@@ -1,0 +1,57 @@
+# include <bits/stdc++.h>
+# define rep(i, n) for(int i=0, i##_len=(n); i<i##_len; ++i)
+# define reps(i, n) for(int i=1, i##_len=(n); i<=i##_len; ++i)
+# define rrep(i, n) for(int i=((int)(n)-1); i>=0; --i)
+# define rreps(i, n) for(int i=((int)(n)); i>0; --i)
+# define ALL(x) (x).begin(), (x).end()
+# define SZ(x) ((int)(x).size())
+# define pb push_back
+# define optimize_cin() cin.tie(0); ios::sync_with_stdio(false)
+# define MSG(x) std::cout << #x << " : " << x << "\n";
+using namespace std;
+using lint = long long;
+template<class T>bool chmax(T &a, const T &b) { if (a<b) { a=b; return 1; } return 0; }
+template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } return 0; }
+
+string S;
+
+int main()
+{
+    cin >> S;
+
+    string S1 = S[0];
+    S1.append(S[1]);
+    string S2 = S[3];
+    S2.append(S[4]);
+
+    if (S1 == "00" || S2 == "00")
+    {
+        cout << "NA" << "\n";
+        return 0;
+    }
+
+    int a = atoi(S1.c_str());
+    int b = atoi(S1.c_str());
+
+    if (a <= 12 && b <= 12)
+    {
+        cout << "AMBIGUOUS" << "\n";
+        return 0;
+    }
+
+    if (a >= 13 && b <= 12)
+    {
+        cout << "YYMM" << "\n";
+        return 0;
+    }
+
+    if (b >= 13 && a <= 12)
+    {
+        cout << "MMYY" << "\n";
+        return 0;
+    }
+    
+    cout << "NA" << "\n";
+
+    return 0;
+}

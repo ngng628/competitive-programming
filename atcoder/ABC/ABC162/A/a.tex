@@ -1,0 +1,88 @@
+\documentclass{jsarticle}
+\usepackage{multicol}
+\usepackage{geometry}
+\geometry{left=30mm,right=30mm,top=15mm,bottom=30mm}
+
+\usepackage{ascmac}
+\usepackage{enumerate}
+
+\usepackage{listings, jlisting}
+\usepackage{color}
+\renewcommand{\lstlistingname}{Code} % キャプション名の指定
+\definecolor{OliveGreen}{rgb}{0.0,0.6,0.0}
+\definecolor{Orenge}{rgb}{0.89,0.55,0}
+\definecolor{SkyBlue}{rgb}{0.28, 0.28, 0.95}
+\lstset{
+  basicstyle={\ttfamily},
+  identifierstyle={\small},
+  commentstyle={\smallitshape},
+  keywordstyle={\small\bfseries},
+  ndkeywordstyle={\small},
+  stringstyle={\small\ttfamily},
+  frame={tb},
+  breaklines=true,
+  columns=[l]{fullflexible},
+  numbers=left,
+  xrightmargin=0zw,
+  xleftmargin=3zw,
+  numberstyle={\scriptsize},
+  stepnumber=1,
+  numbersep=1zw,
+  lineskip=-0.5ex,
+  keywordstyle={\color{SkyBlue}},     %キーワード(int, ifなど)の書体指定
+  commentstyle={\color{OliveGreen}},  %注釈の書体
+  stringstyle=\color{Orenge}          %文字列
+}
+
+\newcommand{\Diff}[1]{D\left[ {#1} \right]}
+\newcommand{\DDiff}[1]{D^2\left[ {#1} \right]}
+\newcommand{\Dinv}[1]{\displaystyle \frac{1}{D}\left[ {#1} \right]}
+\newcommand{\DDinv}[1]{\displaystyle \frac{1}{D^2}\left[ {#1} \right]}
+\newcommand{\dint}[1]{\displaystyle\int{{#1}} dx}
+\newcommand{\dfrac}[2]{\displaystyle\frac{{#1}}{{#2}}}
+\renewcommand{\Im}[1]{\,{\rm Im} \left[ {#1} \right]}
+\renewcommand{\Re}[1]{\,{\rm Re} \left[ {#1} \right]}
+
+\title{E5 電磁界理論 課題}
+\author{水本 直希\thanks{呉工業高等専門学校 電気情報工学科5年}}
+\date{2020/04/14}
+
+\begin{document}
+
+\maketitle
+
+解答のみが知りたい場合は一番最後のセクションを参考にしてください。
+
+\section{感染症}
+
+昨今、新型コロナウイルス（SARS-CoV2）の流行が世界各国を襲っています。
+ウイルスによる健康被害はもちろんのこと、経済活動の停滞、ネットメディアによる悪質なデマの拡散、アジア系住民に対する差別被害など、
+問題は肥大化するばかりです。
+
+さて、感染症流行の数式モデルとして次のようなものが知られています。
+時刻$t$において、感染する可能性のある人口数(無免疫者数)を$S(t)$、感染していてかつ感染させる能力のある人口数(発症者数)を$I(t)$、
+病気からの回復による免疫保持者ないし隔離者・死亡者の人口数(隔離者数)を$R(t)$として次の連立微分方程式を定義します。
+
+  \begin{eqnarray*}
+    \dfrac{d}{dt}S(t) &=& -\beta S(t)I(t) \\
+    \dfrac{d}{dt}I(t) &=& \beta S(t)I(t) - \gamma I(t) \\
+    \dfrac{d}{dt}R(t) &=& \gamma I(t)
+  \end{eqnarray*}
+
+ここで$\beta$は感染率、$\gamma$は回復率を表し、通常これらの値は既知であるとします。また、$\dfrac{1}{\gamma}$は感染期間を表します。
+以上の数式モデルは一般的に「SIRモデル」と呼ばれます。
+
+これらを踏まえ以下の問いに答えなさい。
+
+\begin{enumerate}[(1)]
+  \item 無免疫者数$S(t)$と発症者数$I(t)$と隔離者数$R(t)$の和、すなわち総人口数は一定であることを示しなさい。
+  \item 感染症が発生した初期においては、ほとんど感染者はいないので$S(t) = N\ \ (Nは総人口を表す定数)$と十分近似できる。
+  この近似のもとで、$I(t)$を求めなさい。
+  また、$I_{\infty} = \displaystyle\lim_{t \to \infty} I(t)$としたとき$I_{\infty}$が収束する条件を求めなさい。
+  そのとき条件を満たしているときの$I(t)$のグラフの概形を示せ。
+  \item 17世紀後半のイギリスのとある村でペストが流行した。村の住民261人のうち、7人が初期発症者、254人が初期無免疫者、初期隔離者は0人だという。十分時間が経過し、最終的に感染を逃れて生き残ったのは83人だという。また、ペストの感染期間は11日であるという。(2)で用いた$S(0) = N$の近似は成り立つものとして、感染率$\beta$を求めなさい。
+\end{enumerate}
+
+
+
+\end{document}
