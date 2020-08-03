@@ -3,7 +3,7 @@
 # define reps(i, n) for(int i=1, i##_len=(n); i<=i##_len; ++i)
 # define rrep(i, n) for(int i=((int)(n)-1); i>=0; --i)
 # define rreps(i, n) for(int i=((int)(n)); i>0; --i)
-# define range_for(i, b, e) for(int i=(b), i##_len=(e); i<=i##_len; ++i)
+# define range_for(i, b, e) for(int i=(b), i##_len=(e); i<i##_len; ++i)
 # define step(n) rep(_, n)
 # define ALL(x) (x).begin(), (x).end()
 # define RALL(x) (x).rbegin(), (x).rend()
@@ -15,14 +15,17 @@
 # define LINT_MAX (LLONG_MAX)
 # define LINT_MIN (LLONG_MIN)
 # define cauto const auto
+# define int long long
+# define float long double
 using namespace std;
-using lint = long long;
 template <class Type> inline constexpr Type Square(Type x) { return x * x; }
-template <class Type> inline constexpr bool InRange(const Type& x, const Type& i, const Type& a) { return (i <= x) && (x <= a); }
-template<class Integer>bool chmax(Integer &a, const Integer &b) { if (a<b) { a=b; return 1; } return 0; }
-template<class Integer>bool chmin(Integer &a, const Integer &b) { if (b<a) { a=b; return 1; } return 0; }
+template <class Type> inline constexpr bool InRange(const Type& x, const Type& fst, const Type& lst) { return (fst <= x) && (x < lst); }
+template<class Integer> inline bool chmax(Integer &a, Integer b) { return a < b && (a = b, true); }
+template<class Integer> inline bool chmin(Integer &a, Integer b) { return a > b && (a = b, true); }
 template<class Integer>bool IsOdd(Integer &n) { return n & 1; }
 template<class Integer>bool IsEven(Integer &n) { return !(n & 1); }
+long long gcd(long long a, long long b) { while(b){ long long A = a; (a = b), (b = A % b); } return a; }
+long long lcm(long long a, long long b) { return a / gcd(a, b) * b; }
 int ctoi(const char c) { return ('0' <= c && c <= '9') ? (c - '0') : -1; }
 string YesNo(bool b) { return b ? "Yes" : "No"; }
 string YESNO(bool b) { return b ? "YES" : "NO"; }
@@ -42,9 +45,23 @@ template <class Head, class... Tail> void Debug(Head&& head, Tail&&... tail) { c
 template <class Type> void Debug(vector<Type> &vec) { for (auto& a : vec) { cerr << a; if (&a != &vec.back()) cerr << " "; } cerr << endl; }
 template <class Type> void Debug(vector<vector<Type>> &df) { for (auto& vec : df) { Debug(vec); } }
 
-int main()
+signed main()
 {
-    {{_cursor_}}
+    Cin(string, S, T);
+
+    const int lenS= len(S);
+    S = S + S;
+
+    rep (i, len(S))
+    {
+        if (S.substr(i, lenS) == T)
+        {
+            Print("Yes");
+            return 0;
+        }
+    }
+
+    Print("No");
 
     return 0;
 }

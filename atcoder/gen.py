@@ -39,6 +39,8 @@ def main():
         os.mkdir(contest_grope + '/' + contest_name)
         print(plus, contest_name, 'is created')
 
+    shutil.copyfile('./.ccls', contest_grope + '/' + contest_name + '/.ccls')
+    print(plus, '.ccls is created')
     shutil.copyfile('./download.py', contest_grope + '/' + contest_name + '/download.py')
     print(plus, 'download.py is created\n')
 
@@ -63,7 +65,7 @@ def main():
             print(warning, task_name, 'is already exists')
         else:
             os.mkdir(path)
-            template = '/home/ngng628/.config/nvim/template/cpp/base-atcoder.cpp'
+            template = '/home/ngng/.config/nvim/template/cpp/base-atcoder.cpp'
             shutil.copyfile(template, path + '/main.cpp')
             print(plus, task_name, 'is created')
 
