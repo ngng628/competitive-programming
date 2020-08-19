@@ -7,7 +7,7 @@
 # define step(n) rep(_, n)
 # define ALL(x) (x).begin(), (x).end()
 # define RALL(x) (x).rbegin(), (x).rend()
-# define Unique(a) sort((a).begin(), (a).end()); (a).erase(unique((a).begin(), (a).end()), (a).end())
+# define Unique(a) a.erase(unique(ALL(a)), a.end())
 # define pb push_back
 # define len(x) ((int)(x).size())
 # define optimize_cin() cin.tie(0); ios::sync_with_stdio(false)
@@ -45,38 +45,57 @@ template <class Head, class... Tail> void Debug(Head&& head, Tail&&... tail) { c
 template <class Type> void Debug(vector<Type> &vec) { for (auto& a : vec) { cerr << a; if (&a != &vec.back()) cerr << " "; } cerr << endl; }
 template <class Type> void Debug(vector<vector<Type>> &df) { for (auto& vec : df) { Debug(vec); } }
 
+static const int MOD = 10007;
+struct mint {
+    long long x;
+    mint(long long x=0):x((x%MOD+MOD)%MOD){}
+    mint operator-() const { return mint(-x);}
+    mint& operator+=(const mint a) {
+        if ((x += a.x) >= MOD) x -= MOD;
+        return *this;
+    }
+    mint& operator-=(const mint a) {
+        if ((x += MOD-a.x) >= MOD) x -= MOD;
+        return *this;
+    }
+    mint& operator*=(const mint a) { (x *= a.x) %= MOD; return *this;}
+    mint operator+(const mint a) const { return mint(*this) += a;}
+    mint operator-(const mint a) const { return mint(*this) -= a;}
+    mint operator*(const mint a) const { return mint(*this) *= a;}
+    mint pow(long long t) const {
+    if (!t) return 1;
+        mint a = pow(t>>1);
+        a *= a;
+        if (t&1) a *= *this;
+        return a;
+    }
+
+    // for prime MOD
+    bool operator<(const mint& iValue) const { return this->x < iValue.x; }
+    bool operator<=(const mint& iValue) const { return this->x <= iValue.x; }
+    bool operator>(const mint& iValue) const { return this->x > iValue.x; }
+    bool operator>=(const mint& iValue) const { return this->x >= iValue.x; }
+};
+inline std::istream& operator >>(std::istream& is, const mint& a) { return is >> a.x; }
+inline std::ostream& operator<<(std::ostream& os, const mint& a) { return os << a.x; }
+
+static const int N_MAX = (int)1e6;
+mint tri[N_MAX + 10];
+
 signed main()
 {
-    Cin(int, N, M);
-    vector<int> TF(N, -1);
-    rep (i, M)
+    size_t n; cin >> n;
+    tri[1] = 0;
+    tri[2] = 0;
+    tri[3] = 1;
+
+    range_for (i, 4, N_MAX + 10)
     {
-        Cin(int, p); Cin(string, S);
-        p--;
-        if (TF[p] > 0) continue;
-        if (S == "AC")
-        {
-            TF[p] *= -1;
-        }
-        else
-        {
-            assert(S == "WA");
-            TF[p]--;
-        }
+        tri[i] = tri[i-1] + tri[i-2] + tri[i-3];
     }
 
-    int ac = 0;
-    int wa = 0;
-    rep (i, N)
-    {
-        if (TF[i] > 0)
-        {
-            ac++;
-            wa += TF[i] - 1;
-        }
-    }
-
-    Print(ac, wa);
+    Print(tri[n]);
 
     return 0;
 }
+

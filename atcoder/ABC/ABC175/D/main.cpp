@@ -47,36 +47,56 @@ template <class Type> void Debug(vector<vector<Type>> &df) { for (auto& vec : df
 
 signed main()
 {
-    Cin(int, N, M);
-    vector<int> TF(N, -1);
-    rep (i, M)
+    Cin(int, N, K);
+    vector<int> P(N);
+    rep (i, N)
     {
-        Cin(int, p); Cin(string, S);
-        p--;
-        if (TF[p] > 0) continue;
-        if (S == "AC")
+        Cin(int, p);
+        P[i] = p - 1;
+    }
+    Cinv(int, C, N);
+
+    int ans = LONG_LONG_MIN;
+    rep (i, N)
+    {
+        int now = i;
+        vector<int> visited(N, 0);
+        int pre;
+        int tmp = LONG_LONG_MIN;
+        int score = 0;
+        int times = 0;
+        while ((visited[now] == 0) and (times < K))
         {
-            TF[p] *= -1;
+            visited[now] = times + 1;
+            pre = now;
+            now = P[now];
+            score += C[now];
+            chmax(tmp, score);
+            times++;
+        }
+
+        if (times >= K)
+        {
+            chmax(ans, tmp);
         }
         else
         {
-            assert(S == "WA");
-            TF[p]--;
+            chmax(ans, tmp);
+            int kaisu = K / (visited[now] - visited[pre]);
+            int ttt = sums[visited[now]] - sums[visited[pre]];
+            score = kaisu * score;
+            chmax(ans, score);
+            for (int nokori = 0; nokori < K % times; ++nokori)
+            {
+                now = P[now];
+                score += C[now];
+                chmax(ans, score);
+            }
         }
     }
 
-    int ac = 0;
-    int wa = 0;
-    rep (i, N)
-    {
-        if (TF[i] > 0)
-        {
-            ac++;
-            wa += TF[i] - 1;
-        }
-    }
-
-    Print(ac, wa);
+    Print(ans);
 
     return 0;
 }
+

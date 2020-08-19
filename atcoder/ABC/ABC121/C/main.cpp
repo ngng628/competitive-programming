@@ -7,7 +7,7 @@
 # define step(n) rep(_, n)
 # define ALL(x) (x).begin(), (x).end()
 # define RALL(x) (x).rbegin(), (x).rend()
-# define Unique(a) sort((a).begin(), (a).end()); (a).erase(unique((a).begin(), (a).end()), (a).end())
+# define Unique(a) a.erase(unique(ALL(a)), a.end())
 # define pb push_back
 # define len(x) ((int)(x).size())
 # define optimize_cin() cin.tie(0); ios::sync_with_stdio(false)
@@ -48,35 +48,35 @@ template <class Type> void Debug(vector<vector<Type>> &df) { for (auto& vec : df
 signed main()
 {
     Cin(int, N, M);
-    vector<int> TF(N, -1);
-    rep (i, M)
+    // A円, B本, 添字
+    vector<pair<int, int>> data(N);
+    rep (i, N)
     {
-        Cin(int, p); Cin(string, S);
-        p--;
-        if (TF[p] > 0) continue;
-        if (S == "AC")
+        Cin(int, a, b);
+        get<0>(data[i]) = a;
+        get<1>(data[i]) = b;
+    }
+
+    sort(ALL(data));
+
+    int ans = 0;
+    int hon = M;
+    rep (i, N)
+    {
+        if (hon <= 0) break;
+        if (hon - get<1>(data[i]) < 0)
         {
-            TF[p] *= -1;
+            ans += hon*get<0>(data[i]);
         }
         else
         {
-            assert(S == "WA");
-            TF[p]--;
+            ans += get<0>(data[i])*get<1>(data[i]);
         }
+        hon -= get<1>(data[i]);
     }
 
-    int ac = 0;
-    int wa = 0;
-    rep (i, N)
-    {
-        if (TF[i] > 0)
-        {
-            ac++;
-            wa += TF[i] - 1;
-        }
-    }
-
-    Print(ac, wa);
+    Print(ans);
 
     return 0;
 }
+

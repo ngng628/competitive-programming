@@ -7,7 +7,7 @@
 # define step(n) rep(_, n)
 # define ALL(x) (x).begin(), (x).end()
 # define RALL(x) (x).rbegin(), (x).rend()
-# define Unique(a) sort((a).begin(), (a).end()); (a).erase(unique((a).begin(), (a).end()), (a).end())
+# define Unique(a) a.erase(unique(ALL(a)), a.end())
 # define pb push_back
 # define len(x) ((int)(x).size())
 # define optimize_cin() cin.tie(0); ios::sync_with_stdio(false)
@@ -45,38 +45,35 @@ template <class Head, class... Tail> void Debug(Head&& head, Tail&&... tail) { c
 template <class Type> void Debug(vector<Type> &vec) { for (auto& a : vec) { cerr << a; if (&a != &vec.back()) cerr << " "; } cerr << endl; }
 template <class Type> void Debug(vector<vector<Type>> &df) { for (auto& vec : df) { Debug(vec); } }
 
+using P = pair<int, int>;
+# define X first
+# define Y second
+
+float Distance(P A, P B)
+{
+    return sqrtl(Square(A.X - B.X) + Square(A.Y - B.Y));
+}
+
+float Area(float a, float b, float c)
+{
+    float s = (a + b + c) / 2.0;
+    return sqrtl(s*(s-a)*(s-b)*(s-c));
+}
+
 signed main()
 {
-    Cin(int, N, M);
-    vector<int> TF(N, -1);
-    rep (i, M)
+    vector<P> points(3);
+    for (auto& point : points)
     {
-        Cin(int, p); Cin(string, S);
-        p--;
-        if (TF[p] > 0) continue;
-        if (S == "AC")
-        {
-            TF[p] *= -1;
-        }
-        else
-        {
-            assert(S == "WA");
-            TF[p]--;
-        }
+        cin >> point.X >> point.Y;
     }
 
-    int ac = 0;
-    int wa = 0;
-    rep (i, N)
-    {
-        if (TF[i] > 0)
-        {
-            ac++;
-            wa += TF[i] - 1;
-        }
-    }
+    float a = Distance(points[0], points[1]);
+    float b = Distance(points[1], points[2]);
+    float c = Distance(points[2], points[0]);
 
-    Print(ac, wa);
+    Print(Area(a, b, c));
 
     return 0;
 }
+

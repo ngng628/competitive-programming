@@ -7,7 +7,7 @@
 # define step(n) rep(_, n)
 # define ALL(x) (x).begin(), (x).end()
 # define RALL(x) (x).rbegin(), (x).rend()
-# define Unique(a) sort((a).begin(), (a).end()); (a).erase(unique((a).begin(), (a).end()), (a).end())
+# define Unique(a) a.erase(unique(ALL(a)), a.end())
 # define pb push_back
 # define len(x) ((int)(x).size())
 # define optimize_cin() cin.tie(0); ios::sync_with_stdio(false)
@@ -19,7 +19,7 @@
 # define float long double
 using namespace std;
 template <class Type> inline constexpr Type Square(Type x) { return x * x; }
-template <class Type> inline constexpr bool InRange(const Type& x, const Type& fst, const Type& lst) { return (fst <= x) && (x < lst); }
+template <class Type> inline constexpr bool InRange(const Type& x, const Type fst, const Type lst) { return (fst <= x) && (x <= lst); }
 template<class Integer> inline bool chmax(Integer &a, Integer b) { return a < b && (a = b, true); }
 template<class Integer> inline bool chmin(Integer &a, Integer b) { return a > b && (a = b, true); }
 template<class Integer>bool IsOdd(Integer &n) { return n & 1; }
@@ -47,36 +47,23 @@ template <class Type> void Debug(vector<vector<Type>> &df) { for (auto& vec : df
 
 signed main()
 {
-    Cin(int, N, M);
-    vector<int> TF(N, -1);
-    rep (i, M)
-    {
-        Cin(int, p); Cin(string, S);
-        p--;
-        if (TF[p] > 0) continue;
-        if (S == "AC")
-        {
-            TF[p] *= -1;
-        }
-        else
-        {
-            assert(S == "WA");
-            TF[p]--;
-        }
+    Cin(int, m);
+
+    int VV = 0;
+    if (m < 100LL) {
+        VV = 0;
+    } else if (InRange(m, 100LL, 5000LL)) {
+        VV = (10*m) / 1000;
+    } else if (InRange(m, 6000LL, 30000LL)) {
+        VV = m/1000 + 50;
+    } else if (InRange(m, 35000LL, 70000LL)) {
+        VV = ((m/1000 - 30) / 5) + 80;
+    } else {
+        VV = 89;
     }
 
-    int ac = 0;
-    int wa = 0;
-    rep (i, N)
-    {
-        if (TF[i] > 0)
-        {
-            ac++;
-            wa += TF[i] - 1;
-        }
-    }
-
-    Print(ac, wa);
+    printf("%02lld\n", VV);
 
     return 0;
 }
+

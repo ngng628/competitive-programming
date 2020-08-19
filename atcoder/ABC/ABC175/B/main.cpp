@@ -45,38 +45,65 @@ template <class Head, class... Tail> void Debug(Head&& head, Tail&&... tail) { c
 template <class Type> void Debug(vector<Type> &vec) { for (auto& a : vec) { cerr << a; if (&a != &vec.back()) cerr << " "; } cerr << endl; }
 template <class Type> void Debug(vector<vector<Type>> &df) { for (auto& vec : df) { Debug(vec); } }
 
+void recursive_comb(int *indexes, int s, int rest, std::function<void(int *)> f) {
+    if (rest == 0) f(indexes);
+    else {
+        if (s < 0) return;
+        recursive_comb(indexes, s - 1, rest, f);
+        indexes[rest - 1] = s;
+        recursive_comb(indexes, s - 1, rest - 1, f);
+    }
+}
+
+// nCkの組み合わせに対して処理を実行する
+void foreach_comb(int n, int k, std::function<void(int *)> f) {
+    int indexes[k];
+    recursive_comb(indexes, n - 1, k, f);
+}
+
+// nPnの順列に対して処理を実行する
+void foreach_permutation(int n, std::function<void(int *)> f) {
+    int indexes[n];
+    for (int i = 0; i < n; i++) indexes[i] = i;
+    do {
+        f(indexes);
+    } while (std::next_permutation(indexes, indexes + n));
+}
+
+// nPkの順列に対して処理を実行する
+void foreach_permutation(int n, int k, std::function<void(int *)> f) {
+    foreach_comb(n, k, [&](int *c_indexes) {
+        foreach_permutation(k, [&](int *p_indexes) {
+            int indexes[k];
+            for (int i = 0; i < k; i++) indexes[i] = c_indexes[p_indexes[i]];
+            f(indexes);
+        });
+    });
+}
+
+bool ok(int a, int b, int c)
+{
+    return (a != b and b != c and c != a) and ((a + b > c) and (b + c > a) and (c + a > b));
+}
+
 signed main()
 {
-    Cin(int, N, M);
-    vector<int> TF(N, -1);
-    rep (i, M)
-    {
-        Cin(int, p); Cin(string, S);
-        p--;
-        if (TF[p] > 0) continue;
-        if (S == "AC")
-        {
-            TF[p] *= -1;
-        }
-        else
-        {
-            assert(S == "WA");
-            TF[p]--;
-        }
-    }
+    Cin(int, N);
+    Cinv(int, A, N);
 
-    int ac = 0;
-    int wa = 0;
-    rep (i, N)
-    {
-        if (TF[i] > 0)
-        {
-            ac++;
-            wa += TF[i] - 1;
-        }
-    }
+    //Unique(A);
 
-    Print(ac, wa);
+    int cnt = 0;
+    foreach_comb(N, 3, [&](int *indexes) {
+            //cout << A[indexes[0]] << A[indexes[1]] <<  A[indexes[2]] << endl;
+        if (ok(A[indexes[0]], A[indexes[1]], A[indexes[2]]))
+        {
+            //ce << A[indexes[0]] << A[indexes[1]] <<  A[indexes[2]] << endl;
+            cnt++;
+        }
+    });
+
+    Print(cnt);
 
     return 0;
 }

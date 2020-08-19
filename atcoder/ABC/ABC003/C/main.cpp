@@ -7,7 +7,7 @@
 # define step(n) rep(_, n)
 # define ALL(x) (x).begin(), (x).end()
 # define RALL(x) (x).rbegin(), (x).rend()
-# define Unique(a) sort((a).begin(), (a).end()); (a).erase(unique((a).begin(), (a).end()), (a).end())
+# define Unique(a) a.erase(unique(ALL(a)), a.end())
 # define pb push_back
 # define len(x) ((int)(x).size())
 # define optimize_cin() cin.tie(0); ios::sync_with_stdio(false)
@@ -47,36 +47,21 @@ template <class Type> void Debug(vector<vector<Type>> &df) { for (auto& vec : df
 
 signed main()
 {
-    Cin(int, N, M);
-    vector<int> TF(N, -1);
-    rep (i, M)
-    {
-        Cin(int, p); Cin(string, S);
-        p--;
-        if (TF[p] > 0) continue;
-        if (S == "AC")
-        {
-            TF[p] *= -1;
-        }
-        else
-        {
-            assert(S == "WA");
-            TF[p]--;
-        }
-    }
+    cout << std::fixed << std::setprecision(7);
+    Cin(int, N, K);
+    Cinv(int, R, N);
+    sort(RALL(R));
 
-    int ac = 0;
-    int wa = 0;
-    rep (i, N)
-    {
-        if (TF[i] > 0)
-        {
-            ac++;
-            wa += TF[i] - 1;
-        }
-    }
+    vector<int> selected(K);
+    rep (i, K) selected[i] = R[i];
 
-    Print(ac, wa);
+    sort(ALL(selected));
+
+    float ans = 0.0;
+    rep (i, K) ans = (ans + selected[i]) / 2.0;
+
+    Print(ans);
 
     return 0;
 }
+

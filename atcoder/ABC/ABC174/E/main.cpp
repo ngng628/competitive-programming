@@ -45,36 +45,30 @@ template <class Head, class... Tail> void Debug(Head&& head, Tail&&... tail) { c
 template <class Type> void Debug(vector<Type> &vec) { for (auto& a : vec) { cerr << a; if (&a != &vec.back()) cerr << " "; } cerr << endl; }
 template <class Type> void Debug(vector<vector<Type>> &df) { for (auto& vec : df) { Debug(vec); } }
 
-using P = pair<float, int>;
+int N, K;
+vector<int> A;
+
+bool isOK(int value, int key) {
+    if (value <= key) return true;
+    else return false;
+}
+
+int binary_search() {
+    int ng = -1; // 解が必ず存在しない最大値
+    int ok = (int)A.size(); // 解が必ず存在する最小値
+
+    while (abs(ok - ng) > 1) {
+        int mid = (ok + ng) / 2;
+
+        if (isOK(mid, key)) ok = mid;
+        else ng = mid;
+    }
+    return ok;
+}
 
 signed main()
 {
-    Cin(int, N, K);
-    priority_queue<P> que;
-    int INF = INT_MAX - 1;
-    rep (i, N)
-    {
-        Cin(long double, a);
-        que.push(make_pair(a, INF));
-    }
-
-    step (K)
-    {
-        P now = que.top(); que.pop();
-        if ((int)ceil(now.first) == 1)
-        {
-            Print(1);
-            return 0;
-        }
-
-        int cnt = INT_MAX - now.second;
-        now.first = (now.first * cnt) / (cnt + 1.0);
-        now.second--;
-        que.push(now);
-    }
-
-    Print((int)ceil(que.top().first));
-
-    return 0;
+    cin >> N >> K;
+    A.resize(N); rep (i, N) cin >> A[i];
 }
 

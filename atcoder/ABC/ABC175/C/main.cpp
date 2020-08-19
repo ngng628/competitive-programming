@@ -47,36 +47,34 @@ template <class Type> void Debug(vector<vector<Type>> &df) { for (auto& vec : df
 
 signed main()
 {
-    Cin(int, N, M);
-    vector<int> TF(N, -1);
-    rep (i, M)
+    Cin(int, X, K, D);
+
+    int n =  abs(X) / D;
+    if (K <= n)
     {
-        Cin(int, p); Cin(string, S);
-        p--;
-        if (TF[p] > 0) continue;
-        if (S == "AC")
+        if (X < 0) Print(abs(X + K*D));
+        else Print(abs(X - K*D));
+        return 0;
+    }
+    else
+    {
+        K -= n;
+        if (IsEven(K))
         {
-            TF[p] *= -1;
+            if (X < 0) Print(abs(X + n*D));
+            else Print(abs(X - n*D));
+            return 0;
         }
         else
         {
-            assert(S == "WA");
-            TF[p]--;
+            n++;
+            if (X < 0) Print(abs(X + n*D));
+            else Print(abs(X - n*D));
+            return 0;
+
         }
     }
-
-    int ac = 0;
-    int wa = 0;
-    rep (i, N)
-    {
-        if (TF[i] > 0)
-        {
-            ac++;
-            wa += TF[i] - 1;
-        }
-    }
-
-    Print(ac, wa);
 
     return 0;
 }
+
