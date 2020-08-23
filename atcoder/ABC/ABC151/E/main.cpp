@@ -87,7 +87,7 @@ static const int MAX = 1e5 + 10;
 
 int fac[MAX], finv[MAX], inv[MAX];
  
-void COMinit() // 二項係数を求める時は前処理としてCOMinit()をする
+void COMinit()
 {
     fac[0] = fac[1] = 1;
     finv[0] = finv[1] = 1;
@@ -100,7 +100,6 @@ void COMinit() // 二項係数を求める時は前処理としてCOMinit()を�
     }
 }
  
-// 二項係数計算
 int COM(int n, int k)
 {
     if (n < k)
