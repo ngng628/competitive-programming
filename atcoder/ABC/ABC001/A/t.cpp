@@ -12,7 +12,7 @@
 # define pb push_back
 # define eb emplace_back
 # define len(x) ((int)(x).size())
-# define Find(x,key) ((x).find(key) != (x).end())
+# define CON(x,key) ((x).find(key) != (x).end())
 # define optimize_cin() cin.tie(0); ios::sync_with_stdio(false)
 # define debug(x) std::cerr<<#x<<": "<<(x)<<endl;
 # define cauto const auto
@@ -47,15 +47,9 @@ template <class Head, class... Tail> void Debug(Head&& head, Tail&&... tail) { c
 template <class Type> void Debug(vector<Type> &vec) { for (auto& a : vec) { cerr << a; if (&a != &vec.back()) cerr << " "; } cerr << endl; }
 template <class Type> void Debug(vector<vector<Type>> &df) { for (auto& vec : df) { Debug(vec); } }
 
-
 signed main()
 {
-    Cin(int, R, C);
-    Cin(int, sy, sx);
-    sy--; sx--;
-    Cin(int, gy, gx);
-    gy--; gx--;
-    Cinv(string, c, R);
+    
 
     return 0;
 }

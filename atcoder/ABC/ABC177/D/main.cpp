@@ -1,20 +1,21 @@
 # include <bits/stdc++.h>
 # define rep(i,n) for(int i=0, i##_len=(n); i<i##_len; ++i)
-# define rep2(x,y,w,h) rep (x, w) rep (y, h)
-# define reps(i,n) for(int i=1, i##_len=(n); i<=i##_len; ++i)
-# define reps2(x,y,w,h) reps (x, w) reps (y, h)
-# define rrep(i,n) for(int i=((int)(n)-1); i>=0; --i)
-# define rreps(i,n) for(int i=((int)(n)); i>0; --i)
-# define range_for(i,b,e) for(int i=(b), i##_len=(e); i<i##_len; ++i)
+# define rep2(x, y, w, h) rep (x, w) rep (y, h)
+# define reps(i, n) for(int i=1, i##_len=(n); i<=i##_len; ++i)
+# define reps2(x, y, w, h) reps (x, w) reps (y, h)
+# define rrep(i, n) for(int i=((int)(n)-1); i>=0; --i)
+# define rreps(i, n) for(int i=((int)(n)); i>0; --i)
+# define range_for(i, b, e) for(int i=(b), i##_len=(e); i<i##_len; ++i)
 # define step(n) rep(_, n)
 # define ALL(x) (x).begin(), (x).end()
 # define RALL(x) (x).rbegin(), (x).rend()
 # define pb push_back
-# define eb emplace_back
 # define len(x) ((int)(x).size())
 # define Find(x,key) ((x).find(key) != (x).end())
 # define optimize_cin() cin.tie(0); ios::sync_with_stdio(false)
 # define debug(x) std::cerr<<#x<<": "<<(x)<<endl;
+# define LINT_MAX (LLONG_MAX)
+# define LINT_MIN (LLONG_MIN)
 # define cauto const auto
 # define int long long
 # define float long double
@@ -47,15 +48,42 @@ template <class Head, class... Tail> void Debug(Head&& head, Tail&&... tail) { c
 template <class Type> void Debug(vector<Type> &vec) { for (auto& a : vec) { cerr << a; if (&a != &vec.back()) cerr << " "; } cerr << endl; }
 template <class Type> void Debug(vector<vector<Type>> &df) { for (auto& vec : df) { Debug(vec); } }
 
-
 signed main()
 {
-    Cin(int, R, C);
-    Cin(int, sy, sx);
-    sy--; sx--;
-    Cin(int, gy, gx);
-    gy--; gx--;
-    Cinv(string, c, R);
+    Cin(int, V, E);
+    vector<vector<int>> g(V);
+    rep (i, E) {
+        Cin(int, a, b);
+        a--; b--;
+        g[a].pb(b);
+        g[b].pb(a);
+    }
+
+    vector<bool> visited(V, false);
+    int ans = 0;
+    rep (i, V)
+    {
+        if (visited[i]) continue;
+        stack<int> stk;
+        stk.push(i);
+        visited[i] = true;
+        int nn = 0;
+        while (not stk.empty())
+        {
+            int now = stk.top(); stk.pop();
+            nn++;
+            for (int nxt : g[now])
+            {
+                if (visited[nxt]) continue;
+                stk.push(nxt);
+                visited[nxt] = true;
+            }
+        }
+        chmax(ans, nn);
+    }
+
+    Print(ans);
 
     return 0;
 }
+
