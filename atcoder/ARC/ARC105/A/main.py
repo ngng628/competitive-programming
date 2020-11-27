@@ -1,0 +1,5 @@
+v = list(map(int, input().split()))
+v.sort()
+if v[0] + v[3] == v[1] + v[2]: print('Yes')
+elif v[0] + v[1] + v[2] == v[3]: print('Yes')
+else: print('No')

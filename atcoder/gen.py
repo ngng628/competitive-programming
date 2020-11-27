@@ -65,7 +65,14 @@ def main():
             print(warning, task_name, 'is already exists')
         else:
             os.mkdir(path)
-            template = '/home/ngng/.config/nvim/template/cpp/base-atcoder.cpp'
+            if contest_grope == 'ABC':
+              template = '/home/ngng/.config/nvim/template/cpp/base-abc.cpp'
+            elif contest_grope == 'ARC':
+              template = '/home/ngng/.config/nvim/template/cpp/base-arc.cpp'
+            elif contest_grope == 'AGC':
+              template = '/home/ngng/.config/nvim/template/cpp/base-agc.cpp'
+            else:
+              template = '/home/ngng/.config/nvim/template/cpp/base-other.cpp'
             shutil.copyfile(template, path + '/main.cpp')
             print(plus, task_name, 'is created')
 
