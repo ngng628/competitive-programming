@@ -1,6 +1,10 @@
-# include <bits/stdc++.h>
+/**
+ *  AtCoder Regular Contest 111
+**/
 # ifndef ngng628_library
 # define ngng628_library
+# include <bits/stdc++.h>
+# define cauto const auto
 # define int long long
 # define float long double
 # define fi first
@@ -36,7 +40,6 @@ using msi = map<string, int>;
 constexpr int INF = (1LL<<62)-(1LL<<31);
 constexpr float EPS = 1e-10;
 constexpr float PI = 3.1415926535897932385;
-constexpr int Flag(int n) { return 1LL << n; }
 template<class T> istream& operator>>(istream& is, vector<T>& v) { for (auto& x : v) is >> x; return is; }
 template<class T> istream& operator>>(istream& is, vector<vector<T>>& v) { for(auto& x : v) for (auto& y : x) is >> y; return is; }
 template<class T, class U> istream& operator>>(istream& is, pair<T, U>& p) { return is >> p.fi >> p.se; }
@@ -54,48 +57,52 @@ template<class T> inline void Unique(T& v) { sort(v.begin(), v.end()); v.erase(u
 template<class T> inline constexpr bool chmax(T &a, T b) { return a < b && (a = b, true); }
 template<class T> inline constexpr bool chmin(T &a, T b) { return a > b && (a = b, true); }
 constexpr int ctoi(const char c) { return ('0' <= c and c <= '9') ? (c - '0') : -1; }
-template<class It> constexpr bool same(It f, It e) { while (f != e) if (*f != *(--e)) return false; return true; }
 const char* YesNo(bool b) { return b ? "Yes" : "No"; }
 const char* YESNO(bool b) { return b ? "YES" : "NO"; }
 const char* yesno(bool b) { return b ? "yes" : "no"; }
 const char* yn(bool b) { return YesNo(b); }
 # endif  // ngng628_library
 
-struct Edge {
-   Edge() = default;
-   Edge(int t, int w = 0) : to(t), weight(w) {}
-   int to;
-   int weight;
-};
-using Graph = vector<vector<Edge>>;
+vi topological_sort(const vvi& graph) {
+   vi ans;
+   int n = len(graph);
+   vi ind(n);
+   rep (i, n) {
+       for (int nxt : graph[i]) ind[nxt]++;
+   }
+   queue<int> que;
+   rep (i, n) {
+       if (ind[i] == 0) que.push(i);
+   }
+   while (not que.empty()) {
+       int now = que.front(); que.pop();
+       ans.pb(now);
+       for (int nxt : graph[now]) {
+           ind[nxt]--;
+           if (ind[nxt] == 0) que.push(nxt);
+       }
+   }
+   return ans;
+}
 
 int32_t main() {
-   int v, e, r;
-   cin >> v >> e >> r;
-    Graph graph(v);
-    rep (i, e) {
-        int s, t, d;
-        cin >> s >> t >> d;
-        graph[s].emplace_back(t, d);
-    }
+   int n;
+   cin >> n;
+   int m = n;
+   vvi graph(n);
+   set<pii> st;
+   rep (i, m) {
+      int a, b;
+      cin >> a >> b;
+      a--; b--;
+      if (a == b) continue;
+      if (st.count({a, b}) or st.count({b, a})) continue;
+      graph[a].pb(b);
+      graph[b].pb(a);
+      st.insert({a, b});
+      st.insert({b, a});
+   }
 
-    vi dist(v, INF);
-    priority_queue<pii, vpii, greater<pii>> pq; // {dist, to}
-    dist[r] = 0;
-    pq.emplace(dist[r], r);
-    while (not pq.empty()) {
-       auto [d, now] = pq.top(); pq.pop();
-       if (dist[now] < d) continue;
-       for (auto& edge : graph[now]) {
-           if (dist[edge.to] > dist[now] + edge.weight) {
-               dist[edge.to] = dist[now] + edge.weight;
-               pq.emplace(dist[edge.to], edge.to);
-           }
-       }
-    }
-
-    rep (i, v) {
-        if (dist[i] == INF) print("INF");
-        else print(dist[i]);
-    }
+   vi topo = topological_sort(graph);
+   else print(*max_element(all(topo)) + 1);
 }

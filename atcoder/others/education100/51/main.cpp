@@ -1,8 +1,8 @@
 # include <bits/stdc++.h>
+# include <atcoder/all.h>
 # ifndef ngng628_library
 # define ngng628_library
-# define int long long
-# define float long double
+# define cauto const auto
 # define fi first
 # define se second
 # define mkp make_pair
@@ -21,8 +21,11 @@
 # define lb(v,x) distance(std::begin(v), lower_bound(all(v), (x)))
 # define ub(v,x) distance(std::begin(v), upper_bound(all(v), (x)))
 using namespace std;
-using pii = pair<int, int>;
-using vi = vector<int>;
+using namespace atcoder;
+using ll = int64_t;
+using ld = long double;
+using pii = pair<ll, ll>;
+using vi = vector<ll>;
 using vb = vector<bool>;
 using vvb = vector<vb>;
 using vvvb = vector<vvb>;
@@ -30,13 +33,12 @@ using vs = vector<string>;
 using vpii = vector<pii>;
 using vvi = vector<vi>;
 using vvvi = vector<vvi>;
-using mii = map<int, int>;
-using mci = map<char, int>;
-using msi = map<string, int>;
-constexpr int INF = (1LL<<62)-(1LL<<31);
-constexpr float EPS = 1e-10;
-constexpr float PI = 3.1415926535897932385;
-constexpr int Flag(int n) { return 1LL << n; }
+using mii = map<ll, ll>;
+using mci = map<char, ll>;
+using msi = map<string, ll>;
+constexpr ll INF = (1LL<<62)-(1LL<<31);
+constexpr ld EPS = 1e-10;
+constexpr ld PI = 3.1415926535897932385;
 template<class T> istream& operator>>(istream& is, vector<T>& v) { for (auto& x : v) is >> x; return is; }
 template<class T> istream& operator>>(istream& is, vector<vector<T>>& v) { for(auto& x : v) for (auto& y : x) is >> y; return is; }
 template<class T, class U> istream& operator>>(istream& is, pair<T, U>& p) { return is >> p.fi >> p.se; }
@@ -54,48 +56,45 @@ template<class T> inline void Unique(T& v) { sort(v.begin(), v.end()); v.erase(u
 template<class T> inline constexpr bool chmax(T &a, T b) { return a < b && (a = b, true); }
 template<class T> inline constexpr bool chmin(T &a, T b) { return a > b && (a = b, true); }
 constexpr int ctoi(const char c) { return ('0' <= c and c <= '9') ? (c - '0') : -1; }
-template<class It> constexpr bool same(It f, It e) { while (f != e) if (*f != *(--e)) return false; return true; }
 const char* YesNo(bool b) { return b ? "Yes" : "No"; }
 const char* YESNO(bool b) { return b ? "YES" : "NO"; }
 const char* yesno(bool b) { return b ? "yes" : "no"; }
 const char* yn(bool b) { return YesNo(b); }
 # endif  // ngng628_library
 
-struct Edge {
-   Edge() = default;
-   Edge(int t, int w = 0) : to(t), weight(w) {}
-   int to;
-   int weight;
-};
-using Graph = vector<vector<Edge>>;
+using mint = static_modint<10007>;
+
+constexpr int Flag(int n) {
+   return 1LL << n;
+}
+
+map<char, int> mapping = {{'J', Flag(0)}, {'O', Flag(1)}, {'I', Flag(2)}};
+auto read() {
+   int n;
+   cin >> n;
+   vi a(n+1);
+   a[0] = mapping['J'];
+   reps (i, n) {
+      char c;
+      cin >> c;
+      a[i] = mapping[c];
+   }
+   return make_tuple(n, a);
+}
 
 int32_t main() {
-   int v, e, r;
-   cin >> v >> e >> r;
-    Graph graph(v);
-    rep (i, e) {
-        int s, t, d;
-        cin >> s >> t >> d;
-        graph[s].emplace_back(t, d);
-    }
+   auto [n, a] = read();
 
-    vi dist(v, INF);
-    priority_queue<pii, vpii, greater<pii>> pq; // {dist, to}
-    dist[r] = 0;
-    pq.emplace(dist[r], r);
-    while (not pq.empty()) {
-       auto [d, now] = pq.top(); pq.pop();
-       if (dist[now] < d) continue;
-       for (auto& edge : graph[now]) {
-           if (dist[edge.to] > dist[now] + edge.weight) {
-               dist[edge.to] = dist[now] + edge.weight;
-               pq.emplace(dist[edge.to], edge.to);
-           }
-       }
-    }
+   vector dp(n+1, vector<mint>(Flag(3), 0));
+   dp[0][mapping['J']] = 1;
+   reprs (i, 1, n) {
+      rep (s, Flag(3)) {
+         if (!(s & a[i])) dp[i][s] = 0;
+         else rep (t, Flag(3)) if (s & t) dp[i][s] += dp[i-1][t];
+      }
+   }
 
-    rep (i, v) {
-        if (dist[i] == INF) print("INF");
-        else print(dist[i]);
-    }
+   mint ans = 0;
+   rep (s, Flag(3)) ans += dp[n][s];
+   print(ans.val());
 }

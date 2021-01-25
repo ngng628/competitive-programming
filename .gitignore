@@ -2,6 +2,9 @@
 download.py
 test/
 *.in
+in
+out
+ans
 *.out
 .ccls
 Cargo.*

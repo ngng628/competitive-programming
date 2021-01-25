@@ -1,6 +1,7 @@
 # include <bits/stdc++.h>
 # ifndef ngng628_library
 # define ngng628_library
+# define cauto const auto
 # define int long long
 # define float long double
 # define fi first
@@ -54,48 +55,56 @@ template<class T> inline void Unique(T& v) { sort(v.begin(), v.end()); v.erase(u
 template<class T> inline constexpr bool chmax(T &a, T b) { return a < b && (a = b, true); }
 template<class T> inline constexpr bool chmin(T &a, T b) { return a > b && (a = b, true); }
 constexpr int ctoi(const char c) { return ('0' <= c and c <= '9') ? (c - '0') : -1; }
-template<class It> constexpr bool same(It f, It e) { while (f != e) if (*f != *(--e)) return false; return true; }
 const char* YesNo(bool b) { return b ? "Yes" : "No"; }
 const char* YESNO(bool b) { return b ? "YES" : "NO"; }
 const char* yesno(bool b) { return b ? "yes" : "no"; }
 const char* yn(bool b) { return YesNo(b); }
 # endif  // ngng628_library
 
-struct Edge {
-   Edge() = default;
-   Edge(int t, int w = 0) : to(t), weight(w) {}
-   int to;
-   int weight;
-};
-using Graph = vector<vector<Edge>>;
+auto read() {
+   int n, m;
+   cin >> n >> m;
+   vi a(n);
+   vi _cnt(m);
+   rep (i, n) {
+      cin >> a[i];
+      a[i]--;
+      _cnt[a[i]]++;
+   }
+
+   vi cnt(Flag(m));
+   rep (s, Flag(m)) {
+      rep (i, m) {
+         if (s & Flag(i)) cnt[s] += _cnt[i];
+      }
+   }
+   
+   return make_tuple(n, m, a, cnt);
+}
 
 int32_t main() {
-   int v, e, r;
-   cin >> v >> e >> r;
-    Graph graph(v);
-    rep (i, e) {
-        int s, t, d;
-        cin >> s >> t >> d;
-        graph[s].emplace_back(t, d);
-    }
+   auto [n, m, a, cnt] = read();
 
-    vi dist(v, INF);
-    priority_queue<pii, vpii, greater<pii>> pq; // {dist, to}
-    dist[r] = 0;
-    pq.emplace(dist[r], r);
-    while (not pq.empty()) {
-       auto [d, now] = pq.top(); pq.pop();
-       if (dist[now] < d) continue;
-       for (auto& edge : graph[now]) {
-           if (dist[edge.to] > dist[now] + edge.weight) {
-               dist[edge.to] = dist[now] + edge.weight;
-               pq.emplace(dist[edge.to], edge.to);
-           }
-       }
-    }
+   // 種類 k のぬいぐるみは区間 [l, r) の間に何個？
+   vvi n_dolls(m, vi(n+1, 0));
+   rep (i, m) {
+      reps (k, n) {
+         n_dolls[i][k] += n_dolls[i][k-1] + (a[k-1] == i ? 1 : 0);
+      }
+   }
 
-    rep (i, v) {
-        if (dist[i] == INF) print("INF");
-        else print(dist[i]);
-    }
+   // 既に s は詰めているとき、 i を詰めたらどうなる？
+   vi dp(Flag(m), INF);
+   dp[0] = 0;
+   rep (s, Flag(m)) {
+      rep (i, m) {
+         if (s & Flag(i)) continue;
+         int l = cnt[s];
+         int r = l + cnt[Flag(i)];
+         int cost = (r - l) - (n_dolls[i][r] - n_dolls[i][l]);
+         chmin(dp[s | Flag(i)], dp[s] + cost);
+      }
+   }
+
+   print(dp[Flag(m) - 1]);
 }

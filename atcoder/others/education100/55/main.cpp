@@ -61,41 +61,22 @@ const char* yesno(bool b) { return b ? "yes" : "no"; }
 const char* yn(bool b) { return YesNo(b); }
 # endif  // ngng628_library
 
-struct Edge {
-   Edge() = default;
-   Edge(int t, int w = 0) : to(t), weight(w) {}
-   int to;
-   int weight;
-};
-using Graph = vector<vector<Edge>>;
-
 int32_t main() {
-   int v, e, r;
-   cin >> v >> e >> r;
-    Graph graph(v);
-    rep (i, e) {
-        int s, t, d;
-        cin >> s >> t >> d;
-        graph[s].emplace_back(t, d);
-    }
+   int n;
+   cin >> n;
+   vi a(n);
+   cin >> a;
 
-    vi dist(v, INF);
-    priority_queue<pii, vpii, greater<pii>> pq; // {dist, to}
-    dist[r] = 0;
-    pq.emplace(dist[r], r);
-    while (not pq.empty()) {
-       auto [d, now] = pq.top(); pq.pop();
-       if (dist[now] < d) continue;
-       for (auto& edge : graph[now]) {
-           if (dist[edge.to] > dist[now] + edge.weight) {
-               dist[edge.to] = dist[now] + edge.weight;
-               pq.emplace(dist[edge.to], edge.to);
-           }
-       }
-    }
+   deque<int> dq;
+   for (int& e : a) {
+      auto it = lower_bound(all(dq), e);
+      if (it == dq.begin()) dq.push_front(e);
+      else *(it - 1) = e;
+      for (int d : dq) {
+         cout << d << " ";
+      }
+      cout << endl;
+   }
 
-    rep (i, v) {
-        if (dist[i] == INF) print("INF");
-        else print(dist[i]);
-    }
+   print(len(dq));
 }

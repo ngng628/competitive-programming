@@ -1,6 +1,7 @@
 # include <bits/stdc++.h>
 # ifndef ngng628_library
 # define ngng628_library
+# define cauto const auto
 # define int long long
 # define float long double
 # define fi first
@@ -54,48 +55,39 @@ template<class T> inline void Unique(T& v) { sort(v.begin(), v.end()); v.erase(u
 template<class T> inline constexpr bool chmax(T &a, T b) { return a < b && (a = b, true); }
 template<class T> inline constexpr bool chmin(T &a, T b) { return a > b && (a = b, true); }
 constexpr int ctoi(const char c) { return ('0' <= c and c <= '9') ? (c - '0') : -1; }
-template<class It> constexpr bool same(It f, It e) { while (f != e) if (*f != *(--e)) return false; return true; }
 const char* YesNo(bool b) { return b ? "Yes" : "No"; }
 const char* YESNO(bool b) { return b ? "YES" : "NO"; }
 const char* yesno(bool b) { return b ? "yes" : "no"; }
 const char* yn(bool b) { return YesNo(b); }
 # endif  // ngng628_library
 
-struct Edge {
-   Edge() = default;
-   Edge(int t, int w = 0) : to(t), weight(w) {}
-   int to;
-   int weight;
-};
-using Graph = vector<vector<Edge>>;
+bool calc(bool a, string op, bool b) {
+   if (op == "AND") return a & b;
+   else return a | b;
+}
 
 int32_t main() {
-   int v, e, r;
-   cin >> v >> e >> r;
-    Graph graph(v);
-    rep (i, e) {
-        int s, t, d;
-        cin >> s >> t >> d;
-        graph[s].emplace_back(t, d);
-    }
+   int n; cin >> n;
+   vs op(n);
+   cin >> op;
 
-    vi dist(v, INF);
-    priority_queue<pii, vpii, greater<pii>> pq; // {dist, to}
-    dist[r] = 0;
-    pq.emplace(dist[r], r);
-    while (not pq.empty()) {
-       auto [d, now] = pq.top(); pq.pop();
-       if (dist[now] < d) continue;
-       for (auto& edge : graph[now]) {
-           if (dist[edge.to] > dist[now] + edge.weight) {
-               dist[edge.to] = dist[now] + edge.weight;
-               pq.emplace(dist[edge.to], edge.to);
-           }
-       }
-    }
+   vector<vvvi> dp(n+1,vvvi(2, vvi(2, vi(2, 0))));
+   reps (i, n) {
+      rep (k, 2) {
+         rep (x, 2) {
+            rep (y, 2) {
+               int& now = dp[i][k][x][y];
+               if (calc(k, op[i-1], x) == y) {
+                  if (i == 1) now++;
+                  rep (a, 2) rep (b, 2) now += dp[i-1][a][b][k];
+               }
+               else now = 0;
+            }
+         }
+      }
+   }
 
-    rep (i, v) {
-        if (dist[i] == INF) print("INF");
-        else print(dist[i]);
-    }
+   int ans = 0;
+   rep (a, 2) rep (b, 2) ans += dp[n][a][b][1];
+   print(ans);
 }

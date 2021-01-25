@@ -39,11 +39,12 @@ def main():
         os.mkdir(contest_grope + '/' + contest_name)
         print(plus, contest_name, 'is created')
 
-    shutil.copyfile('./.ccls', contest_grope + '/' + contest_name + '/.ccls')
-    print(plus, '.ccls is created')
     shutil.copyfile('./download.py', contest_grope + '/' + contest_name + '/download.py')
-    print(plus, 'download.py is created\n')
+    print(plus, 'download.py is created')
+    shutil.copytree('./vscode', contest_grope + '/' + contest_name + '/.vscode')
+    print(plus, '.vscode is created\n')
 
+    
     if contest_grope in ['ABC', 'ARC', 'AGC']:
         contest_number = int(contest_name[3:])
         if contest_grope == 'ABC' and contest_number >= 126:
