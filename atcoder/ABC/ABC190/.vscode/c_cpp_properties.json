@@ -3,8 +3,8 @@
         {
             "name": "WSL",
             "includePath": [
-                "${workspaceFolder}/**",
-                "/home/ngng/work/competitive-programming/atcoder/ac-library"
+                "/home/ngng/work/competitive-programming/atcoder/ac-library/**",
+                "${workspaceFolder}/**"
             ],
             "intelliSenseMode": "gcc-x64",
             "compilerPath": "/bin/gcc-10",
