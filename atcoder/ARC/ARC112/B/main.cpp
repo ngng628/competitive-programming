@@ -1,7 +1,7 @@
 # include <bits/stdc++.h>
 # ifndef ngng628_library
 # define ngng628_library
-# define int int64_t
+# define int long long
 # define float long double
 # define fi first
 # define se second
@@ -50,18 +50,43 @@ constexpr int ctoi(const char c) { return ('0' <= c and c <= '9') ? (c - '0') : 
 const char* yn(bool b) { return b ? "Yes" : "No"; }
 # endif  // ngng628_library
 
-int32_t main() {
-   int n;
-   cin >> n;
-   string s;
-   cin >> s;
-   vi left(n+1, 0), right(n+1, 0);
-   rep (i, n) {
-      left[i+1] = left[i] + int(s[i] == 'W');
-      right[n-i-1] = right[n-i] + int(s[n-i] == 'E');
+int pos(int x, int c) {
+   int ans = c;
+   if (c % 2 == 0) {
+      ans -= 1;
    }
+   return min(2*x - 1, ans);
+}
 
-   int ans = INF;
-   rep (i, n) chmin(ans, left[i] + right[i]);
-   print(ans);
+
+int neg(int x, int c) {
+   int ans = c;
+   if (c % 2 == 1) {
+      ans += 1;
+   }
+   // ans += (c - n + 1) / 2;
+   // if (c % 3 == 2) ans++;
+   // else if (c % 3 == 1) ans++;
+   return ans;
+}
+
+int32_t main() {
+   int b, c;
+   cin >> b >> c;
+
+   if (c == 0) drop(1);
+   else if (c == 1) drop(b == 0 ? 1 : 2);
+   else if (c == 2) drop(b == 0 ? 1 : 2);
+
+   int ans = 0;
+   if (b == 0) {
+      ans = neg(b, c);
+   }
+   if (b > 0) {
+      ans = pos(b, c) + neg(-b, c-1);
+   }
+   else {
+      ans = pos(-b, c-1) + neg(b, c);
+   }
+   print(ans + 1);
 }

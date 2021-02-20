@@ -1,7 +1,7 @@
 # include <bits/stdc++.h>
 # ifndef ngng628_library
 # define ngng628_library
-# define int int64_t
+# define int long long
 # define float long double
 # define fi first
 # define se second
@@ -50,18 +50,16 @@ constexpr int ctoi(const char c) { return ('0' <= c and c <= '9') ? (c - '0') : 
 const char* yn(bool b) { return b ? "Yes" : "No"; }
 # endif  // ngng628_library
 
-int32_t main() {
-   int n;
-   cin >> n;
-   string s;
-   cin >> s;
-   vi left(n+1, 0), right(n+1, 0);
-   rep (i, n) {
-      left[i+1] = left[i] + int(s[i] == 'W');
-      right[n-i-1] = right[n-i] + int(s[n-i] == 'E');
-   }
+int S(int n) { return n*(n+1) / 2; }
 
-   int ans = INF;
-   rep (i, n) chmin(ans, left[i] + right[i]);
-   print(ans);
+int32_t main() {
+   int t;
+   cin >> t;
+   while (t--) {
+      int l, r;
+      cin >> l >> r;
+      int n = r - l + 1;
+      int ans = S((n - l < 0 ? 0 : n - l));
+      print(ans);
+   }
 }

@@ -1,89 +1,70 @@
 # include <bits/stdc++.h>
-# define rep(i, n) for(int i=0, i##_len=(n); i<i##_len; ++i)
-# define reps(i, n) for(int i=1, i##_len=(n); i<=i##_len; ++i)
-# define rrep(i, n) for(int i=((int)(n)-1); i>=0; --i)
-# define rreps(i, n) for(int i=((int)(n)); i>0; --i)
-# define range_for(i, b, e) for(int i=(b), i##_len=(e); i<i##_len; ++i)
-# define step(n) rep(_, n)
-# define ALL(x) (x).begin(), (x).end()
-# define RALL(x) (x).rbegin(), (x).rend()
-# define Unique(a) a.erase(unique(ALL(a)), a.end())
-# define pb push_back
-# define len(x) ((int)(x).size())
-# define optimize_cin() cin.tie(0); ios::sync_with_stdio(false)
-# define debug(x) std::cerr<<#x<<": "<<(x)<<endl;
-# define LINT_MAX (LLONG_MAX)
-# define LINT_MIN (LLONG_MIN)
-# define cauto const auto
+# ifndef ngng628_library
+# define ngng628_library
 # define int long long
 # define float long double
+# define fi first
+# define se second
+# define rep(i,n) for(int i=0, i##_len=(n); i<i##_len; ++i)
+# define reps(i,n) for(int i=1, i##_len=(n); i<=i##_len; ++i)
+# define rrep(i,n) for(int i=((int)(n)-1); i>=0; --i)
+# define rreps(i,n) for(int i=((int)(n)); i>0; --i)
+# define repr(i,b,e) for(int i=(b), i##_len=(e); i<i##_len; ++i)
+# define reprs(i,b,e) for(int i=(b), i##_len=(e); i<=i##_len; ++i)
+# define all(x) std::begin(x), std::end(x)
+# define rall(x) std::rbegin(x), std::rend(x)
+# define pb push_back
+# define eb emplace_back
+# define len(x) ((int)(x).size())
+# define contains(x,key) ((x).find(key) != (x).end())
+# define lb(v,x) distance(std::begin(v), lower_bound(all(v), (x)))
+# define ub(v,x) distance(std::begin(v), upper_bound(all(v), (x)))
 using namespace std;
-template <class Type> inline constexpr Type Square(Type x) { return x * x; }
-template <class Type> inline constexpr bool InRange(const Type& x, const Type& fst, const Type& lst) { return (fst <= x) && (x < lst); }
-template<class Integer> inline bool chmax(Integer &a, Integer b) { return a < b && (a = b, true); }
-template<class Integer> inline bool chmin(Integer &a, Integer b) { return a > b && (a = b, true); }
-template<class Integer>bool IsOdd(Integer &n) { return n & 1; }
-template<class Integer>bool IsEven(Integer &n) { return !(n & 1); }
-long long gcd(long long a, long long b) { while(b){ long long A = a; (a = b), (b = A % b); } return a; }
-long long lcm(long long a, long long b) { return a / gcd(a, b) * b; }
-int ctoi(const char c) { return ('0' <= c && c <= '9') ? (c - '0') : -1; }
-string YesNo(bool b) { return b ? "Yes" : "No"; }
-string YESNO(bool b) { return b ? "YES" : "NO"; }
-string yesno(bool b) { return b ? "yes" : "no"; }
-void _cin(){} template <class Head, class... Tail> void _cin(Head&& head, Tail&&... tail){ cin >> head; _cin(forward<Tail>(tail)...); }
-#define Cin(Type, ...) Type __VA_ARGS__; _cin(__VA_ARGS__)
-#define Cinv(Type, xs, n) vector<Type> xs(n); rep(i, n) cin >> xs[i]
-#define Cinv2(Type, xs, ys, n) vector<Type> xs(n), ys(n); rep(i, n) cin >> xs[i] >> ys[i]
-#define Cinv3(Type, xs, ys, zs, n) vector<Type> xs(n), ys(n), zs(n); rep(i, n) cin >> xs[i] >> ys[i] >> zs[i]
-#define Cinvv(Type, xs, h, w) vector<vector<Type>> xs(h, vector<int>(w)); rep(i, h) rep(j, w) cin >> xs[i][j]
-void Print() { cout << endl; }
-template <class Head, class... Tail> void Print(Head&& head, Tail&&... tail) { cout << head; if (sizeof...(tail) != 0) cout << " "; Print(forward<Tail>(tail)...); }
-template <class Type> void Print(vector<Type> &vec) { for (auto& a : vec) { cout << a; if (&a != &vec.back()) cout << " "; } cout << endl; }
-template <class Type> void Print(vector<vector<Type>> &df) { for (auto& vec : df) { Print(vec); } }
-void Debug() { cerr << endl; }
-template <class Head, class... Tail> void Debug(Head&& head, Tail&&... tail) { cerr << head; if (sizeof...(tail) != 0) cerr << " "; Debug(forward<Tail>(tail)...); }
-template <class Type> void Debug(vector<Type> &vec) { for (auto& a : vec) { cerr << a; if (&a != &vec.back()) cerr << " "; } cerr << endl; }
-template <class Type> void Debug(vector<vector<Type>> &df) { for (auto& vec : df) { Debug(vec); } }
+template<class T> using vec = vector<T>;
+using pii = pair<int, int>;
+using vi = vec<int>;
+using vb = vec<bool>;
+using vvb = vec<vb>;
+using vvvb = vec<vvb>;
+using vs = vec<string>;
+using vvi = vec<vi>;
+using vvvi = vec<vvi>;
+constexpr int INF = (1LL<<62)-(1LL<<31);
+constexpr float EPS = 1e-10;
+template<class T> istream& operator>>(istream& is, vec<T>& v) { for (auto& x : v) is >> x; return is; }
+template<class T, class U> istream& operator>>(istream& is, pair<T, U>& p) { return is >> p.fi >> p.se; }
+template<class T> T scan() { T ret; cin >> ret; return ret; }
+template<class T> string join(const vec<T> &v){ stringstream s; rep (i, len(v)) s<<' '<<v[i]; return s.str().substr(1); }
+template<class T> ostream& operator<<(ostream& os, const vec<T>& v){ if (len(v)) os << join(v); return os; }
+template<class T> ostream& operator<<(ostream& os, const vec<vec<T>>& v){ rep (i, len(v)) { if (len(v[i])) os << join(v[i]) << (i-len(v)+1 ? "\n" : ""); } return os; }
+template<class T, class U> ostream& operator<<(ostream& os, const pair<T, U>& p){ cout << p.fi << " " << p.se; return os; }
+void print(){ cout << "\n"; }
+template<class T, class... A>void print(const T& v, const A&...args){cout << v; if(sizeof...(args))cout << " "; print(args...);}
+void eprint() { cerr << "\n"; }
+template<class T, class... A>void eprint(const T& v, const A&...args){cerr << v; if(sizeof...(args))cerr << " "; eprint(args...);}
+void drop(){ cout << "\n"; exit(0); }
+template<class T, class... A>void drop(const T& v, const A&...args){cout << v; if(sizeof...(args))cout << " "; drop(args...);}
+template<class T> inline constexpr bool chmax(T &a, const T& b) { return a < b && (a = b, true); }
+template<class T> inline constexpr bool chmin(T &a, const T& b) { return a > b && (a = b, true); }
+constexpr int ctoi(const char c) { return ('0' <= c and c <= '9') ? (c - '0') : -1; }
+const char* yn(bool b) { return b ? "Yes" : "No"; }
+# endif  // ngng628_library
 
-static const int Nmax = 50'000;
-static const int Mmax = 20;
-static const int Fmax = 10'000;
-int dp[Mmax + 1][Nmax + 10]; // 枚
+int32_t main() {
+   int n, m;
+   cin >> n >> m;
+   vi c(m);
+   cin >> c;
+   sort(all(c));
+   vvi dp(m+1, vi(n+1));
+   rep (i, m+1) dp[i][0] = 0;
+   rep (i, n+1) dp[0][i] = INF;
+   rep (i, m) {
+      rep (k, n+1) {
+         if (k < c[i]) dp[i+1][k] = dp[i][k];
+         else dp[i+1][k] = min(dp[i][k], dp[i+1][k - c[i]] + 1);
+      }
+   }
 
-signed main()
-{
-    Cin(int, n, m);
-    Cinv(int, c, m);
-    sort(ALL(c));
-
-    int INF = 1 << 20;
-    rep (i, Nmax + 10)
-    {
-        dp[0][i] = INF;
-    }
-
-    rep (i, Mmax + 1)
-    {
-        dp[i][0] = 0;
-    }
-
-
-    range_for (i, 0, Mmax)
-    {
-        rep (k, Nmax + 1)
-        {
-            if (k < c[i])
-            {
-                dp[i+1][k] = dp[i][k];
-            }
-            else
-            {
-                dp[i+1][k] = min(dp[i][k], dp[i+1][k - c[i]] + 1);
-            }
-        }
-    }
-
-    Print(dp[m][n]);
-
-    return 0;
+   print(dp[m][n]);
 }

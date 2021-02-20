@@ -1,7 +1,7 @@
 # include <bits/stdc++.h>
 # ifndef ngng628_library
 # define ngng628_library
-# define int int64_t
+# define int long long
 # define float long double
 # define fi first
 # define se second
@@ -50,18 +50,44 @@ constexpr int ctoi(const char c) { return ('0' <= c and c <= '9') ? (c - '0') : 
 const char* yn(bool b) { return b ? "Yes" : "No"; }
 # endif  // ngng628_library
 
-int32_t main() {
-   int n;
-   cin >> n;
-   string s;
-   cin >> s;
-   vi left(n+1, 0), right(n+1, 0);
-   rep (i, n) {
-      left[i+1] = left[i] + int(s[i] == 'W');
-      right[n-i-1] = right[n-i] + int(s[n-i] == 'E');
-   }
+struct Edge {
+   Edge() = default;
+   Edge(int t, int w, int k) : to(t), weight(w), K(k) {}
+   int to, weight, K;
+};
+using Graph = vec<vec<Edge>>;
 
-   int ans = INF;
-   rep (i, n) chmin(ans, left[i] + right[i]);
-   print(ans);
+vi dijkstra(const Graph& graph, int start) {
+   vi dist(len(graph), INF);
+   priority_queue<pii, vec<pii>, greater<pii>> pq; // {dist, to}
+   dist[start] = 0;
+   pq.emplace(dist[start], start);
+   while (not pq.empty()) {
+      auto [d, now] = pq.top(); pq.pop();
+      if (dist[now] < d) continue;
+      for (auto& edge : graph[now]) {
+         int loss = (-dist[now] % edge.K + edge.K) % edge.K;
+         int cost = dist[now] + loss + edge.weight;
+         if (chmin(dist[edge.to], cost)) {
+            pq.emplace(cost, edge.to);
+         }
+      }
+   }
+   return dist;
+}
+
+int32_t main() {
+   int n, m, x, y;
+   cin >> n >> m >> x >> y;
+   x--; y--;
+   Graph g(n);
+   rep (i, m) {
+      int a, b, t, k;
+      cin >> a >> b >> t >> k;
+      a--; b--;
+      g[a].eb(b, t, k);
+      g[b].eb(a, t, k);
+   }
+   auto d = dijkstra(g, x);
+   print(d[y] < INF ? d[y] : -1);
 }

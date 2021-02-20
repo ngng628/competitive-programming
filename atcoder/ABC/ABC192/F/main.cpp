@@ -1,7 +1,7 @@
 # include <bits/stdc++.h>
 # ifndef ngng628_library
 # define ngng628_library
-# define int int64_t
+# define int long long
 # define float long double
 # define fi first
 # define se second
@@ -51,17 +51,8 @@ const char* yn(bool b) { return b ? "Yes" : "No"; }
 # endif  // ngng628_library
 
 int32_t main() {
-   int n;
-   cin >> n;
-   string s;
-   cin >> s;
-   vi left(n+1, 0), right(n+1, 0);
-   rep (i, n) {
-      left[i+1] = left[i] + int(s[i] == 'W');
-      right[n-i-1] = right[n-i] + int(s[n-i] == 'E');
-   }
-
-   int ans = INF;
-   rep (i, n) chmin(ans, left[i] + right[i]);
-   print(ans);
+   int n, x;
+   cin >> n >> x;
+   vi a(n);
+   cin >> a;
 }
