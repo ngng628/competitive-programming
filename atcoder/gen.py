@@ -41,18 +41,17 @@ def main():
 
     shutil.copyfile('./download.py', contest_grope + '/' + contest_name + '/download.py')
     print(plus, 'download.py is created')
-    shutil.copytree('./vscode', contest_grope + '/' + contest_name + '/.vscode')
-    print(plus, '.vscode is created\n')
-
     
     if contest_grope in ['ABC', 'ARC', 'AGC']:
         contest_number = int(contest_name[3:])
         if contest_grope == 'ABC' and contest_number >= 126:
             problem_size = 6
+        elif contest_grope == 'ABC' and contest_number < 126:
+            problem_size = 4
         elif contest_grope == 'AGC':
             problem_size = 6
         else:
-            problem_size = 4
+            problem_size = 6
     else:  # others
         print(check, 'Please enter a problem_size')
         print(cin + ' ', end='')

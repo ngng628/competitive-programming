@@ -8,4 +8,4 @@ ans
 *.out
 .ccls
 Cargo.*
-
+.vscode/

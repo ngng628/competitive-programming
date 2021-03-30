@@ -3,12 +3,12 @@
 using namespace std;
 
 int main() {
-    int ans = 0;
-    rep (i, 3) {
-        int a, b;
-        cin >> a >> b;
-        ans += a*b/10;
-    }
-    cout << ans << endl;
-    return 0;
+   int ans = 0;
+   rep (i, 3) {
+      int a, b;
+      cin >> a >> b;
+      ans += a*b/10;
+   }
+   cout << ans << endl;
+   return 0;
 }
