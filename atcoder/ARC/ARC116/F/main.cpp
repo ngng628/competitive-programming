@@ -37,7 +37,7 @@ void print(){ cout << "\n"; }
 template<class T, class... A>void print(const T& v, const A&...args){ cout << v; if(sizeof...(args))cout << " "; print(args...); }
 void eprint() { cerr << "\n"; }
 template<class T, class... A>void eprint(const T& v, const A&...args){ cerr << v; if(sizeof...(args))cerr << " "; eprint(args...); }
-void drop(){ cout << "\n"; exit(0); }
+void drop(){ cout << "\n"; exit(EXIT_SUCCESS); }
 template<class T, class... A>void drop(const T& v, const A&...args){ cout << v; if(sizeof...(args))cout << " "; drop(args...); }
 template<class T> constexpr bool chmax(T &a, const T& b) { return a < b && (a = b, true); }
 template<class T> constexpr bool chmin(T &a, const T& b) { return a > b && (a = b, true); }
@@ -45,5 +45,5 @@ constexpr int ctoi(const char c) { return ('0' <= c and c <= '9') ? (c - '0') : 
 # endif  // ngng628_library
 
 int32_t main() {
-   
+   return ;
 }
