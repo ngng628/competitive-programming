@@ -38,47 +38,49 @@ void print(){ cout << "\n"; }
 template<class T, class... A>void print(const T& v, const A&...args){ cout << v; if (sizeof...(args)) cout << " "; print(args...); }
 void eprint() { cerr << "\n"; }
 template<class T, class... A>void eprint(const T& v, const A&...args){ cerr << v; if (sizeof...(args)) cerr << " "; eprint(args...); }
-void drop(){ cout << "\n"; exit(0); }
-template<class T, class... A>void drop(const T& v, const A&...args){ cout << v; if(sizeof...(args))cout << " "; drop(args...); }
+# define drop(...) { print(__VA_ARGS__); return; }
 template<class T> constexpr bool chmax(T &a, const T& b){ return a < b && (a = b, true); }
 template<class T> constexpr bool chmin(T &a, const T& b){ return a > b && (a = b, true); }
 constexpr int ctoi(const char c){ return '0' <= c and c <= '9' ? (c - '0') : -1; }
-int take(priority_queue<int, vi, greater<int>>& pq) { int x = pq.top(); pq.pop(); return x; }
-int take(priority_queue<int>& pq) { int x = pq.top(); pq.pop(); return x; }
+struct Setup_io { Setup_io(){ ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0), cerr.tie(0); cout << fixed << setprecision(15); } } setup_io;
 # endif  // ngng628_library
 
+struct Solver {
+   void solve() {
+      int n;
+      cin >> n;
+      vi a(n);
+      cin >> a;
+      int sum = accumulate(all(a), 0LL);
+      if (sum & 1) drop(0);
+      int sp = sum / 2;
+
+      int g = accumulate(all(a), 1LL, [](int a, int b){ return gcd(a, b); });
+      for (int& e : a) e /= g;
+
+      ddb dp(n+1, db(sp+1, false));
+      reprs (i, 0, n) dp[i][0] = true;
+      rep (i, n) {
+         reprs (k, 0, sp) {
+            if (k - a[i] >= 0) dp[i+1][k] = dp[i+1][k] | dp[i][k-a[i]];
+            dp[i+1][k] = dp[i+1][k] | dp[i][k];
+         }
+      }
+
+      if (dp[n][sp]) {
+         rep (i, n) {
+            if (a[i] & 1) {
+               print(1);
+               print(i + 1);
+               return;
+            }
+         }
+      }
+      else print(0);
+   }
+};
+
 int32_t main() {
-   int n;
-   cin >> n;
-   vi a(3*n);
-   cin >> a;
-
-   vi befores(3*n), afters(3*n);
-   {
-      priority_queue<int, vi, greater<int>> pq(a.begin(), a.begin() + n);
-      int sum = reduce(a.begin(), a.begin() + n);
-      eprint("sum:", sum);
-      befores[n] = sum;
-      repr (i, n, 2*n) {
-         pq.push(a[i]);
-         sum += a[i];
-         sum -= take(pq);
-         befores[i + 1] = sum;
-      }
-   }
-   {
-      priority_queue<int> pq(a.begin() + 2*n, a.end());
-      int sum = reduce(a.begin() + 2*n, a.end());
-      afters[2*n] = sum;
-      for (int i = 2*n - 1; i >= n; --i) {
-         pq.push(a[i]);
-         sum += a[i];
-         sum -= take(pq);
-         afters[i] = sum;
-      }
-   }
-
-   int ans = -INF;
-   reprs (i, n, 2*n) chmax(ans, befores[i] - afters[i]);
-   print(ans);
+   Solver solver;
+   solver.solve();
 }

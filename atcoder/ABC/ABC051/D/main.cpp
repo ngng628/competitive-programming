@@ -43,42 +43,69 @@ template<class T, class... A>void drop(const T& v, const A&...args){ cout << v; 
 template<class T> constexpr bool chmax(T &a, const T& b){ return a < b && (a = b, true); }
 template<class T> constexpr bool chmin(T &a, const T& b){ return a > b && (a = b, true); }
 constexpr int ctoi(const char c){ return '0' <= c and c <= '9' ? (c - '0') : -1; }
-int take(priority_queue<int, vi, greater<int>>& pq) { int x = pq.top(); pq.pop(); return x; }
-int take(priority_queue<int>& pq) { int x = pq.top(); pq.pop(); return x; }
 # endif  // ngng628_library
 
+struct Edge {
+   Edge() = default;
+   Edge(int t, int w = 0) : to(t), weight(w) {}
+   int to;
+   int weight;
+};
+using Graph = vec<vec<Edge>>;
+
+vvi dijkstra(const Graph& graph) {
+   const int V = len(graph);
+   vvi ret(V, vi(V, INF));
+   rep (start, V) {
+      vi& dist = ret[start];
+      priority_queue<pii, vec<pii>, greater<pii>> pq; // {dist, to}
+      dist[start] = 0;
+      pq.emplace(dist[start], start);
+      while (not pq.empty()) {
+         auto [d, now] = pq.top(); pq.pop();
+         if (dist[now] < d) continue;
+         for (auto& edge : graph[now]) {
+            int cost = dist[now] + edge.weight;
+            if (chmin(dist[edge.to], cost)) {
+               pq.emplace(cost, edge.to);
+            }
+         }
+      }
+   }
+   return ret;
+}
+
 int32_t main() {
-   int n;
-   cin >> n;
-   vi a(3*n);
-   cin >> a;
-
-   vi befores(3*n), afters(3*n);
-   {
-      priority_queue<int, vi, greater<int>> pq(a.begin(), a.begin() + n);
-      int sum = reduce(a.begin(), a.begin() + n);
-      eprint("sum:", sum);
-      befores[n] = sum;
-      repr (i, n, 2*n) {
-         pq.push(a[i]);
-         sum += a[i];
-         sum -= take(pq);
-         befores[i + 1] = sum;
-      }
+   int n, m;
+   cin >> n >> m;
+   vi a(m), b(m), c(m);
+   rep (i, m) {
+      cin >> a[i] >> b[i] >> c[i];
+      a[i]--, b[i]--;
    }
-   {
-      priority_queue<int> pq(a.begin() + 2*n, a.end());
-      int sum = reduce(a.begin() + 2*n, a.end());
-      afters[2*n] = sum;
-      for (int i = 2*n - 1; i >= n; --i) {
-         pq.push(a[i]);
-         sum += a[i];
-         sum -= take(pq);
-         afters[i] = sum;
-      }
+   Graph g(n);
+   rep (i, m) {
+      g[a[i]].eb(b[i], c[i]);
+      g[b[i]].eb(a[i], c[i]);
    }
 
-   int ans = -INF;
-   reprs (i, n, 2*n) chmax(ans, befores[i] - afters[i]);
-   print(ans);
+   auto dists = dijkstra(g);
+
+   int cnt = 0;
+   rep (i, m) {
+      auto check = [&n,a,b,c,dists](int i) {
+         rep (s, n) {
+            rep (t, n) {
+               int u = a[i];
+               int v = b[i];
+               if (dists[s][u] + c[i] + dists[v][t] == dists[s][t]) {
+                  return false;
+               }
+            }
+         }
+         return true;
+      };
+      if (check(i)) cnt++;
+   }
+   print(cnt);
 }

@@ -43,42 +43,15 @@ template<class T, class... A>void drop(const T& v, const A&...args){ cout << v; 
 template<class T> constexpr bool chmax(T &a, const T& b){ return a < b && (a = b, true); }
 template<class T> constexpr bool chmin(T &a, const T& b){ return a > b && (a = b, true); }
 constexpr int ctoi(const char c){ return '0' <= c and c <= '9' ? (c - '0') : -1; }
-int take(priority_queue<int, vi, greater<int>>& pq) { int x = pq.top(); pq.pop(); return x; }
-int take(priority_queue<int>& pq) { int x = pq.top(); pq.pop(); return x; }
 # endif  // ngng628_library
 
 int32_t main() {
-   int n;
-   cin >> n;
-   vi a(3*n);
-   cin >> a;
-
-   vi befores(3*n), afters(3*n);
-   {
-      priority_queue<int, vi, greater<int>> pq(a.begin(), a.begin() + n);
-      int sum = reduce(a.begin(), a.begin() + n);
-      eprint("sum:", sum);
-      befores[n] = sum;
-      repr (i, n, 2*n) {
-         pq.push(a[i]);
-         sum += a[i];
-         sum -= take(pq);
-         befores[i + 1] = sum;
-      }
+   int x, y, z;
+   cin >> x >> y >> z;
+   if ((y*z) % x == 0) {
+      print((y*z) / x - 1);
    }
-   {
-      priority_queue<int> pq(a.begin() + 2*n, a.end());
-      int sum = reduce(a.begin() + 2*n, a.end());
-      afters[2*n] = sum;
-      for (int i = 2*n - 1; i >= n; --i) {
-         pq.push(a[i]);
-         sum += a[i];
-         sum -= take(pq);
-         afters[i] = sum;
-      }
+   else {
+      print((y*z) / x);
    }
-
-   int ans = -INF;
-   reprs (i, n, 2*n) chmax(ans, befores[i] - afters[i]);
-   print(ans);
 }

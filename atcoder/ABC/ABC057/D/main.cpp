@@ -43,42 +43,59 @@ template<class T, class... A>void drop(const T& v, const A&...args){ cout << v; 
 template<class T> constexpr bool chmax(T &a, const T& b){ return a < b && (a = b, true); }
 template<class T> constexpr bool chmin(T &a, const T& b){ return a > b && (a = b, true); }
 constexpr int ctoi(const char c){ return '0' <= c and c <= '9' ? (c - '0') : -1; }
-int take(priority_queue<int, vi, greater<int>>& pq) { int x = pq.top(); pq.pop(); return x; }
-int take(priority_queue<int>& pq) { int x = pq.top(); pq.pop(); return x; }
+struct Setup_io { Setup_io() { ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0), cerr.tie(0); cout << fixed << setprecision(15); } } setup_io;
 # endif  // ngng628_library
 
+template <class Type>
+vec<Type> cumsum(const vec<Type>& a) {
+   int n = len(a);
+   vec<Type> sums(n+1);
+   sums[0] = 0;
+   reps (i, n) sums[i] = sums[i-1] + a[i-1];
+   return sums;
+}
+
+struct Combination {
+   vvi table;
+   Combination(int n, int k) : table(n + 1, vi(k + 1)) {
+      reprs (i, 0, n) reprs (j, 0, i) {
+         if (!j or j == i) table[i][j] = 1;
+         else table[i][j] = table[i-1][j-1] + table[i-1][j];
+      }
+   }
+
+   int operator()(int n, int k) {
+      if (n < k or n < 0 or k < 0) return 0;
+      return table[n][k];
+   }
+} COM(51, 51);
+
 int32_t main() {
-   int n;
-   cin >> n;
-   vi a(3*n);
-   cin >> a;
+   int n, a, b;
+   cin >> n >> a >> b;
+   vi v(n);
+   cin >> v;
 
-   vi befores(3*n), afters(3*n);
-   {
-      priority_queue<int, vi, greater<int>> pq(a.begin(), a.begin() + n);
-      int sum = reduce(a.begin(), a.begin() + n);
-      eprint("sum:", sum);
-      befores[n] = sum;
-      repr (i, n, 2*n) {
-         pq.push(a[i]);
-         sum += a[i];
-         sum -= take(pq);
-         befores[i + 1] = sum;
-      }
-   }
-   {
-      priority_queue<int> pq(a.begin() + 2*n, a.end());
-      int sum = reduce(a.begin() + 2*n, a.end());
-      afters[2*n] = sum;
-      for (int i = 2*n - 1; i >= n; --i) {
-         pq.push(a[i]);
-         sum += a[i];
-         sum -= take(pq);
-         afters[i] = sum;
-      }
+
+   sort(rall(v));
+
+   float ave = 0.0;
+   int idx = 0;
+   auto sums = cumsum(v);
+   reprs (i, a, b) if (chmax(ave, (float) sums[i] / i)) idx = i - 1;
+
+   if (v[0] == v[a-1]) {
+      int ans = 0;
+      int cnt = count(all(v), v[0]);
+      reprs (i, a, b) ans += COM(cnt, i);
+      print(ave);
+      drop(ans);
    }
 
-   int ans = -INF;
-   reprs (i, n, 2*n) chmax(ans, befores[i] - afters[i]);
-   print(ans);
+   int cnt = count(all(v), v[idx]);
+   int k = 0;
+   reprs (i, 0, idx) if (v[i] == v[idx]) k++;
+
+   print(ave);
+   print(COM(cnt, k));
 }

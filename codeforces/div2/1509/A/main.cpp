@@ -38,47 +38,41 @@ void print(){ cout << "\n"; }
 template<class T, class... A>void print(const T& v, const A&...args){ cout << v; if (sizeof...(args)) cout << " "; print(args...); }
 void eprint() { cerr << "\n"; }
 template<class T, class... A>void eprint(const T& v, const A&...args){ cerr << v; if (sizeof...(args)) cerr << " "; eprint(args...); }
-void drop(){ cout << "\n"; exit(0); }
-template<class T, class... A>void drop(const T& v, const A&...args){ cout << v; if(sizeof...(args))cout << " "; drop(args...); }
+# define drop(fmt, ...) { print(fmt, __VA_ARGS__); return; }
 template<class T> constexpr bool chmax(T &a, const T& b){ return a < b && (a = b, true); }
 template<class T> constexpr bool chmin(T &a, const T& b){ return a > b && (a = b, true); }
 constexpr int ctoi(const char c){ return '0' <= c and c <= '9' ? (c - '0') : -1; }
-int take(priority_queue<int, vi, greater<int>>& pq) { int x = pq.top(); pq.pop(); return x; }
-int take(priority_queue<int>& pq) { int x = pq.top(); pq.pop(); return x; }
+struct Setup_io { Setup_io(){ ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0), cerr.tie(0); cout << fixed << setprecision(15); } } setup_io;
 # endif  // ngng628_library
 
+struct Solver {
+   void solve() {
+      int n;
+      cin >> n;
+      vi a(n);
+      cin >> a;
+      vi odds, evens;
+      rep (i, n) {
+         if (a[i] & 1) odds.pb(a[i]);
+         else evens.pb(a[i]);
+      }
+      rep (i, len(odds)) {
+         if (i != 0) cout << " ";
+         cout << odds[i];
+      }
+      rep (i, len(evens)) {
+         cout << " ";
+         cout << evens[i];
+      }
+      cout << "\n";
+   }
+};
+
 int32_t main() {
-   int n;
-   cin >> n;
-   vi a(3*n);
-   cin >> a;
-
-   vi befores(3*n), afters(3*n);
-   {
-      priority_queue<int, vi, greater<int>> pq(a.begin(), a.begin() + n);
-      int sum = reduce(a.begin(), a.begin() + n);
-      eprint("sum:", sum);
-      befores[n] = sum;
-      repr (i, n, 2*n) {
-         pq.push(a[i]);
-         sum += a[i];
-         sum -= take(pq);
-         befores[i + 1] = sum;
-      }
+   int t;
+   cin >> t;
+   while (t--) {
+      Solver solver;
+      solver.solve();
    }
-   {
-      priority_queue<int> pq(a.begin() + 2*n, a.end());
-      int sum = reduce(a.begin() + 2*n, a.end());
-      afters[2*n] = sum;
-      for (int i = 2*n - 1; i >= n; --i) {
-         pq.push(a[i]);
-         sum += a[i];
-         sum -= take(pq);
-         afters[i] = sum;
-      }
-   }
-
-   int ans = -INF;
-   reprs (i, n, 2*n) chmax(ans, befores[i] - afters[i]);
-   print(ans);
 }

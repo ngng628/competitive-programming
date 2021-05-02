@@ -43,42 +43,54 @@ template<class T, class... A>void drop(const T& v, const A&...args){ cout << v; 
 template<class T> constexpr bool chmax(T &a, const T& b){ return a < b && (a = b, true); }
 template<class T> constexpr bool chmin(T &a, const T& b){ return a > b && (a = b, true); }
 constexpr int ctoi(const char c){ return '0' <= c and c <= '9' ? (c - '0') : -1; }
-int take(priority_queue<int, vi, greater<int>>& pq) { int x = pq.top(); pq.pop(); return x; }
-int take(priority_queue<int>& pq) { int x = pq.top(); pq.pop(); return x; }
 # endif  // ngng628_library
 
+struct Edge {
+   Edge() = default;
+   Edge(int t, int w = 0) : to(t), weight(w) {}
+   int to;
+   int weight;
+};
+using Graph = vec<vec<Edge>>;
+
 int32_t main() {
-   int n;
-   cin >> n;
-   vi a(3*n);
-   cin >> a;
-
-   vi befores(3*n), afters(3*n);
-   {
-      priority_queue<int, vi, greater<int>> pq(a.begin(), a.begin() + n);
-      int sum = reduce(a.begin(), a.begin() + n);
-      eprint("sum:", sum);
-      befores[n] = sum;
-      repr (i, n, 2*n) {
-         pq.push(a[i]);
-         sum += a[i];
-         sum -= take(pq);
-         befores[i + 1] = sum;
-      }
+   int n, m;
+   cin >> n >> m;
+   Graph g(n), h(n);
+   rep (_, m) {
+      int a, b, c;
+      cin >> a >> b >> c;
+      a--, b--;
+      g[a].eb(b, -c);
+      h[b].eb(a, -c);
    }
-   {
-      priority_queue<int> pq(a.begin() + 2*n, a.end());
-      int sum = reduce(a.begin() + 2*n, a.end());
-      afters[2*n] = sum;
-      for (int i = 2*n - 1; i >= n; --i) {
-         pq.push(a[i]);
-         sum += a[i];
-         sum -= take(pq);
-         afters[i] = sum;
+
+   vi dist(n, INF);
+   dist[0] = 0;
+   set<int> negs;
+   rep (i, n) rep (v, n) {
+      for (auto&& edge : g[v]) {
+         if (dist[v] == INF) continue;
+         int old = dist[edge.to];
+         if (chmin(dist[edge.to], dist[v] + edge.weight)) {
+            if (i == n - 1) {
+               dist[edge.to] = old;
+               negs.insert(edge.to);
+            }
+         }
       }
    }
 
-   int ans = -INF;
-   reprs (i, n, 2*n) chmax(ans, befores[i] - afters[i]);
-   print(ans);
+   set<int> closed;
+   for (queue<int> que({n-1}); not que.empty();) {
+      int now = que.front(); que.pop();
+      for (auto [nxt, _] : h[now]) {
+         if (negs.count(nxt)) drop("inf");
+         if (closed.count(nxt)) continue;
+         closed.insert(nxt);
+         que.push(nxt);
+      }
+   }
+
+   print(-dist[n-1]);
 }

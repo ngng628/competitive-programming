@@ -43,42 +43,83 @@ template<class T, class... A>void drop(const T& v, const A&...args){ cout << v; 
 template<class T> constexpr bool chmax(T &a, const T& b){ return a < b && (a = b, true); }
 template<class T> constexpr bool chmin(T &a, const T& b){ return a > b && (a = b, true); }
 constexpr int ctoi(const char c){ return '0' <= c and c <= '9' ? (c - '0') : -1; }
-int take(priority_queue<int, vi, greater<int>>& pq) { int x = pq.top(); pq.pop(); return x; }
-int take(priority_queue<int>& pq) { int x = pq.top(); pq.pop(); return x; }
 # endif  // ngng628_library
 
+template<int MOD>
+struct modint {
+   int val;
+   constexpr modint(long long v = 0) noexcept : val(v % MOD) { if (val < 0) val += MOD; }
+   constexpr int getmod() { return MOD; }
+   constexpr modint inv() { return modint(1) / modint(*this); }
+   constexpr modint operator - () const noexcept { return val ? MOD - val : 0; }
+   constexpr modint operator + (const modint& r) const noexcept { return modint(*this) += r; }
+   constexpr modint operator - (const modint& r) const noexcept { return modint(*this) -= r; }
+   constexpr modint operator * (const modint& r) const noexcept { return modint(*this) *= r; }
+   constexpr modint operator / (const modint& r) const noexcept { return modint(*this) /= r; }
+   constexpr modint& operator += (const modint& r) noexcept {
+      val += r.val;
+      if (val >= MOD) val -= MOD;
+      return *this;
+   }
+   constexpr modint& operator -= (const modint& r) noexcept {
+      val -= r.val;
+      if (val < 0) val += MOD;
+      return *this;
+   }
+   constexpr modint& operator *= (const modint& r) noexcept {
+      val = val * r.val % MOD;
+      return *this;
+   }
+   constexpr modint& operator /= (const modint& r) noexcept {
+      long long a = r.val, b = MOD, u = 1, v = 0;
+      while (b) {
+         long long t = a / b;
+         a -= t * b; swap(a, b);
+         u -= t * v; swap(u, v);
+      }
+      val = val * u % MOD;
+      if (val < 0) val += MOD;
+      return *this;
+   }
+   constexpr bool operator == (const modint& r) const noexcept { return this->val == r.val; }
+   constexpr bool operator != (const modint& r) const noexcept { return this->val != r.val; }
+   friend constexpr modint<MOD> modpow(const modint<MOD> &a, long long n) noexcept {
+      if (n == 0) return 1;
+      auto t = modpow(a, n / 2);
+      t = t * t;
+      if (n & 1) t = t * a;
+      return t;
+   }
+   friend constexpr ostream& operator << (ostream &os, const modint<MOD>& x) noexcept { return os << x.val; }
+   friend constexpr istream& operator >> (istream &is, modint<MOD>& x) noexcept {
+      istream& ret = is >> x.val;
+      x.val %= MOD;
+      return ret;
+   }
+};
+constexpr int MOD = 1000000007;
+using mint = modint<MOD>;
+
 int32_t main() {
-   int n;
-   cin >> n;
-   vi a(3*n);
-   cin >> a;
-
-   vi befores(3*n), afters(3*n);
-   {
-      priority_queue<int, vi, greater<int>> pq(a.begin(), a.begin() + n);
-      int sum = reduce(a.begin(), a.begin() + n);
-      eprint("sum:", sum);
-      befores[n] = sum;
-      repr (i, n, 2*n) {
-         pq.push(a[i]);
-         sum += a[i];
-         sum -= take(pq);
-         befores[i + 1] = sum;
-      }
+   int n, m;
+   cin >> n >> m;
+   vi x(n), y(m);
+   cin >> x >> y;
+   sort(all(x)), sort(all(y));
+   mint w = 0;
+   rep (i, n - 1) {
+      mint l = i + 1;
+      mint r = n - i - 1;
+      mint a = x[i+1] - x[i];
+      w += a*l*r;
    }
-   {
-      priority_queue<int> pq(a.begin() + 2*n, a.end());
-      int sum = reduce(a.begin() + 2*n, a.end());
-      afters[2*n] = sum;
-      for (int i = 2*n - 1; i >= n; --i) {
-         pq.push(a[i]);
-         sum += a[i];
-         sum -= take(pq);
-         afters[i] = sum;
-      }
+   mint h = 0;
+   rep (i, m - 1) {
+      mint l = i + 1;
+      mint r = m - i - 1;
+      mint a = y[i+1] - y[i];
+      h += a*l*r;
    }
 
-   int ans = -INF;
-   reprs (i, n, 2*n) chmax(ans, befores[i] - afters[i]);
-   print(ans);
+   print(w * h);
 }

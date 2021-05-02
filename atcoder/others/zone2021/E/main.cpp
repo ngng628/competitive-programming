@@ -43,42 +43,52 @@ template<class T, class... A>void drop(const T& v, const A&...args){ cout << v; 
 template<class T> constexpr bool chmax(T &a, const T& b){ return a < b && (a = b, true); }
 template<class T> constexpr bool chmin(T &a, const T& b){ return a > b && (a = b, true); }
 constexpr int ctoi(const char c){ return '0' <= c and c <= '9' ? (c - '0') : -1; }
-int take(priority_queue<int, vi, greater<int>>& pq) { int x = pq.top(); pq.pop(); return x; }
-int take(priority_queue<int>& pq) { int x = pq.top(); pq.pop(); return x; }
 # endif  // ngng628_library
 
+struct Edge {
+   Edge() = default;
+   Edge(int t, int w = 0) : to(t), weight(w) {}
+   int to;
+   int weight;
+};
+using Graph = vec<vec<Edge>>;
+
 int32_t main() {
-   int n;
-   cin >> n;
-   vi a(3*n);
-   cin >> a;
+   int R, C;
+   cin >> R >> C;
+   vvi A(R, vi(C - 1)), B(R-1, vi(C));
+   cin >> A >> B;
 
-   vi befores(3*n), afters(3*n);
-   {
-      priority_queue<int, vi, greater<int>> pq(a.begin(), a.begin() + n);
-      int sum = reduce(a.begin(), a.begin() + n);
-      eprint("sum:", sum);
-      befores[n] = sum;
-      repr (i, n, 2*n) {
-         pq.push(a[i]);
-         sum += a[i];
-         sum -= take(pq);
-         befores[i + 1] = sum;
+   vi dist(2*R*C, INF);
+   priority_queue<pii, vec<pii>, greater<pii>> pq; // {dist, to}
+   dist[0] = 0;
+   pq.emplace(dist[0], 0);
+   while (not pq.empty()) {
+      auto [d, now] = pq.top(); pq.pop();
+      if (dist[now] < d) continue;
+
+      vec<Edge> edges;
+      auto node = [&C](int y, int x) { return C*y + x; };
+
+      if (now < R*C) {  // 地上モード
+         auto [y, x] = div(now, C);
+         if (x + 1 < C) edges.eb(node(y, x+1), A[y][x]);
+         if (x - 1 >= 0) edges.eb(node(y, x-1), A[y][x-1]);
+         if (y + 1 < R) edges.eb(node(y+1, x), B[y][x]);
+         edges.eb(now + R*C, 1);
+      }
+      else {  // 地下鉄モード
+         auto [y, x] = div(now - R*C, C);
+         if (y - 1 >= 0) edges.eb(node(y - 1, x) + R*C, 1);
+         edges.eb(now - R*C, 0);
+      }
+
+      for (auto& edge : edges) {
+         if (chmin(dist[edge.to], dist[now] + edge.weight)) {
+            pq.emplace(dist[now] + edge.weight, edge.to);
+         }
       }
    }
-   {
-      priority_queue<int> pq(a.begin() + 2*n, a.end());
-      int sum = reduce(a.begin() + 2*n, a.end());
-      afters[2*n] = sum;
-      for (int i = 2*n - 1; i >= n; --i) {
-         pq.push(a[i]);
-         sum += a[i];
-         sum -= take(pq);
-         afters[i] = sum;
-      }
-   }
 
-   int ans = -INF;
-   reprs (i, n, 2*n) chmax(ans, befores[i] - afters[i]);
-   print(ans);
+   print(dist[R*C - 1]);
 }

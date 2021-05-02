@@ -43,42 +43,39 @@ template<class T, class... A>void drop(const T& v, const A&...args){ cout << v; 
 template<class T> constexpr bool chmax(T &a, const T& b){ return a < b && (a = b, true); }
 template<class T> constexpr bool chmin(T &a, const T& b){ return a > b && (a = b, true); }
 constexpr int ctoi(const char c){ return '0' <= c and c <= '9' ? (c - '0') : -1; }
-int take(priority_queue<int, vi, greater<int>>& pq) { int x = pq.top(); pq.pop(); return x; }
-int take(priority_queue<int>& pq) { int x = pq.top(); pq.pop(); return x; }
 # endif  // ngng628_library
 
 int32_t main() {
-   int n;
-   cin >> n;
-   vi a(3*n);
+   int n, k;
+   cin >> n >> k;
+   vi a(n);
    cin >> a;
-
-   vi befores(3*n), afters(3*n);
-   {
-      priority_queue<int, vi, greater<int>> pq(a.begin(), a.begin() + n);
-      int sum = reduce(a.begin(), a.begin() + n);
-      eprint("sum:", sum);
-      befores[n] = sum;
-      repr (i, n, 2*n) {
-         pq.push(a[i]);
-         sum += a[i];
-         sum -= take(pq);
-         befores[i + 1] = sum;
+   vi rev = [](vi v){ reverse(all(v)); return v; }(a);
+   auto calc = [&k](vi a) {
+      const int n = len(a);
+      ddb dp(n+1, db(k+1, false));
+      rep (i, n+1) dp[i][0] = true;
+      rep (i, n) rep (j, k+1) {
+         if (j - a[i] >= 0) dp[i+1][j] |= dp[i][j - a[i]];
+         else dp[i+1][j] |= dp[i][j];
       }
-   }
-   {
-      priority_queue<int> pq(a.begin() + 2*n, a.end());
-      int sum = reduce(a.begin() + 2*n, a.end());
-      afters[2*n] = sum;
-      for (int i = 2*n - 1; i >= n; --i) {
-         pq.push(a[i]);
-         sum += a[i];
-         sum -= take(pq);
-         afters[i] = sum;
+      return dp;
+   };
+
+   auto left = calc(a);
+   auto right = calc(rev);
+
+   int ans = 0;
+   rep (i, n) {
+      vi sums(k+2, 0);
+      rep (j, k+1) sums[j+1] = sums[j] + right[n-i-1][j];
+      bool ok = true;
+      rep (u, k+1) {
+         if (not left[i][u]) continue;
+         if (sums[k - u] - sums[max(0LL, k - u - a[i])] > 0) ok = false;
       }
+      if (ok) ans++;
    }
 
-   int ans = -INF;
-   reprs (i, n, 2*n) chmax(ans, befores[i] - afters[i]);
    print(ans);
 }

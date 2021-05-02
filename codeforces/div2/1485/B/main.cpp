@@ -43,42 +43,43 @@ template<class T, class... A>void drop(const T& v, const A&...args){ cout << v; 
 template<class T> constexpr bool chmax(T &a, const T& b){ return a < b && (a = b, true); }
 template<class T> constexpr bool chmin(T &a, const T& b){ return a > b && (a = b, true); }
 constexpr int ctoi(const char c){ return '0' <= c and c <= '9' ? (c - '0') : -1; }
-int take(priority_queue<int, vi, greater<int>>& pq) { int x = pq.top(); pq.pop(); return x; }
-int take(priority_queue<int>& pq) { int x = pq.top(); pq.pop(); return x; }
 # endif  // ngng628_library
 
+template <class Type>
+vec<Type> cumsum(const vec<Type>& a) {
+   int n = len(a);
+   vec<Type> sums(n+1);
+   sums[0] = 0;
+   reps (i, n) sums[i] = sums[i-1] + a[i-1];
+   return sums;
+}
+
 int32_t main() {
-   int n;
-   cin >> n;
-   vi a(3*n);
+   int n, q, k;
+   cin >> n >> q >> k;
+   vi a(n);
    cin >> a;
 
-   vi befores(3*n), afters(3*n);
-   {
-      priority_queue<int, vi, greater<int>> pq(a.begin(), a.begin() + n);
-      int sum = reduce(a.begin(), a.begin() + n);
-      eprint("sum:", sum);
-      befores[n] = sum;
-      repr (i, n, 2*n) {
-         pq.push(a[i]);
-         sum += a[i];
-         sum -= take(pq);
-         befores[i + 1] = sum;
-      }
-   }
-   {
-      priority_queue<int> pq(a.begin() + 2*n, a.end());
-      int sum = reduce(a.begin() + 2*n, a.end());
-      afters[2*n] = sum;
-      for (int i = 2*n - 1; i >= n; --i) {
-         pq.push(a[i]);
-         sum += a[i];
-         sum -= take(pq);
-         afters[i] = sum;
-      }
+   vi diffs(n, 0);
+   rep (i, n-1) {
+      if (i == 0) diffs[i] = a[i+1] - a[i] - 1;
+      else diffs[i] = a[i+1] - a[i-1] - 2;
    }
 
-   int ans = -INF;
-   reprs (i, n, 2*n) chmax(ans, befores[i] - afters[i]);
-   print(ans);
+   vi sums = cumsum(diffs);
+
+   while (q--) {
+      int l, r;
+      cin >> l >> r;
+      if (l == r) {
+         print(k-1);
+         continue;
+      }
+      int cnt = sums[r-1] - sums[l];
+      cnt += k - a[r-1];
+      if (r > 1) cnt += (a[r-1] - a[r-2] - 1);
+      cnt += a[l-1] - 1;
+      if (l < n) cnt += a[l] - a[l-1] - 1;
+      print(cnt);
+   }
 }
