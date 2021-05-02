@@ -9,3 +9,4 @@ ans
 .ccls
 Cargo.*
 .vscode/
+tools/
