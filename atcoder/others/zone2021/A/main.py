@@ -1,2 +1,1 @@
-s = input()
-print(s.count('ZONe'))
+print(input().count('ZONe'))

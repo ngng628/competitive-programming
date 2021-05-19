@@ -46,5 +46,11 @@ constexpr int ctoi(const char c){ return '0' <= c and c <= '9' ? (c - '0') : -1;
 # endif  // ngng628_library
 
 int32_t main() {
-   {{cursor}}
+   int K;
+   cin >> K;
+   reprs (N, 2, 50) {
+      vi a(N);
+      iota(all(a), 0);
+      
+   }
 }

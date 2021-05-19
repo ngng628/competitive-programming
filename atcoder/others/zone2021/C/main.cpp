@@ -46,5 +46,5 @@ constexpr int ctoi(const char c){ return '0' <= c and c <= '9' ? (c - '0') : -1;
 # endif  // ngng628_library
 
 int32_t main() {
-   {{cursor}}
+   print(2.0*atan(1.0 / 0.0));
 }
