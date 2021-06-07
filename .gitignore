@@ -7,6 +7,14 @@ out
 ans
 *.out
 .ccls
-Cargo.*
 .vscode/
+
+# Rust
+Cargo.*
+target/
+
+# AHC
 tools/
+vis/
+in/
+out/
