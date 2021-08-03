@@ -44,10 +44,13 @@ def main():
     
     if contest_grope in ['ABC', 'ARC', 'AGC']:
         contest_number = int(contest_name[3:])
-        if contest_grope == 'ABC' and contest_number >= 126:
-            problem_size = 6
-        elif contest_grope == 'ABC' and contest_number < 126:
-            problem_size = 4
+        if contest_grope == 'ABC':
+            if contest_number >= 212:
+                problem_size = 8
+            elif contest_number >= 126:
+                problem_size = 6
+            else:
+                problem_size = 4
         elif contest_grope == 'AGC':
             problem_size = 6
         else:
