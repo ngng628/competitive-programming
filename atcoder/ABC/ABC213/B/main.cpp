@@ -1,5 +1,4 @@
 # include <bits/stdc++.h>
-# include <atcoder/modint>
 # ifndef ngng628_library
 # define ngng628_library
 # define int int_fast64_t
@@ -9,7 +8,7 @@
 # define rep(i,n) for(int i=0, i##_len=(n); i<i##_len; ++i)
 # define reps(i,n) for(int i=1, i##_len=(n); i<=i##_len; ++i)
 # define rrep(i,n) for(int i=(int)(n)-1; i>=0; --i)
-# define rreps(i,n) for(int i=(int)(n); i>0; --i)
+# define rreps(i,n) for(int i=(n); i>0; --i)
 # define repr(i,b,e) for(int i=(b), i##_len=(e); i<i##_len; ++i)
 # define reprs(i,b,e) for(int i=(b), i##_len=(e); i<=i##_len; ++i)
 # define all(x) std::begin(x), std::end(x)
@@ -47,40 +46,17 @@ template<class T> constexpr bool chmin(T &a, const T& b){ return a > b && (a = b
 constexpr int ctoi(const char c){ return '0' <= c and c <= '9' ? (c - '0') : -1; }
 # endif  // ngng628_library
 
-using mint = atcoder::modint998244353;
-istream& operator >>(istream& is, mint& r){ int t; is >> t; r = t; return is; }
-ostream& operator <<(ostream& os, const mint& r){ return os << r.val(); }
-
 int32_t main() {
-   int n, m, k;
-   cin >> n >> m >> k;
-   vvi graph(n);
-   rep (_, m) {
-      int u, v;
-      cin >> u >> v;
-      u--, v--;
-      graph[u].pb(v);
-      graph[v].pb(u);
-   }
+   int N;
+   cin >> N;
+   vi A(N);
+   cin >> A;
 
-   vec<vec<mint>> dp(k + 1, vec<mint>(n, 0));
-   dp[0][0] = 1;
-   reps (i, k) {
-      // 道が壊れていなければ、
-      // 任意の道同士がつながっているので、
-      // i 日目には i-1 日目にいた場所から遷移できる
-      mint sum = 0;
-      rep (j, n) sum += dp[i-1][j];
-      rep (j, n) {
-         dp[i][j] = sum;
-         // ただし、j から j への移動は禁止されているので引く
-         dp[i][j] -= dp[i-1][j];
-         // 都市 j からたどり着けない都市 graph[j] は引いておく
-         for (int v : graph[j]) {
-            dp[i /*日目 に*/][/*都市*/ j /*にいる方法*/] -= dp[i-1 /*日目に*/][/*都市*/ v /*にいる方法*/];
-         }
-      }
-   }
+   vi order(N);
+   iota(all(order), 1);
+   sort(all(order), [&A](int i, int j) {
+      return A[i-1] > A[j-1];
+   });
 
-   print(dp[k][0]);
+   print(order[1]);
 }

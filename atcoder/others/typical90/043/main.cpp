@@ -1,5 +1,4 @@
 # include <bits/stdc++.h>
-# include <atcoder/modint>
 # ifndef ngng628_library
 # define ngng628_library
 # define int int_fast64_t
@@ -9,7 +8,7 @@
 # define rep(i,n) for(int i=0, i##_len=(n); i<i##_len; ++i)
 # define reps(i,n) for(int i=1, i##_len=(n); i<=i##_len; ++i)
 # define rrep(i,n) for(int i=(int)(n)-1; i>=0; --i)
-# define rreps(i,n) for(int i=(int)(n); i>0; --i)
+# define rreps(i,n) for(int i=(n); i>0; --i)
 # define repr(i,b,e) for(int i=(b), i##_len=(e); i<i##_len; ++i)
 # define reprs(i,b,e) for(int i=(b), i##_len=(e); i<=i##_len; ++i)
 # define all(x) std::begin(x), std::end(x)
@@ -23,6 +22,7 @@ template<class T> using vec = vector<T>;
 using pii = pair<int, int>;
 using vi = vec<int>;
 using vvi = vec<vi>;
+using vvvi = vec<vvi>;
 using db = deque<bool>;
 using ddb = deque<db>;
 using vs = vec<string>;
@@ -47,40 +47,61 @@ template<class T> constexpr bool chmin(T &a, const T& b){ return a > b && (a = b
 constexpr int ctoi(const char c){ return '0' <= c and c <= '9' ? (c - '0') : -1; }
 # endif  // ngng628_library
 
-using mint = atcoder::modint998244353;
-istream& operator >>(istream& is, mint& r){ int t; is >> t; r = t; return is; }
-ostream& operator <<(ostream& os, const mint& r){ return os << r.val(); }
+constexpr array<pair<int, int>, 4> dydx4 = {{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}};
+int to_int(pii p) {
+   if (p == make_pair(int(-1), int(0))) return 0;
+   else if (p == make_pair(int(1), int(0))) return 1;
+   else if (p == make_pair(int(0), -int(1))) return 2;
+   else return 3;
+}
+
+struct Node {
+   Node() = default;
+   Node(int _y, int _x, int _dir) : y(_y), x(_x), dir(_dir) {}
+   int y, x, dir;
+   friend bool operator <(Node a, Node b) {
+      tuple<int, int, int> s = make_tuple(a.y, a.x, a.dir);
+      tuple<int, int, int> t = make_tuple(b.y, b.x, b.dir);
+      return s < t;
+   }
+};
 
 int32_t main() {
-   int n, m, k;
-   cin >> n >> m >> k;
-   vvi graph(n);
-   rep (_, m) {
-      int u, v;
-      cin >> u >> v;
-      u--, v--;
-      graph[u].pb(v);
-      graph[v].pb(u);
-   }
+   int h, w;
+   cin >> h >> w;
+   pii start, goal;
+   cin >> start >> goal;
+   start.fi--, start.se--;
+   goal.fi--, goal.se--;
+   vs S(h);
+   cin >> S;
+   auto over = [&h, w](int y, int x) { return y < 0 or y >= h or x < 0 or x >= w; };
 
-   vec<vec<mint>> dp(k + 1, vec<mint>(n, 0));
-   dp[0][0] = 1;
-   reps (i, k) {
-      // 道が壊れていなければ、
-      // 任意の道同士がつながっているので、
-      // i 日目には i-1 日目にいた場所から遷移できる
-      mint sum = 0;
-      rep (j, n) sum += dp[i-1][j];
-      rep (j, n) {
-         dp[i][j] = sum;
-         // ただし、j から j への移動は禁止されているので引く
-         dp[i][j] -= dp[i-1][j];
-         // 都市 j からたどり着けない都市 graph[j] は引いておく
-         for (int v : graph[j]) {
-            dp[i /*日目 に*/][/*都市*/ j /*にいる方法*/] -= dp[i-1 /*日目に*/][/*都市*/ v /*にいる方法*/];
+   // dp[i][j][r] = マス i, j で向き r になるまでの方向転換の回数
+   vvvi dp(h, vvi(w, vi (4, INF)));
+   priority_queue<pair<int, Node>, vec<pair<int, Node>>, greater<pair<int, Node>>> pq; // {dist, to}
+   rep (dir, 4) dp[start.fi][start.se][dir] = 0;
+   rep (dir, 4) pq.emplace(dp[start.fi][start.se][dir], Node(start.fi, start.se, dir));
+   
+   while (not pq.empty()) {
+      auto [d, now] = pq.top(); pq.pop();
+      if (dp[now.y][now.x][now.dir] < d) continue;
+      // 次の状態
+      vec<Node> nexts;
+      for (auto [dy, dx] : dydx4) {
+         int ny = now.y + dy;
+         int nx = now.x + dx;
+         if (not over(ny, nx) and S[ny][nx] == '.') {
+            nexts.eb(ny, nx, to_int({dy, dx}));
+         }
+      }
+      for (auto [ny, nx, dir] : nexts) {
+         int cost = dp[now.y][now.x][now.dir] + (now.dir == dir ? 0 : 1);
+         if (chmin(dp[ny][nx][dir], cost)) {
+            pq.emplace(cost, Node(ny, nx, dir));
          }
       }
    }
 
-   print(dp[k][0]);
+   print(*min_element(all(dp[goal.fi][goal.se])));
 }

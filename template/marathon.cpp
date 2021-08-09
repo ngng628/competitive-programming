@@ -17,6 +17,8 @@
 using namespace std;
 using namespace chrono;
 using ll = long long;
+using ull = unsigned long long;
+using ld = long double;
 template<class T> using vec = vector<T>;
 using vi = vec<int>;
 using vvi = vec<vi>;
@@ -24,7 +26,7 @@ using vll = vec<ll>;
 using vvll = vec<vll>;
 constexpr int INF = (1<<30)-(1<<15);
 constexpr ll LINF = (1LL<<62)-(1LL<<31);
-constexpr float EPS = 1e-10;
+constexpr ld EPS = 1e-10;
 template<class T> istream& operator >>(istream& is, vec<T>& v) { for (auto& x : v) is >> x; return is; }
 template<class T, std::size_t N> istream& operator >>(istream& is, array<T, N>& v) { for (auto& x : v) is >> x; return is; }
 template<class T, class U> istream& operator >>(istream& is, pair<T, U>& p) { return is >> p.fi >> p.se; }
@@ -68,13 +70,117 @@ public:
       uint64_t t = (x^(x<<11));
       x = y; y = z; z = w;
       w = (w^(w>>19))^(t^(t>>8));
-      return w % (b - a) + a;;
+      return w % (b - a) + a;
    }
 
 private:
    uint64_t x, y, z, w;
 } rnd;
+
+vec<string> transposed(const vec<string>& s) {
+   const int h = len(s), w = len(s[0]);
+   vec<string> r(w, string(h, '?'));
+   rep (i, h) rep (k, w) r[k][i] = s[i][k];
+   return r;
+}
 # endif  // ngng628_library
 
-int32_t main() {
+constexpr int TIME_LIMIT_ms = 3000;
+
+struct State {
+   State() = default;
+
+   int score() {
+   }
+};
+
+void print_ans(const vec<string>& ans, ostream& os = cout) {
+}
+
+State init() {
+   return State();
+}
+
+State sa() {
+   // 初期解
+   State old_state = init();
+   ll old_score = old_state.score();
+
+   // 温度設定
+   constexpr double start_temp = 100000, end_temp = 10;
+
+   // ベストなスコア
+   State max_state = old_state;
+   ll max_score = old_score;
+
+   // 経過時間
+   int time_ms;
+
+   int n_loops = 0;
+
+   for (int time_ms = watch.ms(); time_ms <= TIME_LIMIT_ms - 12; ++n_loops, time_ms = watch.ms())
+      // ──────────────────────────────────
+      //  バックアップ（いらないなら消す）
+      // ──────────────────────────────────
+      auto backup = old_state;
+
+      // ──────────────────────────────────
+      //  遷移
+      // ──────────────────────────────────
+      backup = modify();
+      
+
+      // ──────────────────────────────────
+      //  スコアの再計算
+      // ──────────────────────────────────
+      ll new_score = backup.score();
+
+      // ──────────────────────────────────
+      //  確率 prob で遷移する
+      // ──────────────────────────────────
+      double temp = start_temp + (end_temp - start_temp) * (time_ms) / TIME_LIMIT_ms;
+      double prob = exp(double(new_score - old_score) / temp);
+      if (prob > rnd.randint(INF) / (double)INF) {
+         old_state = backup;
+         old_score = new_score;
+      }
+
+      // ──────────────────────────────────
+      //  「一番いいもの」を更新
+      // ──────────────────────────────────
+      if (chmax(max_score, new_score)) {
+         max_state = old_state;
+      }
+
+      // ──────────────────────────────────
+      //  アニメーション
+      // ──────────────────────────────────
+      # ifndef ONLINE_JUDGE
+      // if ( /* 5ループ毎とか */ ) {
+      //    eprint("-----BEGIN-----");
+      //    print_ans(old_state.ans, cerr);
+      //    eprint("-----END-----");
+      // }
+      # endif
+   }
+
+   return max_state;
+}
+
+
+int main() {
+   // ──────────────────────────────────
+   //  入力
+   // ──────────────────────────────────
+
+
+   // ──────────────────────────────────
+   //  焼きなます
+   // ──────────────────────────────────
+   State sa_state = sa();
+
+   // ──────────────────────────────────
+   //  答えの出力
+   // ──────────────────────────────────
+   print_ans(sa_state.ans);
 }
