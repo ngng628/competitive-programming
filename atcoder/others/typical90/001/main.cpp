@@ -53,16 +53,25 @@ int32_t main() {
    A[0] = 0;
    A[N+1] = L;
 
-int ok = 0;
-int ng = L;
-while (abs(ok - ng) > 1) {
-   int mid = (ok + ng) / 2;
-   auto isOK = [&](int key) {
-      return /* condition */;
-   };
-   if (isOK(mid)) ok = mid;
-   else ng = mid;
-}
+   int ok = 0;
+   int ng = L;
+
+   while (abs(ok - ng) > 1) {
+      int mid = (ok + ng) / 2;
+      auto isOK = [&](int key) {
+         int cnt = 0;
+         int left = 0;
+         repr (right, 1, len(A)) {
+            if (A[right] - A[left] >= key) {
+               cnt++;
+               left = right;
+            }
+         }
+         return cnt >= K + 1;
+      };
+      if (isOK(mid)) ok = mid;
+      else ng = mid;
+   }
 
    print(ok);
 }

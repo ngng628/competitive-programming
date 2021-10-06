@@ -1,3 +1,4 @@
+my/
 *.out
 download.py
 test/
@@ -8,6 +9,7 @@ ans
 *.out
 .ccls
 .vscode/
+misc/
 
 # Rust
 Cargo.*

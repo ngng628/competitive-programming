@@ -1,5 +1,4 @@
 # include <bits/stdc++.h>
-# include <atcoder/dsu>
 # ifndef ngng628_library
 # define ngng628_library
 # define int int_fast64_t
@@ -47,64 +46,82 @@ template<class T> constexpr bool chmin(T &a, const T& b){ return a > b && (a = b
 constexpr int ctoi(const char c){ return '0' <= c and c <= '9' ? (c - '0') : -1; }
 # endif  // ngng628_library
 
-using UnionFind = atcoder::dsu;
+class StronglyConnectedComponents {
+public:
+   vvi graph;
+   vi comp;
+
+   StronglyConnectedComponents(const vvi& _g)
+      : comp(len(_g), -1), g(_g), gg(len(_g)), rg(len(_g)), used(len(_g))
+   {
+      rep (i, len(_g)) for (int v : g[i]) {
+         gg[i].pb(v);
+         rg[v].pb(i);
+      }
+      build();
+   }
+
+   int operator[](int k) { return comp[k]; }
+
+   bool same(int s, int t) { 
+      return comp[s] == comp[t];
+   }
+
+private:
+   const vvi& g;
+   vvi gg, rg;
+   vi order, used;
+
+   void dfs(int idx) {
+      if (used[idx]) return;
+      used[idx] = true;
+      for(int to : gg[idx]) dfs(to);
+      order.pb(idx);
+   }
+
+   void rdfs(int idx, int cnt) {
+      if (comp[idx] != -1) return;
+      comp[idx] = cnt;
+      for (int to : rg[idx]) rdfs(to, cnt);
+   }
+
+   void build() {
+      rep (i, len(gg)) dfs(i);
+      reverse(all(order));
+      int ptr = 0;
+      for (int i : order) if(comp[i] == -1) rdfs(i, ptr), ptr++;
+
+      if (not graph.empty()) graph.clear();
+      graph.resize(ptr);
+      rep (i, len(graph)) {
+         for (int to : g[i]) {
+            int x = comp[i], y = comp[to];
+            if (x == y) continue;
+            graph[x].pb(y);
+         }
+      }
+   }
+};
 
 int32_t main() {
    int v, e;
    cin >> v >> e;
-   vvi g(v);
-   vvi h(v);
+   vvi graph(v);
    rep (i, e) {
       int a, b;
       cin >> a >> b;
       a--; b--;
-      g[a].pb(b);
-      h[b].pb(a);
+      graph[a].pb(b);
    }
 
-   db closed(v, false);
-   rep (i, v) {
-      auto dfs = [&](auto&& self, int now) {
-         used[now] = true;
-         for (int nxt : g[now]) {
-            if (closed[nxt]) continue;
-            self(self, nxt);
-         }
+   StronglyConnectedComponents scc(graph);
 
-      }
+   int ans = 0;
+   auto f = [](int n){ return n * (n - 1) / 2; };
+   map<int, int> mp;
+   for (int c : scc.comp) mp[c]++;
+   for (pii p : mp) {
+      ans += f(p.se);
    }
-
-
-
-
-
-
-
-
-
-
-
-   for (int i = 0; i < (int)n; ++i) {
-      /* codejj */
-   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+   print(ans);
 }

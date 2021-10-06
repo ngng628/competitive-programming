@@ -47,5 +47,42 @@ constexpr int ctoi(const char c){ return '0' <= c and c <= '9' ? (c - '0') : -1;
 # endif  // ngng628_library
 
 int32_t main() {
-   {{_cursor_}}
+   constexpr int S_MAX = 1e5;
+   int n, s;
+   cin >> n >> s;
+   vi a(n + 1), b(n + 1);
+   reps (i, n) cin >> a[i] >> b[i];
+
+   vvi dp(n + 1, vi(S_MAX + 1, -INF));
+   dp[0][0] = 0;
+   reps (i, n) {
+      rep (k, S_MAX + 1) {
+         for (bool j : {false, true}) {
+            int weight = j ? a[i] : b[i];
+            if (k - weight >= 0) {
+               chmax(dp[i][k], dp[i-1][k - weight] + 1);
+            }
+         }
+      }
+   }
+
+   if (dp[n][s] < 0) {
+      print("Impossible");
+   }
+   else {
+      string ans;
+      int now = s;
+      rreps (i, n) {
+         if (now - a[i] >= 0 and dp[i - 1][now - a[i]] >= 0) {
+            ans.pb('A');
+            now -= a[i];
+         }
+         else {
+            ans.pb('B');
+            now -= b[i];
+         }
+      }
+      reverse(all(ans));
+      print(ans);
+   }
 }
