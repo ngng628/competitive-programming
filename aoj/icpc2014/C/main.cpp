@@ -3,14 +3,17 @@
 # define ngng628_library
 # define int Int
 # define float Float
+# define overload3(_1,_2,_3,name,...) name
 # define loop for(;;)
-# define step(n) rep(_,n)
-# define rep(i,n) for(int i=0, i##_len=(n); i<i##_len; ++i)
-# define reps(i,n) for(int i=1, i##_len=(n); i<=i##_len; ++i)
+# define _step(n) _rep(_,n)
+# define _rep(i,n) _repr(i,0,n)
+# define _repr(i,b,e) for(int i=(b), i##_len=(e); i<i##_len; ++i)
+# define rep(...) overload3(__VA_ARGS__, _repr, _rep, _step)(__VA_ARGS__)
+# define _reps(i,n) _reprs(i,1,n)
+# define _reprs(i,b,e) for(int i=(b), i##_len=(e); i<=i##_len; ++i)
+# define reps(...) overload3(__VA_ARGS__, _reps, _reprs)(__VA_ARGS__)
 # define rrep(i,n) for(int i=(int)(n)-1; i>=0; --i)
 # define rreps(i,n) for(int i=(n); i>0; --i)
-# define repr(i,b,e) for(int i=(b), i##_len=(e); i<i##_len; ++i)
-# define reprs(i,b,e) for(int i=(b), i##_len=(e); i<=i##_len; ++i)
 # define all(v) std::begin(v), std::end(v)
 # define rall(v) std::rbegin(v), std::rend(v)
 # define pb push_back
@@ -26,7 +29,7 @@ using vi = vec<int>;
 using vvi = vec<vi>;
 using db = deque<bool>;
 using ddb = deque<db>;
-constexpr int INF = (1LL<<62)-(1LL<<31);
+constexpr int oo = (1LL<<62)-(1LL<<31);
 template<class T> istream& operator >>(istream& is, vec<T>& v) { for (auto& x : v) is >> x; return is; }
 template<class T, size_t N> istream& operator >>(istream& is, array<T, N>& v) { for (auto& x : v) is >> x; return is; }
 template<class T, class U> istream& operator >>(istream& is, pair<T, U>& p) { return is >> p.first >> p.second; }
@@ -35,17 +38,48 @@ template<class T> ostream& operator <<(ostream& os, const vec<T>& v){ if (len(v)
 template<class T> ostream& operator <<(ostream& os, const vec<vec<T>>& v){ rep (i, len(v)) if (len(v[i])) os << join(v[i]) << (i-len(v)+1 ? "\n" : ""); return os; }
 template<class T, class U> ostream& operator <<(ostream& os, const pair<T, U>& p){ return os << p.first << ' ' << p.second; }
 template<class T, class U, class V> ostream& operator <<(ostream& os, const tuple<T, U, V>& t){ return os << get<0>(t) << " " << get<1>(t) << " " << get<2>(t); }
-void print(){ cout << "\n"; }
-template<class T, class... A>void print(const T& v, const A&...args){ cout << v; if (sizeof...(args)) cout << " "; print(args...); }
-void eprint() { cerr << "\n"; }
-template<class T, class... A>void eprint(const T& v, const A&...args){ cerr << v; if (sizeof...(args)) cerr << " "; eprint(args...); }
 template<class T> constexpr bool chmax(T& a, const T& b){ return a < b && (a = b, true); }
 template<class T> constexpr bool chmin(T& a, const T& b){ return a > b && (a = b, true); }
-struct Setup_io { Setup_io(){ ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0), cerr.tie(0); cout << fixed << setprecision(15); } } setup_io;
 # endif  // ngng628_library
+
+int pow(int x, int n) {
+   int p = 1;
+   while (n > 0) {
+       if (n & 1) p *= x;
+       x *= x;
+       n >>= 1;
+   }
+   return p;
+}
 
 int32_t main() {
    loop {
-      if () break;
+      int r, n;
+      cin >> r >> n;
+      if (!(r | n)) break;
+
+      constexpr int MAX = 20;
+      // 長方形を 1 ずつ分割して考える
+      // （座標値は整数なので中途半端にはならない）
+      vi y(2*MAX + 1);
+      rep (n) {
+         int l, r, h;
+         cin >> l >> r >> h;
+         l += MAX, r += MAX;  // バイアスをかけて全てpositiveにする
+         rep (i, l, r) chmax(y[i], h);
+      }
+
+      float ans = oo;
+      rep (i, MAX - r, MAX + r) {
+         // ある座標 x にある長方形に着目する
+         // 両隣の低い方の影の高さを求めて、
+         // その位置に対する時刻を求める
+         float t = r - sqrtl(pow(r, 2) - pow(MAX - i, 2));
+         chmin(t, r - sqrtl(pow(r, 2) - pow(MAX - i - 1, 2)));
+
+         chmin(ans, t + y[i]);
+      }
+
+      cout << ans << endl;
    }
 }

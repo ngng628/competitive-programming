@@ -45,7 +45,31 @@ struct Setup_io { Setup_io(){ ios_base::sync_with_stdio(0), cin.tie(0), cout.tie
 # endif  // ngng628_library
 
 int32_t main() {
-   loop {
-      if () break;
+   int n;
+   cin >> n;
+   array<int, 3> ryb;
+   cin >> ryb;
+
+   auto f = [&n](int a) {
+      return n / a;
+   };
+
+   int ans = 0;
+   rep (cnt_r, f(ryb[0])) {
+      reprs (cnt_y, cnt_r - 1, cnt_r + 1) {
+         reprs (cnt_b, cnt_y - 1, cnt_y + 1) {
+            if (not (abs(cnt_r - cnt_b) <= 1)) continue;
+            auto ok = [&n, ryb](int s, int t, int u) {
+               auto [r, y, b] = ryb;
+               int sum = s*r + t*y + u*b;
+               return sum <= n;
+            };
+            if (ok(cnt_r, cnt_y, cnt_b)) {
+               chmax(ans, cnt_r + cnt_y + cnt_b);
+            }
+         }
+      }
    }
+
+   cout << ans << '\n';
 }

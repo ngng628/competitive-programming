@@ -3,8 +3,6 @@
 # define ngng628_library
 # define int Int
 # define float Float
-# define loop for(;;)
-# define step(n) rep(_,n)
 # define rep(i,n) for(int i=0, i##_len=(n); i<i##_len; ++i)
 # define reps(i,n) for(int i=1, i##_len=(n); i<=i##_len; ++i)
 # define rrep(i,n) for(int i=(int)(n)-1; i>=0; --i)
@@ -26,7 +24,7 @@ using vi = vec<int>;
 using vvi = vec<vi>;
 using db = deque<bool>;
 using ddb = deque<db>;
-constexpr int INF = (1LL<<62)-(1LL<<31);
+constexpr int oo = (1LL<<62)-(1LL<<31);
 template<class T> istream& operator >>(istream& is, vec<T>& v) { for (auto& x : v) is >> x; return is; }
 template<class T, size_t N> istream& operator >>(istream& is, array<T, N>& v) { for (auto& x : v) is >> x; return is; }
 template<class T, class U> istream& operator >>(istream& is, pair<T, U>& p) { return is >> p.first >> p.second; }
@@ -35,17 +33,46 @@ template<class T> ostream& operator <<(ostream& os, const vec<T>& v){ if (len(v)
 template<class T> ostream& operator <<(ostream& os, const vec<vec<T>>& v){ rep (i, len(v)) if (len(v[i])) os << join(v[i]) << (i-len(v)+1 ? "\n" : ""); return os; }
 template<class T, class U> ostream& operator <<(ostream& os, const pair<T, U>& p){ return os << p.first << ' ' << p.second; }
 template<class T, class U, class V> ostream& operator <<(ostream& os, const tuple<T, U, V>& t){ return os << get<0>(t) << " " << get<1>(t) << " " << get<2>(t); }
-void print(){ cout << "\n"; }
-template<class T, class... A>void print(const T& v, const A&...args){ cout << v; if (sizeof...(args)) cout << " "; print(args...); }
-void eprint() { cerr << "\n"; }
-template<class T, class... A>void eprint(const T& v, const A&...args){ cerr << v; if (sizeof...(args)) cerr << " "; eprint(args...); }
+void drop(){ cout << '\n'; exit(0); }
+template<class T, class... A> void drop(const T& v, const A&...args){ cout << v; if (sizeof...(args)) cout << ' '; drop(args...); }
 template<class T> constexpr bool chmax(T& a, const T& b){ return a < b && (a = b, true); }
 template<class T> constexpr bool chmin(T& a, const T& b){ return a > b && (a = b, true); }
-struct Setup_io { Setup_io(){ ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0), cerr.tie(0); cout << fixed << setprecision(15); } } setup_io;
 # endif  // ngng628_library
 
+array<int, 3> solve(int n) {
+   if (n == 0) {
+      return {0, 0, 0};
+   }
+   else if (n == 1 or n == 2 or n == 4) {
+      return {-1, -1, -1};
+   }
+   else if (n == 3) {
+      return {1, 0, 0};
+   }
+   else {
+      if ((n - 5) % 3 == 0) {
+         int t = (n - 5) / 3;
+         return {t, 1, 0};
+      }
+      else if ((n - 6) % 3 == 0) {
+         int t = (n - 6) / 3;
+         return {t + 2, 0, 0};
+      }
+      else {
+         int t = (n - 7) / 3;
+         return {t, 0, 1};
+      }
+   }
+}
+
 int32_t main() {
-   loop {
-      if () break;
+   int n;
+   cin >> n;
+   auto [x, y, z] = solve(n);
+   if (x == -1) {
+      cout << -1 << endl;
+   }
+   else {
+      printf("%lld %lld %lld\n", x, y, z);
    }
 }

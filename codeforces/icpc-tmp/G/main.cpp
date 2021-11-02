@@ -3,8 +3,6 @@
 # define ngng628_library
 # define int Int
 # define float Float
-# define loop for(;;)
-# define step(n) rep(_,n)
 # define rep(i,n) for(int i=0, i##_len=(n); i<i##_len; ++i)
 # define reps(i,n) for(int i=1, i##_len=(n); i<=i##_len; ++i)
 # define rrep(i,n) for(int i=(int)(n)-1; i>=0; --i)
@@ -26,7 +24,7 @@ using vi = vec<int>;
 using vvi = vec<vi>;
 using db = deque<bool>;
 using ddb = deque<db>;
-constexpr int INF = (1LL<<62)-(1LL<<31);
+constexpr int oo = (1LL<<62)-(1LL<<31);
 template<class T> istream& operator >>(istream& is, vec<T>& v) { for (auto& x : v) is >> x; return is; }
 template<class T, size_t N> istream& operator >>(istream& is, array<T, N>& v) { for (auto& x : v) is >> x; return is; }
 template<class T, class U> istream& operator >>(istream& is, pair<T, U>& p) { return is >> p.first >> p.second; }
@@ -35,17 +33,75 @@ template<class T> ostream& operator <<(ostream& os, const vec<T>& v){ if (len(v)
 template<class T> ostream& operator <<(ostream& os, const vec<vec<T>>& v){ rep (i, len(v)) if (len(v[i])) os << join(v[i]) << (i-len(v)+1 ? "\n" : ""); return os; }
 template<class T, class U> ostream& operator <<(ostream& os, const pair<T, U>& p){ return os << p.first << ' ' << p.second; }
 template<class T, class U, class V> ostream& operator <<(ostream& os, const tuple<T, U, V>& t){ return os << get<0>(t) << " " << get<1>(t) << " " << get<2>(t); }
-void print(){ cout << "\n"; }
-template<class T, class... A>void print(const T& v, const A&...args){ cout << v; if (sizeof...(args)) cout << " "; print(args...); }
-void eprint() { cerr << "\n"; }
-template<class T, class... A>void eprint(const T& v, const A&...args){ cerr << v; if (sizeof...(args)) cerr << " "; eprint(args...); }
+void drop(){ cout << '\n'; exit(0); }
+template<class T, class... A> void drop(const T& v, const A&...args){ cout << v; if (sizeof...(args)) cout << ' '; drop(args...); }
 template<class T> constexpr bool chmax(T& a, const T& b){ return a < b && (a = b, true); }
 template<class T> constexpr bool chmin(T& a, const T& b){ return a > b && (a = b, true); }
-struct Setup_io { Setup_io(){ ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0), cerr.tie(0); cout << fixed << setprecision(15); } } setup_io;
 # endif  // ngng628_library
 
+string to_string(int n, int base) {
+   string res;
+   while (n) {
+      int d = n % base;
+      if (0 <= d and d <= 9) res += d + '0';
+      else res += d - 10 + 'A';
+      n /= base;
+   }
+   reverse(all(res));
+   return res;
+}
+
+vector<int> replaceMap(int k) {
+  vector<int> res;
+  for (int i = 0; i < k; i++) {
+    res.push_back(i);
+  }
+  for (int i = k + 1; res.size() != 9; i++) {
+    res.push_back(i);
+  }
+  return res;
+}
+
+int greedy(int n, int k) {
+   for (int i = 1; i <= n; ++i) {
+      string s = to_string(i, 10);
+      if (count(all(s), k + '0')) {
+         n++;
+      }
+   }
+   cout << n << endl;
+   return 0;
+}
+
 int32_t main() {
-   loop {
-      if () break;
+   int n, k;
+   cin >> n >> k;
+   string base9 = to_string(n, 9);  // n を 9進数で表現
+   if (k == 0) {
+      int i = len(base9) - 1;
+      string s = base9;
+      while (i > 0) {
+         if (s[i] == '0') {
+            s[i] = '9';
+            while (--i >= 1 and s[i] == '0') {
+               s[i] = '8';
+            }
+            s[i] = s[i] - 1;
+         }
+         else {
+            --i;
+         }
+      }
+
+      if (s[0] != '0') cout << s[0];
+      repr (i, 1, len(s)) cout << s[i];
+      cout << endl;
+   }
+   else {
+      vi mapping = replaceMap(k);
+      for (char c : base9) {
+         cout << mapping[c - '0'];
+      }
+      cout << endl;
    }
 }
