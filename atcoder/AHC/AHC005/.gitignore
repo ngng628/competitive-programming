@@ -1,0 +1,10 @@
+tools/
+in/
+out/
+err/
+vis/
+.vscode/
+seeds.txt
+in.*
+out.*
+a.out

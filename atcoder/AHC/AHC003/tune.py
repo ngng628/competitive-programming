@@ -23,31 +23,8 @@ def wrapper(args):
 
 
 def objective(trial):
-  # double alpha_c = 1.0 / 24000, alpha_hv = 1, alpha_delta = 1, start_alpha = 0.1, end_alpha = 0.08, penalty = 1, turn_c = 1;
-  # int exploitation_turn = 130, beta_ = 10, epoch = 5;
-
-  alpha_c = trial.suggest_loguniform('alpha_c', 1e-6, 1e-3)
-  # alpha_c = 1.0 / 24000
-  alpha_hv = trial.suggest_loguniform('alpha_hv', 1e-1, 10)
-  # alpha_hv = 1
-  alpha_delta = trial.suggest_loguniform('alpha_delta', 1e-1, 10)
-  # alpha_delta = 1
-  start_alpha = trial.suggest_uniform('start_alpha', 1e-2, 1e-1)
-  # start_alpha = 0.1
-  end_alpha = trial.suggest_uniform('end_alpha', 1e-2, start_alpha)
-  # end_alpha = 0.08
-  penalty = trial.suggest_loguniform('penalty', 1e-1, 10)
-  # penalty = 1
-  turn_c = trial.suggest_uniform('turn_c', 1, 10)
-  # turn_c = 1
-  exploitation_turn = trial.suggest_int("exploitation_turn", 50, 200)
-  # exploitation_turn = 130
-  beta = trial.suggest_int("beta", 1, 50)
-  # beta = 10
-  epoch = trial.suggest_int("epoch", 3, 8)
-  # epoch = 5
-  
-  return wrapper([alpha_c, alpha_hv, alpha_delta, start_alpha, end_alpha, penalty, turn_c, exploitation_turn, beta, epoch])
+  x = trial.suggest_loguniform('x', -1e3, 1e3)
+  return wrapper([x])
 
 def main():
   study = optuna.create_study()
