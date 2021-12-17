@@ -41,8 +41,60 @@ template<class T> constexpr bool chmax(T& a, const T& b){ return a < b && (a = b
 template<class T> constexpr bool chmin(T& a, const T& b){ return a > b && (a = b, true); }
 # endif  // ngng628_library
 
+using State = string::const_iterator;
+void skip(State& it) { while (isspace(*it)) ++it; }
+void skip(State& it, char c) { assert(c == *it); ++it; }
+void skip(State& it, const string& s) { for (char c : s) { assert(c == *it); ++it; } }
+void skip(State& it, int n) { while (n--) ++it; }
+string erase_all_space(string s) { s.erase(remove_if(all(s), [](char c){ return isspace(c); }), s.end()); return s; }
+int ctoi(char c) { assert('0' <= c and c <= '9'); return c - '0'; }
 
+bool Main() {
+   int n;
+   cin >> n;
+   if (!n) return false;
+   vec<string> str(n);
+   cin >> str;
+
+   struct Parser {
+      int n;
+      vec<string> s;
+      Parser(int _n, vec<string> _s) : n(_n), s(_s) {}
+      int parse() {
+         int i = 0;
+         int j1 = 0;
+         int j2 = n;
+         term(i, j1, j2);
+      }
+
+      int expr(int i, int j1, int j2) {
+
+      }
+
+      int term(int i, int j1, int j2) {
+         repr (k, j1, j2) {
+            if (s[i][j] == '-') {
+               int res = fraction(i, j1, j2, k);
+            }
+            else {
+               
+            }
+         }
+      }
+
+      int fraction(int i, int j1, int j2, int base) {
+         assert(s[i][base] == '-');
+         i++;
+         int num = expr(i, j1, base);
+         int den = expr(i, base + 1, j2);
+         return num / den;
+      }
+   };
+
+   cout << Parser(n, str).parse() << endl;
+   return true;
+}
 
 int32_t main() {
-   {{_cursor_}}
+   while (Main());
 }

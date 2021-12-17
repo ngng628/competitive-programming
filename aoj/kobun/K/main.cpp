@@ -374,7 +374,7 @@ bool Main() {
    struct Parser {
       string s;
       int n_terms;
-      map<string, vec<Fraction>> mp;  // mp['元素記号'][i項目] = 係数
+      map<string, vec<Fraction>> mp;  // mp['元素記号'][i項目] = 何個
       Parser(string _s) : s(_s), it(s.begin()) {}
 
       void parse() {
@@ -468,6 +468,8 @@ bool Main() {
    //  4. 掃き出し法をする
    // ────────────────────────────────
    sweep(mat, true);
+   cout << "mat = " << endl;
+   cout << mat << endl;
 
    // ────────────────────────────────
    //  5. 係数を調整

@@ -49,77 +49,111 @@ void skip(State& it, int n) { while (n--) ++it; }
 string erase_all_space(string s) { s.erase(remove_if(all(s), [](char c){ return isspace(c); }), s.end()); return s; }
 int ctoi(char c) { assert('0' <= c and c <= '9'); return c - '0'; }
 
+// 各向きに対する移動方向
+map<char, pii> dydx = {
+	{'N', make_pair(-1, 0)},
+	{'E', make_pair(0, 1)},
+	{'S', make_pair(1, 0)},
+	{'W', make_pair(0, -1)},
+};
+
+// ロボット
+struct Robot {
+	Robot() = default;
+	Robot(int _y, int _x, char _dir, vec<string> _a) : y(_y), x(_x), dir(_dir), a(_a) {}
+	bool cannot_move_front() {
+		int ny = y + dydx[dir].first;
+		int nx = x + dydx[dir].second;
+		return a[ny][nx] == '#'
+	}
+	int y, x;
+	char dir;
+private:
+	vec<string> a;
+};
+
 int32_t main() {
-   int h, w;
-   cin >> h >> w;
-   vec<string> s(h);
-   cin >> s;
+	int h, w;
+	cin >> h >> w;
+	vec<string> a(h);
+	cin >> a;
+	string s;
+	cin >> s;
 
-   struct Parser {
-      int h, w;
-      vec<string> s;
-      string t;
-      int y, x;
-      char dir;
-      int gy, gx;
-      map<char, pii> dydx;
-      Parser(int _h, int _w, string _s) : h(_h), w(_w), s(_s), dir('N') {
-         rep (i, h) rep (j, w) {
-            if (s[i][j] == 's') y = i, x = j;
-            if (s[i][j] == 'g') gy = i, gx = j;
-         }
-         dydx['N'] = make_pair(-1, 0);
-         dydx['E'] = make_pair(0, 1);
-         dydx['S'] = make_pair(1, 0);
-         dydx['W'] = make_pair(, -1);
-      }
-      int parse() {
-         State it = t.begin();
-         return program(it, true);
-      }
+	struct Parser {
+		// 入力
+		int h, w;
+		vec<string> a;
+		string s;
 
-      int program(State& it, bool condition) {
-         statement(it, condition);
-      }
+		// 現在の位置
+		Robot robot;
 
-      int statement(State& it, bool condition) {
-         if (*it == '[') {
-            if_statement(it, condition);
-         }
-         else if (*it == '{') {
-            while_statement(it, condition);
-         }
-         else {
-            // 動作文
-         }
-      }
+		// ゴールの位置
+		int gy, gx;
 
-      int if_statement(State& it, bool condition) {
-         skip(it, '[');
-         bool f = false;
-         if (*it == '~') {
-            f = true;
-            ++it;
-         }
+		Parser(int _h, int _w, vector<string> _a, string _s) : h(_h), w(_w), a(_a), s(_s) {
+			int sy, sx;
+			rep (i, h) rep (j, w) {
+				if (a[i][j] == 's') {
+					sy = i;
+					sx = j;
+				}
+				if (a[i][j] == 'g') {
+					gy = i;
+					gx = j;
+				}
+			}
+			robot = Robot(sy, sx, 'N', a);
 
-         condition &= [&]() -> bool {
-            if (*it == 'C') {
-               auto [dy, dx] = dydx[dir];
-               int ny = y + dy, nx = x + dx;
-               return (s[ny][nx] == '#') ^ f;
-            }
-            else if (*it == 'T') return (true) ^ f;
-            else return (*it++ == dir) ^ f;
-         }();
+			State it = s.begin();
+			program(it, true, false);
+		}
 
-         program(it, condition);
-         skip(it, "]");
-      }
+		void program(State& it, bool if_cond, bool while_cond) {
+			sentence(it, if_cond, while_cond);
+		}
 
-      int while_statement(State& it, bool condition) {
-         skip(it, '{');
-         
-         skip(it, '}');
-      }
-   };
+		void sentence(State& it, bool if_cond, bool while_cond) {
+			if (*it == '[') {
+				assert(*it++ == '[');
+				bool c = condition(it);
+				program(it, if_cond & c, while_cond);
+			}
+			else if (*it == '{') {
+				assert(*it++ == '{');
+				bool c = condition(it);
+				program(it, if_cond, while_cond & c);
+			}
+			else {
+				run(it, if_cond, while_cond);
+			}
+		}
+
+		bool condition(State& it) {
+			bool NOT = false;
+			if (*it == '~') {
+				NOT = true;
+				it++;
+			}
+			char c = *it;
+			it++;
+			if (c == 'C') return (robot.cannot_move_front()) ^ NOT;
+			else if (c == 'T') return true ^ NOT;
+			else return (c == robot.dir) ^ NOT;
+		}
+
+		void run(State& it, bool if_cond, bool while_cond) {
+			if (not if_cond) return;
+
+			if (while_cond) {
+				while (
+			}
+			else {
+
+			}
+		}
+	};
+
+
 }

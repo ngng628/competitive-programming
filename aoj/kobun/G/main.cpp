@@ -10,7 +10,7 @@ using pNode = shared_ptr<Node>;
 struct Node {
    int root;
    Node() : root(-1), left(nullptr), right(nullptr) {}
-   shared_ptr<Node> left, right;
+   pNode left, right;
 };
 
 

@@ -1,85 +1,139 @@
 # include <bits/stdc++.h>
-# define rep(i, n) for(int i=0, i##_len=(n); i<i##_len; ++i)
-# define reps(i, n) for(int i=1, i##_len=(n); i<=i##_len; ++i)
-# define rrep(i, n) for(int i=((int)(n)-1); i>=0; --i)
-# define rreps(i, n) for(int i=((int)(n)); i>0; --i)
-# define range_for(i, b, e) for(int i=(b), i##_len=(e); i<=i##_len; ++i)
-# define step(n) rep(_, n)
-# define ALL(x) (x).begin(), (x).end()
-# define RALL(x) (x).rbegin(), (x).rend()
-# define Unique(a) a.erase(unique(ALL(a)), a.end())
+# ifndef ngng628_library
+# define ngng628_library
+# define int Int
+# define float Float
+# define overload3(_1,_2,_3,name,...) name
+# define _step(n) _rep(_,n)
+# define _rep(i,n) _repr(i,0,n)
+# define _repr(i,b,e) for(int i=(b), i##_len=(e); i<i##_len; ++i)
+# define rep(...) overload3(__VA_ARGS__, _repr, _rep, _step)(__VA_ARGS__)
+# define _reps(i,n) _reprs(i,1,n)
+# define _reprs(i,b,e) for(int i=(b), i##_len=(e); i<=i##_len; ++i)
+# define reps(...) overload3(__VA_ARGS__, _reprs, _reps)(__VA_ARGS__)
+# define rrep(i,n) for(int i=(int)(n)-1; i>=0; --i)
+# define rreps(i,n) for(int i=(n); i>0; --i)
+# define all(v) std::begin(v), std::end(v)
+# define rall(v) std::rbegin(v), std::rend(v)
 # define pb push_back
-# define len(x) ((int)(x).size())
-# define optimize_cin() cin.tie(0); ios::sync_with_stdio(false)
-# define debug(x) std::cerr<<#x<<": "<<(x)<<endl;
-# define LINT_MAX (LLONG_MAX)
-# define LINT_MIN (LLONG_MIN)
-# define cauto const auto
+# define eb emplace_back
+# define len(v) (int)std::size(v)
+# define eprintf(...) fprintf(stderr, __VA_ARGS__)
 using namespace std;
-using int32 = int32_t;
-using int64 = int64_t;
-using float32 = float;
-using float64 = double;
-using float128 = long double;
-template <class Type> inline constexpr Type Square(Type x) { return x * x; }
-template <class Type> inline constexpr bool InRange(const Type& x, const Type& i, const Type& a) { return (i <= x) && (x <= a); }
-template<class Integer>bool chmax(Integer &a, const Integer &b) { if (a<b) { a=b; return 1; } return 0; }
-template<class Integer>bool chmin(Integer &a, const Integer &b) { if (b<a) { a=b; return 1; } return 0; }
-template<class Integer>bool IsOdd(Integer &n) { return n & 1; }
-template<class Integer>bool IsEven(Integer &n) { return !(n & 1); }
-long long gcd(long long a, long long b) { while(b){ long long A = a; (a = b), (b = A % b); } return a; }
-long long lcm(long long a, long long b) { return a / gcd(a, b) * b; }
-int64 gcd(int64 a, int64 b) { while(b){ int64 A = a; (a = b), (b = A % b); } return a; }
-int64 lcm(int64 a, int64 b) { return a / gcd(a, b) * b; }
-int ctoi(const char c) { return ('0' <= c && c <= '9') ? (c - '0') : -1; }
-string YesNo(bool b) { return b ? "Yes" : "No"; }
-string YESNO(bool b) { return b ? "YES" : "NO"; }
-string yesno(bool b) { return b ? "yes" : "no"; }
-void _cin(){} template <class Head, class... Tail> void _cin(Head&& head, Tail&&... tail){ cin >> head; _cin(forward<Tail>(tail)...); }
-#define Cin(Type, ...) Type __VA_ARGS__; _cin(__VA_ARGS__)
-#define Cinv(Type, xs, n) vector<Type> xs(n); rep(i, n) cin >> xs[i]
-#define Cinv2(Type, xs, ys, n) vector<Type> xs(n), ys(n); rep(i, n) cin >> xs[i] >> ys[i]
-#define Cinv3(Type, xs, ys, zs, n) vector<Type> xs(n), ys(n), zs(n); rep(i, n) cin >> xs[i] >> ys[i] >> zs[i]
-#define Cinvv(Type, xs, h, w) vector<vector<Type>> xs(h, vector<int>(w)); rep(i, h) rep(j, w) cin >> xs[i][j]
-void Print() { cout << endl; }
-template <class Head, class... Tail> void Print(Head&& head, Tail&&... tail) { cout << head; if (sizeof...(tail) != 0) cout << " "; Print(forward<Tail>(tail)...); }
-template <class Type> void Print(vector<Type> &vec) { for (auto& a : vec) { cout << a; if (&a != &vec.back()) cout << " "; } cout << endl; }
-template <class Type> void Print(vector<vector<Type>> &df) { for (auto& vec : df) { Print(vec); } }
-void Debug() { cerr << endl; }
-template <class Head, class... Tail> void Debug(Head&& head, Tail&&... tail) { cerr << head; if (sizeof...(tail) != 0) cerr << " "; Debug(forward<Tail>(tail)...); }
-template <class Type> void Debug(vector<Type> &vec) { for (auto& a : vec) { cerr << a; if (&a != &vec.back()) cerr << " "; } cerr << endl; }
-template <class Type> void Debug(vector<vector<Type>> &df) { for (auto& vec : df) { Debug(vec); } }
+using Int = long long;
+using Float = long double;
+template<class T> using vec = vector<T>;
+using pii = pair<int, int>;
+using vi = vec<int>;
+using vvi = vec<vi>;
+using db = deque<bool>;
+using ddb = deque<db>;
+constexpr int oo = (1LL<<62)-(1LL<<31);
+template<class T> istream& operator >>(istream& is, vec<T>& v) { for (auto& x : v) is >> x; return is; }
+template<class T, size_t N> istream& operator >>(istream& is, array<T, N>& v) { for (auto& x : v) is >> x; return is; }
+template<class T, class U> istream& operator >>(istream& is, pair<T, U>& p) { return is >> p.first >> p.second; }
+template<class T> string join(const vec<T>& v){ stringstream s; for (T t : v) s << ' ' << t; return s.str().substr(1); }
+template<class T> ostream& operator <<(ostream& os, const vec<T>& v){ if (len(v)) os << join(v); return os; }
+template<class T> ostream& operator <<(ostream& os, const vec<vec<T>>& v){ rep (i, len(v)) if (len(v[i])) os << join(v[i]) << (i-len(v)+1 ? "\n" : ""); return os; }
+template<class T, class U> ostream& operator <<(ostream& os, const pair<T, U>& p){ return os << p.first << ' ' << p.second; }
+template<class T, class U, class V> ostream& operator <<(ostream& os, const tuple<T, U, V>& t){ return os << get<0>(t) << " " << get<1>(t) << " " << get<2>(t); }
+template<class T> constexpr bool chmax(T& a, const T& b){ return a < b && (a = b, true); }
+template<class T> constexpr bool chmin(T& a, const T& b){ return a > b && (a = b, true); }
+# endif  // ngng628_library
 
-std::vector<int> Eratosthenes( const int N )
-{
-    std::vector<bool> is_prime( N + 1 );
-    std::vector<int64> div_num( N + 1 );
-    for( int i = 0; i <= N; i++ )
-    {
-        is_prime[ i ] = true;
-    }
-    std::vector<int> P;
-    for( int i = 2; i <= N; i++ )
-    {
-        if( is_prime[ i ] )
-        {
-            div_num[ i ] = 2;
-            for( int j = 2 * i; j <= N; j += i )
-            {
-                div_num[ j ] = 
-                is_prime[ j ] = false;
-            }
-            P.emplace_back( i );
-        }
-    }
-    return P;
+struct Prime {
+   Prime() : n_max(0) {}
+   // O ( N loglog(N) )
+   Prime(int n) : n_max(n), table(n+1, true), osak(n+1) {
+       iota(osak.begin(), osak.end(), 0);
+       osak[0] = 1;
+       if (n >= 0) table[0] = false;
+       if (n >= 1) table[1] = false;
+       for (int i = 2; i * i <= n; i++) {
+           if (not table[i]) continue;
+           lst.pb(i);
+           for(int k = i + i; k <= n; k += i) {
+               table[k] = false;
+               osak[k] = i;
+           }
+       }
+   }
+
+   // n <= n_max のとき: O(1)
+   // それ超えのとき: O( sqrt(N) )
+   bool is(const int n) {
+       if (n <= n_max) return table[n];
+       if (n <= 4) return n == 2 || n == 3;
+       if (n % 2 == 0 || n % 3 == 0 || (n % 6 != 1 && n % 6 != 5)) return false;
+       for (int i = 5; i * i <= n; i += 6) if (n % i == 0 || n % (i + 2) == 0) return false;
+       return true;
+   }
+
+   // O( sqrt(N) )
+   map<int, int> factor(int n) {
+       if (n == 1) {
+           map<int, int> one;
+           one[1] = 1;
+           return one;
+       }
+       if (n <= n_max) return impl_factor_fast(n);
+       map<int, int> ret;
+       for (int i = 2; i * i <= n; i++) {
+           while (n % i == 0) {
+               ret[i]++;
+               n /= i;
+           }
+       }
+       if (n != 1) ret[n] = 1;
+       return ret;
+   }
+
+   // O( log(N) )
+   map<int, int> impl_factor_fast(int n) {
+       map<int, int> ret;
+       while (n != 1) {
+           int p = osak[n];
+           ret[p]++;
+           n /= p;
+       }
+       return ret;
+   }
+
+   // O( len(v) log(v_max) )
+   bool to(vi v) {
+       unordered_set<int> s;
+       for (auto& n : v) {
+           while (n != 1) {
+               int p = osak[n];
+               if (s.count(p)) return false;
+               else s.insert(p);
+               while (n % p == 0) n /= p;
+           }
+       }
+       return true;
+   }
+
+   const int n_max;
+   db table;
+   vi osak;
+   vi lst;
+} PRIME(1e7);
+
+int32_t main() {
+   int n;
+   cin >> n;
+
+   int ans = 0;
+   reps (k, n) {
+      auto f = [](int x) -> int {
+         if (x == 1) return 1;
+         auto fac = PRIME.factor(x);
+         int res = 1;
+         for (auto [p, a] : fac) res *= a + 1;
+         return res;
+      };
+      ans += k*f(k);
+   }
+
+   cout << ans << endl;
 }
-
-int main()
-{
-    int p[200000][1000000000];
-
-
-    return 0;
-}
-
