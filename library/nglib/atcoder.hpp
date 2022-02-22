@@ -1,17 +1,5 @@
-# ifndef ONLINE_JUDGE
-# include <nglib/atcoder.hpp>
-# endif
-# ifdef ngng628_library
-
-int32 main() {
-}
-
-
-
-
-
-
-# else
+# ifndef ngng628_library
+# define ngng628_library
 
 # include <bits/stdc++.h>
 # define int Int
@@ -55,7 +43,6 @@ template<class T> ostream& operator <<(ostream& os, const vec<T>& v){ if (len(v)
 template<class T> ostream& operator <<(ostream& os, const vec<vec<T>>& v){ rep (i, len(v)) if (len(v[i])) os << join(v[i]) << (i-len(v)+1 ? "\n" : ""); return os; }
 template<class T, class U> ostream& operator <<(ostream& os, const pair<T, U>& p){ return os << p.first << ' ' << p.second; }
 template<class T, class U, class V> ostream& operator <<(ostream& os, const tuple<T, U, V>& t){ return os << get<0>(t) << " " << get<1>(t) << " " << get<2>(t); }
-template<class T> T scan(){ T t; cin >> t; return t; }
 template<class T> constexpr bool chmax(T& a, const T& b){ return a < b && (a = b, true); }
 template<class T> constexpr bool chmin(T& a, const T& b){ return a > b && (a = b, true); }
 constexpr int ctoi(char c){ return isdigit(c) ? c - '0' : -1; }
@@ -93,8 +80,10 @@ namespace BitOperations {
    constexpr int Log2i(int x) { return Msb(x); }
 }
 using namespace BitOperations;
+
 struct Scanner {
    Scanner() = default;
+
    int nextInt(int offset = 0) const {
       char c = skip();
       int r = c - '0';
@@ -104,23 +93,104 @@ struct Scanner {
       while (not isspace(c = gc())) r = 10 * r + (c & 0xf);
       return sgn * r + offset;
    }
-   char nextChar() const { return skip(); }   
-   string nextWord() const { char c = skip(); string r = {c}; while (not isspace(c = gc())) r.push_back(c); return r; }
-   string nextLine() const { char c; string r; while ((c = gc()) != '\n') r.push_back(c); return r; }
-   vi nextVi(int n, int offset=0) const { vi a(n); rep(i, n) a[i] = nextInt(offset); return a; }
-   template <size_t N> array<int, N> nextAi(int offset=0) const { array<int, N> r; rep(i, N) r[i] = nextInt(offset); return r; }
-   template <size_t N> vec<array<int, N>> nextVecAi(int n, int offset=0) const { vec<array<int, N>> r(n); rep (i, n) rep(j, N) r[i][j] = nextInt(offset); return r; }
-   vvi nextVvi(int n, int m, int offset=0) const { vvi a(n, vi(m)); rep(i, n) rep(j, m) a[i][j] = nextInt(offset); return a; }
-   vec<string> nextWords(int n) const { vec<string> s(n); rep (i, n) s[i] = nextWord(); return s; }
-   set<int> nextSetInt(int n, int offset=0) const { set<int> r; rep(n) r.insert(nextInt(offset)); return r; }
-   set<char> nextSetChar(int n) const { set<char> r; rep(n) r.insert(nextChar()); return r; }
-   set<string> nextSetWord(int n) const { set<string> r; rep(n) r.insert(nextWord()); return r; }
-   pii nextPii() const { return nextPii(0, 0); }
-   pii nextPii(int offset1, int offset2) const { int a = nextInt(offset1), b = nextInt(offset2); return make_pair(a, b); }
-   vec<pii> nextVecPii(int n) const { return nextVecPii(n, 0, 0); }
-   vec<pii> nextVecPii(int n, int offset1, int offset2) const { vec<pii> r(n); rep (i, n) r[i] = nextPii(offset1, offset2); return r; }
-   pair<vi, vi> nextPairViVi(int n) const { return nextPairViVi(n, 0, 0); }
-   pair<vi, vi> nextPairViVi(int n, int offset1, int offset2) const { vi a(n), b(n); rep (i, n) tie(a[i], b[i]) = nextPii(offset1, offset2); return make_pair(a, b); }
+
+   char nextChar() const {
+      return skip();
+   }
+
+   string nextWord() const {
+      char c = skip();
+      string r = {c};
+      while (not isspace(c = gc())) r.push_back(c);
+      return r;
+   }
+
+   string nextLine() const {
+      char c;
+      string r;
+      while ((c = gc()) != '\n') r.push_back(c);
+      return r;
+   }
+
+   vi nextVi(int n, int offset=0) const {
+      vi a(n);
+      rep(i, n) a[i] = nextInt(offset);
+      return a;
+   }
+
+   template <size_t N>
+   array<int, N> nextAi(int offset=0) const {
+      array<int, N> r;
+      rep(i, N) r[i] = nextInt(offset);
+      return r;
+   }
+
+   template <size_t N>
+   vec<array<int, N>> nextVecAi(int n, int offset=0) const {
+      vec<array<int, N>> r(n);
+      rep (i, n) rep(j, N) r[i][j] = nextInt(offset);
+      return r;
+   }
+
+   vvi nextVvi(int n, int m, int offset=0) const {
+      vvi a(n, vi(m));
+      rep(i, n) rep(j, m) a[i][j] = nextInt(offset);
+      return a;
+   }
+
+   vec<string> nextWords(int n) const {
+      vec<string> s(n);
+      rep (i, n) s[i] = nextWord();
+      return s;
+   }
+
+   set<int> nextSetInt(int n, int offset=0) const {
+      set<int> r;
+      rep(n) r.insert(nextInt(offset));
+      return r;
+   }
+
+   set<char> nextSetChar(int n) const {
+      set<char> r;
+      rep(n) r.insert(nextChar());
+      return r;
+   }
+
+   set<string> nextSetWord(int n) const {
+      set<string> r;
+      rep(n) r.insert(nextWord());
+      return r;
+   }
+
+   pii nextPii() const {
+      return nextPii(0, 0);
+   }
+
+   pii nextPii(int offset1, int offset2) const {
+      int a = nextInt(offset1), b = nextInt(offset2);
+      return make_pair(a, b);
+   }
+
+   vec<pii> nextVecPii(int n) const {
+      return nextVecPii(n, 0, 0);
+   }
+
+   vec<pii> nextVecPii(int n, int offset1, int offset2) const {
+      vec<pii> r(n);
+      rep (i, n) r[i] = nextPii(offset1, offset2);
+      return r;
+   }
+
+   pair<vi, vi> nextPairViVi(int n) const {
+      return nextPairViVi(n, 0, 0);
+   }
+
+   pair<vi, vi> nextPairViVi(int n, int offset1, int offset2) const {
+      vi a(n), b(n);
+      rep (i, n) tie(a[i], b[i]) = nextPii(offset1, offset2);
+      return make_pair(a, b);
+   }
+
    tuple<int, int, vvi> nextGraph(int offset=-1) const {
       int n = nextInt();
       int m = nextInt();
@@ -133,6 +203,7 @@ struct Scanner {
       }
       return make_tuple(n, m, g);
    }
+
    tuple<int, int, vvi> nextDirectedGraph(int offset=-1) const {
       int n = nextInt();
       int m = nextInt();
@@ -144,6 +215,7 @@ struct Scanner {
       }
       return make_tuple(n, m, g);
    }
+
    tuple<int, int, vvi> nextTree(int offset=-1) const {
       int n = nextInt();
       vvi g(n);
@@ -155,6 +227,7 @@ struct Scanner {
       }
       return make_tuple(n, n - 1, g);
    }
+
    tuple<int, int, vvi> nextDirectedTree(int offset=-1) const {
       int n = nextInt();
       vvi g(n);
@@ -165,11 +238,15 @@ struct Scanner {
       }
       return make_tuple(n, n - 1, g);
    }
+
 private:
-   char skip() const { char c; while (isspace(c = getchar_unlocked())); return c; }
+   char skip() const {
+      char c;
+      while (isspace(c = getchar_unlocked())) ;
+      return c;
+   }
+
    inline char gc() const { return getchar_unlocked(); }
 } sc;
 
-# define ngng628_library
-# include __FILE__
 # endif

@@ -59,14 +59,14 @@ class Random {
 public:
    Random() : x(1859738746), y(9707750167), z(2653432786), w(3463085849) {}
  
-   [[nodiscard]] ll randint(ll n) noexcept {
+   [[nodiscard]] ll nextInt(ll n) noexcept {
       uint64_t t = (x^(x<<11));
       x = y; y = z; z = w;
       w = (w^(w>>19))^(t^(t>>8));
       return w % n;
    }
 
-   [[nodiscard]] ll randint(ll a, ll b) noexcept {
+   [[nodiscard]] ll nextInt(ll a, ll b) noexcept {
       uint64_t t = (x^(x<<11));
       x = y; y = z; z = w;
       w = (w^(w>>19))^(t^(t>>8));
@@ -76,13 +76,6 @@ public:
 private:
    uint64_t x, y, z, w;
 } rnd;
-
-vec<string> transposed(const vec<string>& s) {
-   const int h = len(s), w = len(s[0]);
-   vec<string> r(w, string(h, '?'));
-   rep (i, h) rep (k, w) r[k][i] = s[i][k];
-   return r;
-}
 # endif  // ngng628_library
 
 constexpr int TIME_LIMIT_ms = 3000;
