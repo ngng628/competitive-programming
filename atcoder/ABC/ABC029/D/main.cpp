@@ -1,65 +1,78 @@
-//                              ______  ______  ______
-// .-----..-----..-----..-----.|    __||__    ||  __  |
-// |     ||  _  ||     ||  _  ||  __  ||    __||  __  |
-// |__|__||___  ||__|__||___  ||______||______||______|
-//        |_____|       |_____|
-//
 # include <bits/stdc++.h>
-# define rep(i,n) for(int i=0, i##_len=(n); i<i##_len; ++i)
-# define rep2(x,y,w,h) rep (x, w) rep (y, h)
-# define reps(i,n) for(int i=1, i##_len=(n); i<=i##_len; ++i)
-# define reps2(x,y,w,h) reps (x, w) reps (y, h)
-# define rrep(i,n) for(int i=((int)(n)-1); i>=0; --i)
-# define rreps(i,n) for(int i=((int)(n)); i>0; --i)
-# define repr(i,b,e) for(int i=(b), i##_len=(e); i<i##_len; ++i)
-# define reprs(i,b,e) for(int i=(b), i##_len=(e); i<i##_len; ++i)
-# define step(n) rep(_, n)
-# define ALL(x) (x).begin(), (x).end()
-# define RALL(x) (x).rbegin(), (x).rend()
+# ifndef ngng628_library
+# define ngng628_library
+# define int Int
+# define float Float
+# define overload3(_1,_2,_3,name,...) name
+# define _step(n) _rep(_,n)
+# define _rep(i,n) _repr(i,0,n)
+# define _repr(i,b,e) for(int i=(b), i##_len=(e); i<i##_len; ++i)
+# define rep(...) overload3(__VA_ARGS__, _repr, _rep, _step)(__VA_ARGS__)
+# define _reps(i,n) _reprs(i,1,n)
+# define _reprs(i,b,e) for(int i=(b), i##_len=(e); i<=i##_len; ++i)
+# define reps(...) overload3(__VA_ARGS__, _reprs, _reps)(__VA_ARGS__)
+# define rrep(i,n) for(int i=(int)(n)-1; i>=0; --i)
+# define rreps(i,n) for(int i=(n); i>0; --i)
+# define all(v) std::begin(v), std::end(v)
+# define rall(v) std::rbegin(v), std::rend(v)
 # define pb push_back
 # define eb emplace_back
-# define len(x) ((int)(x).size())
-# define contains(x,key) ((x).find(key) != (x).end())
-# define cauto const auto
-# define int long long
-# define float long double
-# define FI first
-# define SE second
+# define len(v) (int)std::size(v)
+# define eprintf(...) fprintf(stderr, __VA_ARGS__)
 using namespace std;
-using vi = vector<int>;
-using vb = vector<bool>;
-using vvi = vector<vi>;
-using vs = vector<string>;
+using Int = long long;
+using Float = long double;
+template<class T> using vec = vector<T>;
 using pii = pair<int, int>;
-using vpii = vector<pair<int, int>>;
-using mii = map<int, int>;
-using msi = map<string, int>;
-template<class T> istream& operator>>(istream& is, vector<T>& v) { for (auto& x : v) is >> x; return is; }
-template<class T> istream& operator>>(istream& is, vector<vector<T>>& v) { for(auto& x : v) for (auto& y : x) is >> y; return is; }
-template<class T, class U> istream& operator>>(istream& is, pair<T, U>& p) { return is >> p.FI >> p.SE; }
-template<class T> string join(const vector<T> &v){ stringstream s; rep (i, len(v)) s<<' '<<v[i]; return s.str().substr(1); }
-template<class T> ostream& operator<<(ostream& os, const vector<T>& v){ if (len(v)) os << join(v); return os; }
-template<class T> ostream& operator<<(ostream& os, const vector<vector<T>>& v){ rep (i, len(v)) { if (len(v[i])) os << join(v[i]) << (i-len(v)+1 ? "\n" : ""); } return os; }
-void print(){ cout << "\n"; }
-template<class T, class... A>void print(const T& v, const A&...args){cout << v; if(sizeof...(args))cout << " "; print(args...);}
-void eprint() { cerr << "\n"; }
-template<class T, class... A>void eprint(const T& v, const A&...args){cerr << v; if(sizeof...(args))cerr << " "; eprint(args...);}
-template<class T, class U> ostream& operator<<(ostream& os, const pair<T,U>& p){ cout << p.FI << " " << p.SE; return os; }
-template<class T> inline constexpr bool InRange(const T& x, const T& fst, const T& lst) { return (fst <= x) && (x < lst); }
-template<class T> inline void Unique(T& v) { sort(v.begin(), v.end()); v.erase(unique(v.begin(), v.end()), v.end()); }
-template<class Integer> inline constexpr bool chmax(Integer &a, Integer b) { return a < b && (a = b, true); }
-template<class Integer> inline constexpr bool chmin(Integer &a, Integer b) { return a > b && (a = b, true); }
-constexpr long long gcd(long long a, long long b) { while(b){ long long A = a; (a = b), (b = A % b); } return a; }
-constexpr long long lcm(long long a, long long b) { return a / gcd(a, b) * b; }
-constexpr int ctoi(const char c) { return ('0' <= c && c <= '9') ? (c - '0') : -1; }
-constexpr const char* YesNo(bool b) { return b ? "Yes" : "No"; }
-constexpr const char* YESNO(bool b) { return b ? "YES" : "NO"; }
-constexpr const char* yesno(bool b) { return b ? "yes" : "no"; }
-constexpr const char* yn(bool b) { return YesNo(b); }
+using vi = vec<int>;
+using vvi = vec<vi>;
+using db = deque<bool>;
+using ddb = deque<db>;
+constexpr int oo = (1LL<<62)-(1LL<<31);
+template<class T, class U> istream& operator >>(istream& is, pair<T, U>& p) { return is >> p.first >> p.second; }
+template<class T> istream& operator >>(istream& is, vec<T>& v) { for (auto& x : v) is >> x; return is; }
+template<class T, size_t N> istream& operator >>(istream& is, array<T, N>& v) { for (auto& x : v) is >> x; return is; }
+template<class T> string join(const vec<T>& v){ stringstream s; for (T t : v) s << ' ' << t; return s.str().substr(1); }
+template<class T> ostream& operator <<(ostream& os, const vec<T>& v){ if (len(v)) os << join(v); return os; }
+template<class T> ostream& operator <<(ostream& os, const vec<vec<T>>& v){ rep (i, len(v)) if (len(v[i])) os << join(v[i]) << (i-len(v)+1 ? "\n" : ""); return os; }
+template<class T, class U> ostream& operator <<(ostream& os, const pair<T, U>& p){ return os << p.first << ' ' << p.second; }
+template<class T, class U, class V> ostream& operator <<(ostream& os, const tuple<T, U, V>& t){ return os << get<0>(t) << " " << get<1>(t) << " " << get<2>(t); }
+template<class T> constexpr bool chmax(T& a, const T& b){ return a < b && (a = b, true); }
+template<class T> constexpr bool chmin(T& a, const T& b){ return a > b && (a = b, true); }
+int ctoi(char c){ return isdigit(c) ? c - '0' : -1; }
+# endif  // ngng628_library
 
-signed main() {
-    {{_cursor_}}
+int32_t main() {
+   string N;
+   cin >> N;
+   const int n = len(N);
 
-    return 0;
+   using vvvi = vec<vvi>;
+   vvvi dp(n + 1, vvi(n + 1, vi(2, 0)));
+   enum Ordering { Less, Equal };
+
+   dp[0][0][Equal] = 1;
+   rep (i, n) {
+      const int ni = ctoi(N[i]);
+      rep (n_ones, n + 1) {
+         for (int ord : { Less, Equal }) {
+            rep (d, 10) {
+               int n_ones2 = n_ones;
+               int ord2 = ord;
+
+               if (d == 1) n_ones2 += 1;
+               if (n_ones2 > n) continue;
+
+               if (ord == Equal and d > ni) continue;
+               if (d < ni) ord2 = Less;
+
+               dp[i + 1][n_ones2][ord2] += dp[i][n_ones][ord];
+            }
+         }
+      }
+   }
+
+   int ans = 0;
+   rep (j, n + 1) ans += j * (dp[n][j][Less] + dp[n][j][Equal]);
+   cout << ans << endl;
 }
-

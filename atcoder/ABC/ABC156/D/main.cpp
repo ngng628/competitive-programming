@@ -1,55 +1,36 @@
 # include <bits/stdc++.h>
-# define rep(i, n) for(int i=0, i##_len=(n); i<i##_len; ++i)
-# define reps(i, n) for(int i=1, i##_len=(n); i<=i##_len; ++i)
-# define rrep(i, n) for(int i=((int)(n)-1); i>=0; --i)
-# define rreps(i, n) for(int i=((int)(n)); i>0; --i)
-# define range_for(i, b, e) for(int i=(b), i##_len=(e); i<=i##_len; ++i)
-# define ALL(x) (x).begin(), (x).end()
-# define RALL(x) (x).rbegin(), (x).rend()
-# define pb push_back
-# define len(x) ((int)(x).size())
-# define optimize_cin() cin.tie(0); ios::sync_with_stdio(false)
-# define debug(x) std::cerr<<#x<<": "<<(x)<<endl;
-# define cauto const auto
+# include <atcoder/modint>
+# ifndef ngng628_library
+# define ngng628_library
+# define int Int
+# define overload3(_1,_2,_3,name,...) name
+# define _step(n) _rep(_,n)
+# define _rep(i,n) _repr(i,0,n)
+# define _repr(i,b,e) for(int i=(b), i##_len=(e); i<i##_len; ++i)
+# define rep(...) overload3(__VA_ARGS__, _repr, _rep, _step)(__VA_ARGS__)
+# define _reps(i,n) _reprs(i,1,n)
+# define _reprs(i,b,e) for(int i=(b), i##_len=(e); i<=i##_len; ++i)
+# define reps(...) overload3(__VA_ARGS__, _reprs, _reps)(__VA_ARGS__)
 using namespace std;
-using lint = long long;
-template <class Type> inline constexpr bool InRange(const Type& x, const Type& i, const Type& a) { return (i <= x) && (x <= a); }
-template<class Integer>bool chmax(Integer &a, const Integer &b) { if (a<b) { a=b; return 1; } return 0; }
-template<class Integer>bool chmin(Integer &a, const Integer &b) { if (b<a) { a=b; return 1; } return 0; }
-template<class Integer>bool IsOdd(Integer &n) { return n & 1; }
-template<class Integer>bool IsEven(Integer &n) { return !(n & 1); }
-int ctoi(const char c) { return ('0' <= c && c <= '9') ? (c - '0') : -1; }
-string YesNo(bool b) { return b ? "Yes" : "No"; }
-string YESNO(bool b) { return b ? "YES" : "NO"; }
-string yesno(bool b) { return b ? "yes" : "no"; }
-static const lint MOD9 = (lint)1e9+7;
-int dy[4] = {0, 1, 0, -1};
-int dx[4] = {1, 0, -1, 0};
+using Int = long long;
+# endif  // ngng628_library
 
-// 整数の桁数を返す ( log(N) )
-template <class Integer> Integer GetDigit(Integer n) {
-    Integer d = 0;
-    while (n) {
-        n /= 10;
-        d++;
-    }
-    return d;
+using namespace atcoder;
+using Fp = modint1000000007;
+istream& operator >>(istream& is, Fp& r){ int t; is >> t; r = t; return is; }
+ostream& operator <<(ostream& os, const Fp& r){ return os << r.val(); }
+
+Fp nchoosek(int n, int k) {
+   Fp num = 1;
+   rep (i, k) num *= n - i;
+   Fp den = 1;
+   reps (i, k) den *= i;
+   return num / den;
 }
 
-// 素数かどうかを返す ( O(sqrt(N)) )
-template <class Integer>
-constexpr bool IsPrime(const Integer n) noexcept {
-    if (n < 4) return n == 2 || n == 3;
-    if (n % 2 == 0 || n % 3 == 0 || (n % 6 != 1 && n % 6 != 5)) return false;
-    for (Integer i = 5; i * i <= n; i += 6) if (n % i == 0 || n % (i + 2) == 0) return false;
-    return true;
+int32_t main() {
+   int n, a, b;
+   cin >> n >> a >> b;
+   Fp ans = Fp(2).pow(n) - nchoosek(n, a) - nchoosek(n, b) - 1;
+   cout << ans << '\n';
 }
-
-
-int main()
-{
-    {{_cursor_}}
-
-    return 0;
-}
-

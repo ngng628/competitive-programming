@@ -1,0 +1,1 @@
+print({w:7-i for i,w in enumerate(["SUN","MON","TUE","WED","THU","FRI","SAT"])}[input()])

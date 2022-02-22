@@ -2,85 +2,103 @@
 # include <atcoder/modint>
 # ifndef ngng628_library
 # define ngng628_library
-# define int int_fast64_t
-# define float __long_double
-# define fi first
-# define se second
-# define rep(i,n) for(int i=0, i##_len=(n); i<i##_len; ++i)
-# define reps(i,n) for(int i=1, i##_len=(n); i<=i##_len; ++i)
+# define int Int
+# define float Float
+# define overload3(_1,_2,_3,name,...) name
+# define _step(n) _rep(_,n)
+# define _rep(i,n) _repr(i,0,n)
+# define _repr(i,b,e) for(int i=(b), i##_len=(e); i<i##_len; ++i)
+# define rep(...) overload3(__VA_ARGS__, _repr, _rep, _step)(__VA_ARGS__)
+# define _reps(i,n) _reprs(i,1,n)
+# define _reprs(i,b,e) for(int i=(b), i##_len=(e); i<=i##_len; ++i)
+# define reps(...) overload3(__VA_ARGS__, _reprs, _reps)(__VA_ARGS__)
 # define rrep(i,n) for(int i=(int)(n)-1; i>=0; --i)
 # define rreps(i,n) for(int i=(n); i>0; --i)
-# define repr(i,b,e) for(int i=(b), i##_len=(e); i<i##_len; ++i)
-# define reprs(i,b,e) for(int i=(b), i##_len=(e); i<=i##_len; ++i)
-# define all(x) std::begin(x), std::end(x)
-# define rall(x) std::rbegin(x), std::rend(x)
+# define all(v) std::begin(v), std::end(v)
+# define rall(v) std::rbegin(v), std::rend(v)
 # define pb push_back
 # define eb emplace_back
-# define len(x) (int)(x).size()
+# define len(v) (int)std::size(v)
+# define eprintf(...) fprintf(stderr, __VA_ARGS__)
 using namespace std;
-using __long_double = long double;
+using Int = long long;
+using Float = long double;
 template<class T> using vec = vector<T>;
 using pii = pair<int, int>;
 using vi = vec<int>;
 using vvi = vec<vi>;
 using db = deque<bool>;
 using ddb = deque<db>;
-using vs = vec<string>;
-constexpr int INF = (1LL<<62)-(1LL<<31);
-constexpr float EPS = 1e-10;
+constexpr int oo = (1LL<<62)-(1LL<<31);
+template<class T, class U> istream& operator >>(istream& is, pair<T, U>& p) { return is >> p.first >> p.second; }
 template<class T> istream& operator >>(istream& is, vec<T>& v) { for (auto& x : v) is >> x; return is; }
-template<class T, std::size_t N> istream& operator >>(istream& is, array<T, N>& v) { for (auto& x : v) is >> x; return is; }
-template<class T, class U> istream& operator >>(istream& is, pair<T, U>& p) { return is >> p.fi >> p.se; }
-template<class T> string join(const vec<T> &v){ stringstream s; rep (i, len(v)) s << ' ' << v[i]; return s.str().substr(1); }
+template<class T, size_t N> istream& operator >>(istream& is, array<T, N>& v) { for (auto& x : v) is >> x; return is; }
+template<class T> string join(const vec<T>& v){ stringstream s; for (T t : v) s << ' ' << t; return s.str().substr(1); }
 template<class T> ostream& operator <<(ostream& os, const vec<T>& v){ if (len(v)) os << join(v); return os; }
 template<class T> ostream& operator <<(ostream& os, const vec<vec<T>>& v){ rep (i, len(v)) if (len(v[i])) os << join(v[i]) << (i-len(v)+1 ? "\n" : ""); return os; }
-template<class T, class U> ostream& operator <<(ostream& os, const pair<T, U>& p){ return os << p.fi << " " << p.se; }
+template<class T, class U> ostream& operator <<(ostream& os, const pair<T, U>& p){ return os << p.first << ' ' << p.second; }
 template<class T, class U, class V> ostream& operator <<(ostream& os, const tuple<T, U, V>& t){ return os << get<0>(t) << " " << get<1>(t) << " " << get<2>(t); }
-void print(){ cout << "\n"; }
-template<class T, class... A>void print(const T& v, const A&...args){ cout << v; if (sizeof...(args)) cout << " "; print(args...); }
-void eprint() { cerr << "\n"; }
-template<class T, class... A>void eprint(const T& v, const A&...args){ cerr << v; if (sizeof...(args)) cerr << " "; eprint(args...); }
-void drop(){ cout << "\n"; exit(0); }
-template<class T, class... A>void drop(const T& v, const A&...args){ cout << v; if(sizeof...(args))cout << " "; drop(args...); }
-template<class T> constexpr bool chmax(T &a, const T& b){ return a < b && (a = b, true); }
-template<class T> constexpr bool chmin(T &a, const T& b){ return a > b && (a = b, true); }
-constexpr int ctoi(const char c){ return '0' <= c and c <= '9' ? (c - '0') : -1; }
+template<class T> constexpr bool chmax(T& a, const T& b){ return a < b && (a = b, true); }
+template<class T> constexpr bool chmin(T& a, const T& b){ return a > b && (a = b, true); }
 # endif  // ngng628_library
 
-using Fp = atcoder::modint1000000007;
+namespace BitOperations {
+   constexpr int Popcount(int x) { return __builtin_popcountll(x); }
+   constexpr int Parity(int x) { return __builtin_parityll(x); }
+   constexpr int Ffs(int x) { return __builtin_ffsll(x); }
+   constexpr int Clz(int x) { return __builtin_clzll(x); }
+   constexpr int Ctz(int x) { return __builtin_ctzll(x); }
+
+   constexpr int Bit(int x) { return 1LL << x; }
+   constexpr bool Isbit(int x) { return x and (x & -x) == x; }
+   constexpr int Msb(int x) { return x == 0 ? -1 : 63 - Clz(x); }
+   constexpr int Lsb(int x) { return x == 0 ? 64 : Ctz(x); }
+   constexpr int Allbit(int n) { return (1LL << (n + 1)) - 1; }
+   constexpr bool Stand(int x, int i) { return x & Bit(i); }
+   constexpr int Log2i(int x) { return Msb(x); }
+}
+using namespace BitOperations;
+
+using Fp = atcoder::modint998244353;
 istream& operator >>(istream& is, Fp& r){ int t; is >> t; r = t; return is; }
 ostream& operator <<(ostream& os, const Fp& r){ return os << r.val(); }
-
-struct Combination {
-   vec<Fp> fact, ifact;
-   Combination(int n) : fact(n+1), ifact(n+1) {
-      assert(n < Fp::mod());
-      fact[0] = 1;
-      reps (i, n) fact[i] = fact[i-1] * i;
-      ifact[n] = fact[n].inv();
-      rreps (i, n) ifact[i-1] = ifact[i] * i;
-   }
-   Fp operator()(int n, int k) {
-      if (k < 0 or k > n) return 0;
-      return fact[n] * ifact[k] * ifact[n-k];
-   }
-} COM(200020);
+Fp operator"" _fp(unsigned long long n) { return n; }
 
 int32_t main() {
    int n;
-   string s;
-   cin >> n >> s;
+   cin >> n;
+   string _s;
+   cin >> _s;
+   vi a(n);
+   transform(all(_s), a.begin(), [](const char c){ return c - 'A'; });
 
-   vec<int> cnt(10);
+   // dp[i][S][last] := i 番目以下で，S のコンテストに参加していて，最後に参加したコンテストが last であるような通り数
+   constexpr int EMPTY = 10;
+   vec<vec<vec<Fp>>> dp(n + 1, vec<vec<Fp>>(Allbit(10) + 1, vec<Fp>(11, 0)));
+   dp[0][0][EMPTY] = 1;
    rep (i, n) {
-      cnt[s[i] - 'A']++;
+      rep (S, Allbit(10)) {
+         rep (last, 11) {
+            // 出ない
+            dp[i + 1][S][last] += dp[i][S][last];
+
+            // 出る
+            if (a[i] == last) {
+               dp[i + 1][S | Bit(a[i])][a[i]] += dp[i][S][last];
+            }
+            else if (not Stand(S, a[i])) {
+               dp[i + 1][S | Bit(a[i])][a[i]] += dp[i][S][last];
+            }
+         }
+      }
    }
 
    Fp ans = 0;
-   rep (i, 10) {
-      Fp two = 2;
-      if (cnt[i]) ans += two.pow(cnt[i]);
+   reps (S, Allbit(10)) {
+      rep (last, 10) {
+         ans += dp[n][S][last];
+      }
    }
 
-   print(ans);
+   cout << ans << '\n';
 }
