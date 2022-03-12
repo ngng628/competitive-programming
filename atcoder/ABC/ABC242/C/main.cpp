@@ -3,44 +3,41 @@
 # include <nglib/atcoder.hpp>
 # endif
 # ifdef ngng628_library
-using mint = atcoder::modint1000000007;
+using mint = atcoder::modint998244353;
+istream& operator >>(istream& is, mint& r){ int t; is >> t; r = t; return is; }
 ostream& operator <<(ostream& os, const mint& r){ return os << r.val(); }
+mint operator"" _mint(unsigned long long n) { return n; }
+using vm = vec<mint>;
+using vvm = vec<vm>;
+using vvvm = vec<vvm>;
+
+mint Sum(mint n) {
+   return n*(n + 1) / 2;
+}
 
 int32 main() {
-    auto n = sc.nextInt();
+   auto n = sc.nextInt();
+   
+   vec<vec<mint>> dp(n + 1, vec<mint>(10, 0));
+   reps (i, 1, 9) {
+      dp[1][i] = 1;
+   }
 
-    auto ok = [](string s) {
-        auto in_agc = [](string s) {
-            return s.substr(0, 3) == "AGC" or s.substr(1, 3) == "AGC";
-        };
-        if (in_agc(s)) return false;
-        rep (i, 3) {
-            swap(s[i], s[i + 1]);
-            if (in_agc(s)) return false;
-            swap(s[i], s[i + 1]);
-        }
-        return true;
-    };
+   reps (i, 2, n) {
+      reps (d, 1, 9) {
+         reps (d2, 1, 9) {
+            if (abs(d - d2) <= 1) dp[i][d] += dp[i - 1][d2];
+         }
+      }
+   }
 
-    vec<map<string, mint>> dp(n + 1);
-    vec<map<string, bool>> closed(n + 1);
-    auto rec = Fix([&](auto&& Recall, int i, string back3) -> mint {
-        if (closed[i][back3]) return dp[i][back3];
-        if (i == n) {
-            return 1;
-        }
-        mint ret = 0;
-        for (char _c : { 'A', 'G', 'C', 'T' }) {
-            string c = string(1, _c);
-            if (ok(back3 + c)) {
-                ret += Recall(i + 1, back3.substr(1) + c);
-            }
-        }
-        closed[i][back3] = true;
-        return dp[i][back3] = ret;
-    });
-    cout << rec(0, "TTT"s) << endl;
+   mint ans = 0;
+   reps (i, 1, 9) {
+      ans += dp[n][i];
+   }
+   cout << ans << endl;
 }
+
 
 
 
@@ -77,8 +74,6 @@ using uint64 = uint64_t;
 using usize = size_t;
 using ssize = ptrdiff_t;
 template<class T> using vec = vector<T>;
-template<class T> using MaxHeap = priority_queue<T>;
-template<class T> using MinHeap = priority_queue<T, vec<T>, greater<T>>;
 using pii = pair<int, int>;
 using vi = vec<int>;
 using vvi = vec<vi>;
@@ -95,7 +90,7 @@ template<class T, class U, class V> ostream& operator <<(ostream& os, const tupl
 template<class T> T scan(){ T t; cin >> t; return t; }
 template<class T> constexpr bool chmax(T& a, const T& b){ return a < b && (a = b, true); }
 template<class T> constexpr bool chmin(T& a, const T& b){ return a > b && (a = b, true); }
-constexpr int ctoi(char c){ return '0' <= c and c <= '9' ? c - '0' : -1; }
+constexpr int ctoi(char c){ return isdigit(c) ? c - '0' : -1; }
 int ceil(const int n, const int d) { assert(d); return n / d + int((n ^ d) >= 0 && n % d != 0); }
 template<class T> void sort(T& v){ sort(all(v)); }
 template<class T, class Compare> void sort(T& v, Compare comp){ sort(all(v), comp); }
@@ -130,12 +125,6 @@ namespace BitOperations {
    constexpr int Log2i(int x) { return Msb(x); }
 }
 using namespace BitOperations;
-template <class F>
-struct Fix {
-   F f;
-   Fix(F &&f_) : f(std::forward<F>(f_)) {}
-   template <class... Args> auto operator()(Args &&...args) const { return f(*this, std::forward<Args>(args)...); }
-};
 struct Scanner {
    Scanner() = default;
    int nextInt(int offset = 0) const {

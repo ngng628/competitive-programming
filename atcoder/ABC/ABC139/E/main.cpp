@@ -1,46 +1,59 @@
-# include <atcoder/modint>
 # ifndef ONLINE_JUDGE
 # include <nglib/atcoder.hpp>
 # endif
 # ifdef ngng628_library
-using mint = atcoder::modint1000000007;
-ostream& operator <<(ostream& os, const mint& r){ return os << r.val(); }
+
+using Node = pair<int32, int32>;
+struct phash {
+   inline size_t operator ()(const pair<int,int>& p) const {
+      int s = min(p.first, p.second);
+      int t = max(p.first, p.second);
+      return 500*999*s + t;
+   }
+};
+constexpr Node nd(int32 a, int32 b) { return make_pair(min(a, b), max(a, b)); }
+constexpr Node nil = nd(-1, -1);
+using Graph = unordered_map<Node, vec<Node>, phash>;
 
 int32 main() {
-    auto n = sc.nextInt();
+   auto n = sc.nextInt();
+   auto a = sc.nextVvi(n, n - 1, -1);
+   Graph graph;
+   rep (i, n) rep (j, n - 2) graph[nd(i, a[i][j])].push_back(nd(i, a[i][j + 1]));
 
-    auto ok = [](string s) {
-        auto in_agc = [](string s) {
-            return s.substr(0, 3) == "AGC" or s.substr(1, 3) == "AGC";
-        };
-        if (in_agc(s)) return false;
-        rep (i, 3) {
-            swap(s[i], s[i + 1]);
-            if (in_agc(s)) return false;
-            swap(s[i], s[i + 1]);
-        }
-        return true;
-    };
+   int ans = 0;
+   unordered_set<Node, phash> calced;
+   unordered_set<Node, phash> visited;
+   unordered_map<Node, int, phash> cache;
+   auto dfs = [&](auto&& dfs, Node v) -> int {
+      if (visited.count(v)) {
+         if (not calced.count(v)) return -1;
+         return cache[v];
+      }
+      visited.insert(v);
+      cache[v] = 1;
+      for (Node node : graph[v]) {
+         int res = dfs(dfs, node);
+         if (res == -1) return -1;
+         cache[v] = max(cache[v], res + 1);
+      }
+      calced.insert(v);
+      return cache[v];
+   };
+   rep (i, n) {
+      rep (j, i + 1, n) {
+         int res = dfs(dfs, nd(i, j));
+         if (res == -1) {
+            puts("-1");
+            return 0;
+         }
+         chmax(ans, res);
+      }
+   }
 
-    vec<map<string, mint>> dp(n + 1);
-    vec<map<string, bool>> closed(n + 1);
-    auto rec = Fix([&](auto&& Recall, int i, string back3) -> mint {
-        if (closed[i][back3]) return dp[i][back3];
-        if (i == n) {
-            return 1;
-        }
-        mint ret = 0;
-        for (char _c : { 'A', 'G', 'C', 'T' }) {
-            string c = string(1, _c);
-            if (ok(back3 + c)) {
-                ret += Recall(i + 1, back3.substr(1) + c);
-            }
-        }
-        closed[i][back3] = true;
-        return dp[i][back3] = ret;
-    });
-    cout << rec(0, "TTT"s) << endl;
+   cout << ans << '\n';
 }
+
 
 
 
@@ -130,12 +143,6 @@ namespace BitOperations {
    constexpr int Log2i(int x) { return Msb(x); }
 }
 using namespace BitOperations;
-template <class F>
-struct Fix {
-   F f;
-   Fix(F &&f_) : f(std::forward<F>(f_)) {}
-   template <class... Args> auto operator()(Args &&...args) const { return f(*this, std::forward<Args>(args)...); }
-};
 struct Scanner {
    Scanner() = default;
    int nextInt(int offset = 0) const {

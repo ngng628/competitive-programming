@@ -3,7 +3,74 @@
 # endif
 # ifdef ngng628_library
 
+template <class Type, class Func>
+struct Pigeonhole {
+   Pigeonhole() = default;
+   Pigeonhole(Type x, Func f) { init(x, f); }
+
+   void init(Type x, Func f) {
+      index.clear();
+      value.clear();
+
+      Type now = x;
+      int cur = 1;
+      while (index[now] == 0) {
+         value.pb(now);
+         index[now] = cur++;
+         now = f(now);
+      }
+      cycle = cur - index[now];
+      margin = index[now] - 1;
+      length = cur - 1;
+   }
+
+   // x に f を K 回作用させたときの値
+   Type query(int K) {
+      if (K >= margin) K = (K - margin) % cycle + margin;
+      return value[K];
+   }
+
+   map<Type, int> index;
+   vec<Type> value;
+   int cycle;
+   int margin;
+   int length;
+};
+
 int32 main() {
+   auto [n, K] = sc.nextPii();
+   auto a = sc.nextVi(n);
+
+   auto trans = [&](int x) { return (x + a[x % n]) % n; };
+   Pigeonhole hato(0LL, trans);
+
+   int x = 0;
+   int ad1 = 0;
+   rep (hato.margin) {
+      ad1 += a[x];
+      x = trans(x);
+   }
+   int y = x;
+   int ad2 = 0;
+   rep (hato.cycle) {
+      ad2 += a[x];
+      x = trans(x);
+   }
+
+   int ans = 0;
+   int xx = 0;
+   rep (min(hato.margin, K)) {
+      ans += a[xx];
+      xx = trans(xx);
+   }
+   K = max<int>(0, K - hato.margin);
+   ans += ad2 * (K / hato.cycle);
+   rep (K % hato.cycle) {
+      ans += a[y];
+      y = trans(y);
+   }
+
+   cout << ans << endl;
 }
 
 
