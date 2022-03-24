@@ -1,87 +1,279 @@
-# include <bits/stdc++.h>
-# define rep(i, n) for(int i=0, i##_len=(n); i<i##_len; ++i)
-# define reps(i, n) for(int i=1, i##_len=(n); i<=i##_len; ++i)
-# define rrep(i, n) for(int i=((int)(n)-1); i>=0; --i)
-# define rreps(i, n) for(int i=((int)(n)); i>0; --i)
-# define range_for(i, b, e) for(int i=(b), i##_len=(e); i<i##_len; ++i)
-# define step(n) rep(_, n)
-# define ALL(x) (x).begin(), (x).end()
-# define RALL(x) (x).rbegin(), (x).rend()
-# define pb push_back
-# define len(x) ((int)(x).size())
-# define optimize_cin() cin.tie(0); ios::sync_with_stdio(false)
-# define debug(x) std::cerr<<#x<<": "<<(x)<<endl;
-# define LINT_MAX (LLONG_MAX)
-# define LINT_MIN (LLONG_MIN)
-# define cauto const auto
-# define int long long
-# define float long double
-using namespace std;
-template <class Type> inline constexpr Type Square(Type x) { return x * x; }
-template <class Type> inline constexpr bool InRange(const Type& x, const Type& fst, const Type& lst) { return (fst <= x) && (x < lst); }
-template <class Type> inline void Unique(Type& v) { sort(v.begin(), v.end()); v.erase(unique(v.begin(), v.end()), v.end()); }
-template<class Integer> inline constexpr bool chmax(Integer &a, Integer b) { return a < b && (a = b, true); }
-template<class Integer> inline constexpr bool chmin(Integer &a, Integer b) { return a > b && (a = b, true); }
-template<class Integer>bool constexpr IsOdd(Integer &n) { return n & 1; }
-template<class Integer>bool constexpr IsEven(Integer &n) { return !(n & 1); }
-constexpr long long gcd(long long a, long long b) { while(b){ long long A = a; (a = b), (b = A % b); } return a; }
-constexpr long long lcm(long long a, long long b) { return a / gcd(a, b) * b; }
-constexpr int ctoi(const char c) { return ('0' <= c && c <= '9') ? (c - '0') : -1; }
-string YesNo(bool b) { return b ? "Yes" : "No"; }
-string YESNO(bool b) { return b ? "YES" : "NO"; }
-string yesno(bool b) { return b ? "yes" : "no"; }
-void _cin(){} template <class Head, class... Tail> void _cin(Head&& head, Tail&&... tail){ cin >> head; _cin(forward<Tail>(tail)...); }
-#define Cin(Type, ...) Type __VA_ARGS__; _cin(__VA_ARGS__)
-#define Cinv(Type, xs, n) vector<Type> xs(n); rep(i, n) cin >> xs[i]
-#define Cinv2(Type, xs, ys, n) vector<Type> xs(n), ys(n); rep(i, n) cin >> xs[i] >> ys[i]
-#define Cinv3(Type, xs, ys, zs, n) vector<Type> xs(n), ys(n), zs(n); rep(i, n) cin >> xs[i] >> ys[i] >> zs[i]
-#define Cinvv(Type, xs, h, w) vector<vector<Type>> xs(h, vector<int>(w)); rep(i, h) rep(j, w) cin >> xs[i][j]
-void Print() { cout << endl; }
-template <class Head, class... Tail> void Print(Head&& head, Tail&&... tail) { cout << head; if (sizeof...(tail) != 0) cout << " "; Print(forward<Tail>(tail)...); }
-template <class Type> void Print(vector<Type> &vec) { for (auto& a : vec) { cout << a; if (&a != &vec.back()) cout << " "; } cout << endl; }
-template <class Type> void Print(vector<vector<Type>> &df) { for (auto& vec : df) { Print(vec); } }
-void Debug() { cerr << endl; }
-template <class Head, class... Tail> void Debug(Head&& head, Tail&&... tail) { cerr << head; if (sizeof...(tail) != 0) cerr << " "; Debug(forward<Tail>(tail)...); }
-template <class Type> void Debug(vector<Type> &vec) { for (auto& a : vec) { cerr << a; if (&a != &vec.back()) cerr << " "; } cerr << endl; }
-template <class Type> void Debug(vector<vector<Type>> &df) { for (auto& vec : df) { Debug(vec); } }
+# ifndef ONLINE_JUDGE
+# include <nglib/atcoder.hpp>
+# endif
+# ifdef ngng628_library
 
-using P = pair<int, int>;
-# define X second
-# define Y first
+template <class Type = int>
+struct mexset {
+   mexset() { 
+      s.emplace(numeric_limits<Type>::min(), numeric_limits<Type>::min());
+      s.emplace(numeric_limits<Type>::max(), numeric_limits<Type>::max());
+   }
+   mexset(Type inf, Type sup) { s.emplace(inf, inf), s.emplace(sup, sup); }
 
-struct phash {
-    inline size_t operator ()(const pair<int,int>& p) const {
-        const auto h1 = hash<int>()(p.first);
-        const auto h2 = hash<int>()(p.second);
-        return h1 ^ (h2 << 1);
-    }
+   bool contains(const Type x) const {
+      auto it = prev(s.lower_bound({x + 1, x + 1}));
+      auto [l, u] = *it;
+      return l <= x && x <= u;
+   }
+
+   bool insert(const Type x) {
+      auto nit = s.lower_bound({x + 1, x + 1});
+      auto it = prev(nit);
+      auto [l, u] = *it;
+      auto [nl, nu] = *nit;
+      if (l <= x && x <= u) {
+         mset.insert(x);
+         return false;
+      }
+
+      if (u == x - 1) {
+         if (nl == x + 1) s.erase(it), s.erase(nit), s.emplace(l, nu);
+         else s.erase(it), s.emplace(l, x);
+      }
+      else {
+         if (nl == x + 1) s.erase(nit), s.emplace(x, nu);
+         else s.emplace(x, x);
+      }
+      return true;
+   }
+
+   bool erase(const Type x) {
+      auto it0 = mset.find(x);
+      if (it0 != mset.end()) {
+         mset.erase(it0);
+         return true;
+      }
+      auto it = prev(s.lower_bound({x + 1, x + 1}));
+      auto [l, u] = *it;
+      if (x < l || u < x) return false;
+
+      s.erase(it);
+      if (x == l and l < u) s.emplace(l + 1, u);
+      else if (x == u and l < u) s.emplace(l, u - 1);
+      else s.emplace(l, x - 1), s.emplace(x + 1, u);
+      return true;
+   }
+
+   Type mex(const Type inf = 0) const {
+      auto [l, u] = *prev(s.lower_bound({inf + 1, inf + 1}));
+      if (l <= inf && inf <= u) return u + 1;
+      else return inf;
+   }
+
+private:
+   set<pair<Type, Type>> s;
+   multiset<Type> mset;
 };
 
-signed main()
-{
-    Cin(int, H, W, M);
-    vector<int> h(M), w(M);
-    map<int, int> hei, wid;
-    vector<int> rows(H);
-    vector<int> cols(W);
-    unordered_set<P, phash> exist;
-    rep (i, M)
-    {
-        cin >> h[i] >> w[i];
-        rows[h[i]-1]++;
-        cols[w[i]-1]++;
-        exist.insert({h[i] - 1, w[i] - 1});
-    }
+int32 main() {
+   auto [h, w, m] = sc.nextAi<3>();
+   auto [y, x] = sc.nextPairViVi(m, -1, -1);
 
-    int ans = 0;
-    rep (y, H) rep (x, W)
-    {
-        if (exist.find({y, x}) != exist.end()) chmax(ans, rows[y] + cols[x] - 1);
-        else chmax(ans, rows[y] + cols[x]);
-    }
+   vi f(h, 0), g(w, 0);
+   rep (i, m) {
+      f[y[i]]++;
+      g[x[i]]++;
+   }
 
-    Print(ans);
+   int mf = max(f);
+   int mg = max(g);
+   vector<int> mfi;
+   rep (i, h) {
+      if (f[i] == mf) {
+         mfi.push_back(i);
+      }
+   }
+   vector<int> mgj;
+   rep (j, w) {
+      if (g[j] == mg) {
+         mgj.push_back(j);
+      }
+   }
 
-    return 0;
+   int cnt = 0;
+   rep (i, m) {
+      if (f[y[i]] == mf and g[x[i]] == mg) {
+         cnt += 1;
+      }
+   }
+
+   cout << (cnt == len(mfi) * len(mgj) ? mf + mg - 1 : mf + mg) << '\n';
 }
 
+
+
+
+
+
+
+# else
+
+# include <bits/stdc++.h>
+# define int Int
+# define float Float
+# define overload3(_1,_2,_3,name,...) name
+# define _step(n) _rep(_,n)
+# define _rep(i,n) _repr(i,0,n)
+# define _repr(i,b,e) for(int i=(b), i##_len=(e); i<i##_len; ++i)
+# define rep(...) overload3(__VA_ARGS__, _repr, _rep, _step)(__VA_ARGS__)
+# define _reps(i,n) _reprs(i,1,n)
+# define _reprs(i,b,e) for(int i=(b), i##_len=(e); i<=i##_len; ++i)
+# define reps(...) overload3(__VA_ARGS__, _reprs, _reps)(__VA_ARGS__)
+# define rrep(i,n) for(int i=(int)(n)-1; i>=0; --i)
+# define rreps(i,n) for(int i=(n); i>0; --i)
+# define all(v) std::begin(v), std::end(v)
+# define rall(v) std::rbegin(v), std::rend(v)
+# define pb push_back
+# define eb emplace_back
+# define len(v) (int)std::size(v)
+# define eprintf(...) fprintf(stderr, __VA_ARGS__)
+using namespace std;
+using Int = long long;
+using Float = long double;
+using int32 = int32_t;
+using int64 = int64_t;
+using uint32 = uint32_t;
+using uint64 = uint64_t;
+using usize = size_t;
+using ssize = ptrdiff_t;
+template<class T> using vec = vector<T>;
+template<class T> using MaxHeap = priority_queue<T>;
+template<class T> using MinHeap = priority_queue<T, vec<T>, greater<T>>;
+using pii = pair<int, int>;
+using vi = vec<int>;
+using vvi = vec<vi>;
+using vvvi = vec<vvi>;
+using db = deque<bool>;
+using ddb = deque<db>;
+using dddb = deque<ddb>;
+constexpr int oo = (1LL<<62)-(1LL<<31);
+template<class T> string join(const vec<T>& v){ stringstream s; for (T t : v) s << ' ' << t; return s.str().substr(1); }
+template<class T> ostream& operator <<(ostream& os, const vec<T>& v){ if (len(v)) os << join(v); return os; }
+template<class T> ostream& operator <<(ostream& os, const vec<vec<T>>& v){ rep (i, len(v)) if (len(v[i])) os << join(v[i]) << (i-len(v)+1 ? "\n" : ""); return os; }
+template<class T, class U> ostream& operator <<(ostream& os, const pair<T, U>& p){ return os << p.first << ' ' << p.second; }
+template<class T, class U, class V> ostream& operator <<(ostream& os, const tuple<T, U, V>& t){ return os << get<0>(t) << " " << get<1>(t) << " " << get<2>(t); }
+template<class T> T scan(){ T t; cin >> t; return t; }
+template<class T> constexpr bool chmax(T& a, const T& b){ return a < b && (a = b, true); }
+template<class T> constexpr bool chmin(T& a, const T& b){ return a > b && (a = b, true); }
+constexpr int ctoi(char c){ return '0' <= c and c <= '9' ? c - '0' : -1; }
+int ceil(const int n, const int d) { assert(d); return n / d + int((n ^ d) >= 0 && n % d != 0); }
+template<class T> void sort(T& v){ sort(all(v)); }
+template<class T, class Compare> void sort(T& v, Compare comp){ sort(all(v), comp); }
+template<class T> void rsort(T& v){ sort(all(v), greater<>()); }
+template<class T, class Compare> void rsort(T& v, Compare comp){ sort(rall(v), comp); }
+template<class T> void reverse(T& v){ reverse(all(v)); }
+template<class T> void unique(T& v){ sort(v); v.erase(unique(all(v)), std::end(v)); }
+template <class T = int, class S> T accumulate(const S& v, T init = 0) { return accumulate(std::cbegin(v), std::cend(v), init); }
+template <class T = int, class S, class Operation> T accumulate(const S& v, T init, Operation op) { return accumulate(std::cbegin(v), std::cend(v), init, op); }
+template <class T = int, class S> auto count(const S& v, T target) { return count(std::cbegin(v), std::cend(v), target); }
+template <class T, class Compare> auto count_if(const T& v, Compare comp) { return count_if(std::cbegin(v), std::cend(v), comp); }
+template<class T> auto max(T& v){ return *max_element(std::cbegin(v), std::cend(v)); }
+template<class T> auto min(T& v){ return *min_element(std::cbegin(v), std::cend(v)); }
+template<class T = int, class S> auto lower_bound(const S& v, T x){ return lower_bound(std::cbegin(v), std::cend(v), x); }
+template<class T = int, class S> auto upper_bound(const S& v, T x){ return upper_bound(std::cbegin(v), std::cend(v), x); }
+template<class T> auto next_permutation(T& v){ return next_permutation(all(v)); }
+vector<int> iota(int n) { vector<int> v(n); std::iota(all(v), int(0)); return v; }
+vector<int> iota(int a, int b) { vector<int> v(b - a); std::iota(all(v), a); return v; }
+namespace BitOperations {
+   constexpr int Popcount(int x) { return __builtin_popcountll(x); }
+   constexpr int Parity(int x) { return __builtin_parityll(x); }
+   constexpr int Ffs(int x) { return __builtin_ffsll(x); }
+   constexpr int Clz(int x) { return __builtin_clzll(x); }
+   constexpr int Ctz(int x) { return __builtin_ctzll(x); }
+
+   constexpr int Bit(int x) { return 1LL << x; }
+   constexpr bool Isbit(int x) { return x and (x & -x) == x; }
+   constexpr int Msb(int x) { return x == 0 ? -1 : 63 - Clz(x); }
+   constexpr int Lsb(int x) { return x == 0 ? 64 : Ctz(x); }
+   constexpr int Allbit(int n) { return (1LL << n) - 1; }
+   constexpr bool Stand(int x, int i) { return x & Bit(i); }
+   constexpr int Log2i(int x) { return Msb(x); }
+}
+using namespace BitOperations;
+template <class F>
+struct Fix {
+   F f;
+   Fix(F &&f_) : f(std::forward<F>(f_)) {}
+   template <class... Args> auto operator()(Args &&...args) const { return f(*this, std::forward<Args>(args)...); }
+};
+struct Scanner {
+   Scanner() = default;
+   int nextInt(int offset = 0) const {
+      char c = skip();
+      int r = c - '0';
+      int sgn = 1;
+      if (c == '-') sgn = -1, r = gc() & 0xf;
+      else if (c == '+') r = gc() & 0xf;
+      while (not isspace(c = gc())) r = 10 * r + (c & 0xf);
+      return sgn * r + offset;
+   }
+   char nextChar() const { return skip(); }   
+   string nextWord() const { char c = skip(); string r = {c}; while (not isspace(c = gc())) r.push_back(c); return r; }
+   string nextLine() const { char c; string r; while ((c = gc()) != '\n') r.push_back(c); return r; }
+   vi nextVi(int n, int offset=0) const { vi a(n); rep(i, n) a[i] = nextInt(offset); return a; }
+   template <size_t N> array<int, N> nextAi(int offset=0) const { array<int, N> r; rep(i, N) r[i] = nextInt(offset); return r; }
+   template <size_t N> vec<array<int, N>> nextVecAi(int n, int offset=0) const { vec<array<int, N>> r(n); rep (i, n) rep(j, N) r[i][j] = nextInt(offset); return r; }
+   vvi nextVvi(int n, int m, int offset=0) const { vvi a(n, vi(m)); rep(i, n) rep(j, m) a[i][j] = nextInt(offset); return a; }
+   vec<string> nextWords(int n) const { vec<string> s(n); rep (i, n) s[i] = nextWord(); return s; }
+   set<int> nextSetInt(int n, int offset=0) const { set<int> r; rep(n) r.insert(nextInt(offset)); return r; }
+   set<char> nextSetChar(int n) const { set<char> r; rep(n) r.insert(nextChar()); return r; }
+   set<string> nextSetWord(int n) const { set<string> r; rep(n) r.insert(nextWord()); return r; }
+   pii nextPii() const { return nextPii(0, 0); }
+   pii nextPii(int offset1, int offset2) const { int a = nextInt(offset1), b = nextInt(offset2); return make_pair(a, b); }
+   vec<pii> nextVecPii(int n) const { return nextVecPii(n, 0, 0); }
+   vec<pii> nextVecPii(int n, int offset1, int offset2) const { vec<pii> r(n); rep (i, n) r[i] = nextPii(offset1, offset2); return r; }
+   pair<vi, vi> nextPairViVi(int n) const { return nextPairViVi(n, 0, 0); }
+   pair<vi, vi> nextPairViVi(int n, int offset1, int offset2) const { vi a(n), b(n); rep (i, n) tie(a[i], b[i]) = nextPii(offset1, offset2); return make_pair(a, b); }
+   tuple<int, int, vvi> nextGraph(int offset=-1) const {
+      int n = nextInt();
+      int m = nextInt();
+      vvi g(n);
+      rep (m) {
+         int a = nextInt(offset);
+         int b = nextInt(offset);
+         g[a].push_back(b);
+         g[b].push_back(a);
+      }
+      return make_tuple(n, m, g);
+   }
+   tuple<int, int, vvi> nextDirectedGraph(int offset=-1) const {
+      int n = nextInt();
+      int m = nextInt();
+      vvi g(n);
+      rep (m) {
+         int a = nextInt(offset);
+         int b = nextInt(offset);
+         g[a].push_back(b);
+      }
+      return make_tuple(n, m, g);
+   }
+   tuple<int, int, vvi> nextTree(int offset=-1) const {
+      int n = nextInt();
+      vvi g(n);
+      rep (n - 1) {
+         int a = nextInt(offset);
+         int b = nextInt(offset);
+         g[a].push_back(b);
+         g[b].push_back(a);
+      }
+      return make_tuple(n, n - 1, g);
+   }
+   tuple<int, int, vvi> nextDirectedTree(int offset=-1) const {
+      int n = nextInt();
+      vvi g(n);
+      rep (n - 1) {
+         int a = nextInt(offset);
+         int b = nextInt(offset);
+         g[a].push_back(b);
+      }
+      return make_tuple(n, n - 1, g);
+   }
+private:
+   char skip() const { char c; while (isspace(c = getchar_unlocked())); return c; }
+   inline char gc() const { return getchar_unlocked(); }
+} sc;
+
+# define ngng628_library
+# include __FILE__
+# endif
