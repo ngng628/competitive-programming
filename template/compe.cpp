@@ -11,6 +11,7 @@ int32 main() {
 
 
 
+
 # else
 
 # include <bits/stdc++.h>
@@ -62,6 +63,8 @@ template<class T> constexpr bool chmax(T& a, const T& b){ return a < b && (a = b
 template<class T> constexpr bool chmin(T& a, const T& b){ return a > b && (a = b, true); }
 constexpr int ctoi(char c){ return '0' <= c and c <= '9' ? c - '0' : -1; }
 int ceil(const int n, const int d) { assert(d); return n / d + int((n ^ d) >= 0 && n % d != 0); }
+template<class T> constexpr bool iseven(T n) { return !(n & 1); }
+template<class T> constexpr bool isodd(T n) { return n & 1; }
 template<class T> void sort(T& v){ sort(all(v)); }
 template<class T, class Compare> void sort(T& v, Compare comp){ sort(all(v), comp); }
 template<class T> void rsort(T& v){ sort(all(v), greater<>()); }
@@ -79,6 +82,10 @@ template<class T = int, class S> auto upper_bound(const S& v, T x){ return upper
 template<class T> auto next_permutation(T& v){ return next_permutation(all(v)); }
 vector<int> iota(int n) { vector<int> v(n); std::iota(all(v), int(0)); return v; }
 vector<int> iota(int a, int b) { vector<int> v(b - a); std::iota(all(v), a); return v; }
+namespace math {
+   constexpr int sum(int n) { return n * (n + 1) / 2; }
+   template <class T = int, class S> T sum(const S& v) { return accumulate(all(v), T(0)); }
+}
 namespace BitOperations {
    constexpr int Popcount(int x) { return __builtin_popcountll(x); }
    constexpr int Parity(int x) { return __builtin_parityll(x); }
@@ -96,9 +103,9 @@ namespace BitOperations {
 }
 using namespace BitOperations;
 template <class F>
-struct Fix {
+struct Bind {
    F f;
-   Fix(F &&f_) : f(std::forward<F>(f_)) {}
+   Bind(F &&f_) : f(std::forward<F>(f_)) {}
    template <class... Args> auto operator()(Args &&...args) const { return f(*this, std::forward<Args>(args)...); }
 };
 struct Scanner {
