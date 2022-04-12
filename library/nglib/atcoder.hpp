@@ -36,9 +36,11 @@ using pii = pair<int, int>;
 using vi = vec<int>;
 using vvi = vec<vi>;
 using vvvi = vec<vvi>;
-using db = deque<bool>;
-using ddb = deque<db>;
-using dddb = deque<ddb>;
+using vb = basic_string<bool>;
+using vvb = vec<vb>;
+using vvvb = vec<vvb>;
+template<class T, size_t N> auto make_vector(vi& sizes, const T& x) { if constexpr (N == 1) { return vector(sizes[0], x); } else { int size = sizes[N - 1]; sizes.pop_back(); return vector(size, make_vector<T, N - 1>(sizes, x)); } }
+template<class T, size_t N> auto make_vector(int const(&sizes)[N], const T& x = T()) { vi s(N); rep (i, N) s[i] = sizes[N - i - 1]; return make_vector<T, N>(s, x); }
 constexpr int oo = (1LL<<62)-(1LL<<31);
 template<class T> string join(const vec<T>& v){ stringstream s; for (T t : v) s << ' ' << t; return s.str().substr(1); }
 template<class T> ostream& operator <<(ostream& os, const vec<T>& v){ if (len(v)) os << join(v); return os; }
@@ -48,7 +50,6 @@ template<class T, class U, class V> ostream& operator <<(ostream& os, const tupl
 template<class T> constexpr bool chmax(T& a, const T& b){ return a < b && (a = b, true); }
 template<class T> constexpr bool chmin(T& a, const T& b){ return a > b && (a = b, true); }
 constexpr int ctoi(char c){ return '0' <= c and c <= '9' ? c - '0' : -1; }
-int ceil(const int n, const int d) { assert(d); return n / d + int((n ^ d) >= 0 && n % d != 0); }
 template<class T> constexpr bool iseven(T n) { return !(n & 1); }
 template<class T> constexpr bool isodd(T n) { return n & 1; }
 template<class T> void sort(T& v){ sort(all(v)); }
@@ -66,11 +67,37 @@ template<class T> auto min(T& v){ return *min_element(std::cbegin(v), std::cend(
 template<class T = int, class S> auto lower_bound(const S& v, T x){ return lower_bound(std::cbegin(v), std::cend(v), x); }
 template<class T = int, class S> auto upper_bound(const S& v, T x){ return upper_bound(std::cbegin(v), std::cend(v), x); }
 template<class T> auto next_permutation(T& v){ return next_permutation(all(v)); }
-vector<int> iota(int n) { vector<int> v(n); std::iota(all(v), int(0)); return v; }
-vector<int> iota(int a, int b) { vector<int> v(b - a); std::iota(all(v), a); return v; }
+vi iota(int n) { vi v(n); std::iota(all(v), int(0)); return v; }
+vi iota(int a, int b) { vi v(b - a); std::iota(all(v), a); return v; }
+vec<pii> iota2(int n, int m) { vec<pii> res(n * m); rep (i, n) rep (j, m) res[n*i + j] = { i, j }; return res; }
 namespace math {
-   constexpr int sum(int n) { return n * (n + 1) / 2; }
-   template <class T = int, class S> T sum(const S& v) { return accumulate(all(v), T(0)); }
+   /**
+    * @brief 1 から n までの総和を求めます。
+    * @param n 実数
+    * @return 1 + 2 + ... + n
+    */
+   template<class T = int> T sum(T n) { return n * (n + 1) / 2; }
+
+   /**
+    * @brief ceil(a / b) を正確に計算します。
+    * @param a 割られる数
+    * @param b 割る数
+    * @return ceil(a / b)
+    */
+   int ceil(const int n, const int d) { assert(d); return n / d + int((n ^ d) >= 0 && n % d != 0); }
+
+   /**
+    * @brief floor(sqrt(n)) を正確に計算します。
+    * @param n 非負整数
+    * @return floor(sqrt(n))
+    */
+   constexpr int floor_sqrt(int n) {
+      assert(n >= 0);
+      if (n <= 1) return n;
+      int r = sqrt(n);
+      do r = (r & n / r) + (r ^ n / r) / 2; while (r > n / r);
+      return r;
+   }
 }
 namespace BitOperations {
    constexpr int Popcount(int x) { return __builtin_popcountll(x); }
@@ -83,8 +110,28 @@ namespace BitOperations {
    constexpr bool Isbit(int x) { return x and (x & -x) == x; }
    constexpr int Msb(int x) { return x == 0 ? -1 : 63 - Clz(x); }
    constexpr int Lsb(int x) { return x == 0 ? 64 : Ctz(x); }
+
+   /**
+    * @brief n - 1 桁目までの bit が全て立ったビット列を返します
+    * @param n 立たせるビットの個数
+    * @return n - 1 桁目までの bit が全て立ったビット列
+    * @details (1 << n) - 1 を返します
+    */
    constexpr int Allbit(int n) { return (1LL << n) - 1; }
+
+   /**
+    * @brief x の i 桁目が立っているかを判定します
+    * @param x 対象のビット列
+    * @param i i 桁目 (0-index)
+    * @return i 桁目が立っているか
+    */
    constexpr bool Stand(int x, int i) { return x & Bit(i); }
+
+   /**
+    * @brief floor(log2(x)) を正確に求めます
+    * @param x 対象の数
+    * @return floor(log2(x))
+    */
    constexpr int Log2i(int x) { return Msb(x); }
 }
 using namespace BitOperations;
@@ -209,12 +256,10 @@ struct Scanner {
    }
 
    tuple<int, int, vvi> nextGraph(int offset=-1) const {
-      int n = nextInt();
-      int m = nextInt();
+      auto [n, m] = nextPii();
       vvi g(n);
       rep (m) {
-         int a = nextInt(offset);
-         int b = nextInt(offset);
+         auto [a, b] = nextPii(offset, offset);
          g[a].push_back(b);
          g[b].push_back(a);
       }
@@ -222,12 +267,10 @@ struct Scanner {
    }
 
    tuple<int, int, vvi> nextDirectedGraph(int offset=-1) const {
-      int n = nextInt();
-      int m = nextInt();
+      auto [n, m] = nextPii();
       vvi g(n);
       rep (m) {
-         int a = nextInt(offset);
-         int b = nextInt(offset);
+         auto [a, b] = nextPii(offset, offset);
          g[a].push_back(b);
       }
       return make_tuple(n, m, g);
@@ -237,8 +280,7 @@ struct Scanner {
       int n = nextInt();
       vvi g(n);
       rep (n - 1) {
-         int a = nextInt(offset);
-         int b = nextInt(offset);
+         auto [a, b] = nextPii(offset, offset);
          g[a].push_back(b);
          g[b].push_back(a);
       }
@@ -249,8 +291,7 @@ struct Scanner {
       int n = nextInt();
       vvi g(n);
       rep (n - 1) {
-         int a = nextInt(offset);
-         int b = nextInt(offset);
+         auto [a, b] = nextPii(offset, offset);
          g[a].push_back(b);
       }
       return make_tuple(n, n - 1, g);
