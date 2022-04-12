@@ -11,6 +11,7 @@ ans
 .vscode/
 misc/
 *.gch
+memo.ipynb
 
 # Rust
 Cargo.*
