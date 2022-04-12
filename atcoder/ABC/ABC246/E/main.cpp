@@ -1,56 +1,84 @@
-# include <atcoder/modint>
 # ifndef ONLINE_JUDGE
 # include <nglib/atcoder.hpp>
 # endif
 # ifdef ngng628_library
-using mint = atcoder::modint1000000007;
-istream& operator >>(istream& is, mint& r){ int t; is >> t; r = t; return is; }
-ostream& operator <<(ostream& os, const mint& r){ return os << r.val(); }
-mint operator"" _mint(unsigned long long n) { return n; }
-using vm = vec<mint>;
-using vvm = vec<vm>;
-using vvvm = vec<vvm>;
 
-struct Combination {
-   vec<mint> fact, ifact;
-   Combination(int n) : fact(n + 1), ifact(n + 1) {
-      assert(n < mint::mod());
-      fact[0] = 1;
-      reps (i, n) fact[i] = fact[i-1] * i;
-      ifact[n] = fact[n].inv();
-      rreps (i, n) ifact[i-1] = ifact[i] * i;
-   }
-   mint operator()(int n, int k) {
-      if (k < 0 or k > n) return 0;
-      return fact[n] * ifact[k] * ifact[n - k];
-   }
-} nchoosek(1e6 + 1);
-
-mint narrangek(int n, int k) {
-    return nchoosek.fact[n] * nchoosek.ifact[n - k];
-}
+using Pos = tuple<int, int, int>;
 
 int32 main() {
-    /**
-     * m 種類の文字からなる長さ n を 2 つ生成する
-     *  - a[i] != a[j] (i != j)
-     *  - b[i] != b[j] (i != j)
-     *  - a[i] != b[i]
-     * を満たす (a, b) の組は何個か
-    */
-    auto [n, m] = sc.nextPii();
+   auto n = sc.nextInt();
+   auto [si, sj] = sc.nextPii(-1, -1);
+   auto [gi, gj] = sc.nextPii(-1, -1);
+   auto s = sc.nextWords(n);
+   auto over = [&n](int y, int x) { return y < 0 or y >= n or x < 0 or x >= n; };
+   auto Ok = [&s, &over](int y, int x) {
+      if (over(y, x)) return false;
+      return s[y][x] == '.';
+   };
+   auto nexts = [&Ok](const Pos& p) -> vec<pair<Pos, int>> {
+      int y = get<0>(p);
+      int x = get<1>(p);
+      int dir = get<2>(p);
+      vector<pair<Pos, int>> cost;
+      // 左上
+      {
+         int ny = y - 1, nx = x - 1;
+         if (Ok(ny, nx)) {
+            if (dir == 0) cost.push_back(make_pair(make_tuple(ny, nx, 0), 0));
+            else cost.push_back(make_pair(make_tuple(ny, nx, 0), 1));
+         }
+      }
+      // 右下
+      {
+         int ny = y + 1, nx = x + 1;
+         if (Ok(ny, nx)) {
+            if (dir == 0) cost.push_back(make_pair(make_tuple(ny, nx, 0), 0));
+            else cost.push_back(make_pair(make_tuple(ny, nx, 0), 1));
+         }
+      }
+      // 右上
+      {
+         int ny = y - 1, nx = x + 1;
+         if (Ok(ny, nx)) {
+            if (dir == 1) cost.push_back(make_pair(make_tuple(ny, nx, 1), 0));
+            else cost.push_back(make_pair(make_tuple(ny, nx, 1), 1));
+         }
+      }
+      {
+         int ny = y + 1, nx = x - 1;
+         if (Ok(ny, nx)) {
+            if (dir == 1) cost.push_back(make_pair(make_tuple(ny, nx, 1), 0));
+            else cost.push_back(make_pair(make_tuple(ny, nx, 1), 1));
+         }
+      }
+      return cost;
+   };
 
-    // ありえる全て - 少なくとも 1 つ被っている
-    mint cardA = narrangek(m, n);
-    mint sum = 0;
-    reps (k, n) {
-        mint n_selects = nchoosek(n, k);
-        mint perm = narrangek(m - k, n - k);
-        if (isodd(k)) sum += n_selects*perm;
-        else sum -= n_selects*perm;
-    }
-    cout << cardA*(cardA - sum) << endl;
+   auto dist = make_vector({ n, n, 2 }, oo);
+   MinHeap<pair<int, Pos>> heap;  // { dist, to }
+   dist[si][sj][0] = 0;
+   dist[si][sj][1] = 0;
+   heap.emplace(dist[si][sj][0], make_tuple(si, sj, 0));
+   heap.emplace(dist[si][sj][1], make_tuple(si, sj, 1));
+   while (not heap.empty()) {
+      auto [d, now] = heap.top();
+      heap.pop();
+      int nowd = dist[get<0>(now)][get<1>(now)][get<2>(now)];
+      if (nowd < d) continue;
+      for (auto [nxt, wei] : nexts(now)) {
+         int cost = wei + nowd;
+         auto [ny, nx, dir] = nxt;
+         if (chmin(dist[ny][nx][dir], cost)) {
+            heap.emplace(cost, nxt);
+         }
+      }
+   }
+
+   int ans = min(dist[gi][gj]) + 1;
+   cout << (ans >= oo ? -1 : ans) << '\n';
 }
+
+
 
 
 

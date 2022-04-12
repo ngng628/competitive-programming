@@ -68,7 +68,7 @@ def main():
             print(warning, task_name, 'is already exists')
         else:
             os.mkdir(path)
-            template = '/home/ngng/.config/nvim/template/cpp/base-compe.cpp'
+            template = '/home/ngng/work/competitive-programming/template/compe.cpp'
             shutil.copyfile(template, path + '/main.cpp')
             print(plus, task_name, 'is created')
 

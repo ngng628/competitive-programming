@@ -1,55 +1,20 @@
-# include <atcoder/modint>
 # ifndef ONLINE_JUDGE
 # include <nglib/atcoder.hpp>
 # endif
 # ifdef ngng628_library
-using mint = atcoder::modint1000000007;
-istream& operator >>(istream& is, mint& r){ int t; is >> t; r = t; return is; }
-ostream& operator <<(ostream& os, const mint& r){ return os << r.val(); }
-mint operator"" _mint(unsigned long long n) { return n; }
-using vm = vec<mint>;
-using vvm = vec<vm>;
-using vvvm = vec<vvm>;
-
-struct Combination {
-   vec<mint> fact, ifact;
-   Combination(int n) : fact(n + 1), ifact(n + 1) {
-      assert(n < mint::mod());
-      fact[0] = 1;
-      reps (i, n) fact[i] = fact[i-1] * i;
-      ifact[n] = fact[n].inv();
-      rreps (i, n) ifact[i-1] = ifact[i] * i;
-   }
-   mint operator()(int n, int k) {
-      if (k < 0 or k > n) return 0;
-      return fact[n] * ifact[k] * ifact[n - k];
-   }
-} nchoosek(1e6 + 1);
-
-mint narrangek(int n, int k) {
-    return nchoosek.fact[n] * nchoosek.ifact[n - k];
-}
 
 int32 main() {
-    /**
-     * m 種類の文字からなる長さ n を 2 つ生成する
-     *  - a[i] != a[j] (i != j)
-     *  - b[i] != b[j] (i != j)
-     *  - a[i] != b[i]
-     * を満たす (a, b) の組は何個か
-    */
-    auto [n, m] = sc.nextPii();
+   auto [a, b] = sc.nextPii();
 
-    // ありえる全て - 少なくとも 1 つ被っている
-    mint cardA = narrangek(m, n);
-    mint sum = 0;
-    reps (k, n) {
-        mint n_selects = nchoosek(n, k);
-        mint perm = narrangek(m - k, n - k);
-        if (isodd(k)) sum += n_selects*perm;
-        else sum -= n_selects*perm;
-    }
-    cout << cardA*(cardA - sum) << endl;
+   const int N = 50;
+   vec<string> s(2*N, string(2*N, '.'));
+   rep (i, N) {
+      rep (j, 2*N) {
+         s[i][j] = '#';
+      }
+   }
+   pair<int, int> cur;
+   while 
 }
 
 
@@ -142,9 +107,14 @@ vi iota(int n) { vi v(n); iota(all(v), int(0)); return v; }
 vi iota(int a, int b) { vi v(b - a); iota(all(v), a); return v; }
 vec<pii> iota2(int n, int m) { vec<pii> res(n * m); rep (i, n) rep (j, m) res[n*i + j] = { i, j }; return res; }
 namespace math {
-   constexpr int sum(int n) { return n * (n + 1) / 2; }
-   template<class T = int, class S> T sum(const S& v) { return accumulate(all(v), T(0)); }
+   template<class T> T sum(T n) { return n * (n + 1) / 2; }
    int ceil(const int n, const int d) { assert(d); return n / d + int((n ^ d) >= 0 && n % d != 0); }
+   constexpr int floor_sqrt(int n) {
+      if (n <= 1) return n;
+      int r = sqrt(n);
+      do r = (r & n / r) + (r ^ n / r) / 2; while (r > n / r);
+      return r;
+   }
 }
 template <class F>
 struct Bind { F f; Bind(F &&f_)
@@ -161,7 +131,7 @@ struct Scanner {
       while (!isspace(c = gc())) r = 10 * r + (c & 0xf);
       return sgn * r + o;
    }
-   char nextChar() const { return skip(); }   
+   char nextChar() const { return skip(); }
    string nextWord() const { char c = skip(); string r = {c}; while (!isspace(c = gc())) r.pb(c); return r; }
    string nextLine() const { char c; string r; while ((c = gc()) != '\n') r.pb(c); return r; }
    vi nextVi(int n, int o=0) const { vi a(n); rep(i, n) a[i] = nextInt(o); return a; }

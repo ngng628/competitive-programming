@@ -3,10 +3,6 @@
 # endif
 # ifdef ngng628_library
 
-constexpr int sq(int x) {
-   return x * x;
-}
-
 constexpr int floor_sqrt(int n) {
    if (n <= 1) return n;
    int r = sqrt(n);
@@ -14,39 +10,40 @@ constexpr int floor_sqrt(int n) {
    return r;
 }
 
+constexpr int X_MAX = 9 * 1e18;
 struct Solver {
-   Solver() = default;
+   vi cache;
+   db wj;
+   Solver()
+      : cache(floor_sqrt(floor_sqrt(X_MAX)) + 1, 0)
+      , wj(floor_sqrt(floor_sqrt(X_MAX)) + 1, true)
+   {}
+
    void solve() {
-      auto X = sc.nextInt();
+      auto x = sc.nextInt();
+      int sqrtx = floor_sqrt(x);
 
-      auto sqrt_x = floor_sqrt(X);
+      auto dp = Bind([&](auto&& dp, int a) -> int {
+         if (not wj[a]) return cache[a];
 
-      vec<int> dp(600000, 0);
-      deque<bool> wj(600000, true);
-      auto rec = Fix([&](auto&& Recall, int x) -> int {
-         if (not wj[x]) return dp[x];
-         if (x == 1) {
-            wj[x] = false;
-            return dp[x] = 1;
-         }
-         else {
-            int res = 0;
-            for (int i = 1; i*i <= x; ++i) {
-               res += Recall(i);
-            }
-            wj[x] = false;
-            return dp[x] = res;
-         }
+         int res = [&] {
+            int acc = 0;
+            if (a == 1) acc = 1;
+            else reps (b, floor_sqrt(a)) acc += dp(b);
+            return acc;
+         }();
+
+         wj[a] = false;
+         return cache[a] = res;
       });
 
       int ans = 0;
-      for (int i = 1; i*i <= sqrt_x; ++i) {
-         int low = i * i;
-         int up = sqrt_x;
-         ans += rec(i) * max<int>(up - low + 1, 0);
+      for (int i = 1; i*i <= sqrtx; ++i) {
+         int cnt = max<int>(0, sqrtx - i*i + 1);
+         ans += cnt * dp(i);
       }
 
-      cout << ans << endl;
+      cout << ans << '\n';
    }
 };
 
@@ -95,8 +92,6 @@ using uint64 = uint64_t;
 using usize = size_t;
 using ssize = ptrdiff_t;
 template<class T> using vec = vector<T>;
-template<class T> using MaxHeap = priority_queue<T>;
-template<class T> using MinHeap = priority_queue<T, vec<T>, greater<T>>;
 using pii = pair<int, int>;
 using vi = vec<int>;
 using vvi = vec<vi>;
@@ -115,6 +110,8 @@ template<class T> constexpr bool chmax(T& a, const T& b){ return a < b && (a = b
 template<class T> constexpr bool chmin(T& a, const T& b){ return a > b && (a = b, true); }
 constexpr int ctoi(char c){ return '0' <= c and c <= '9' ? c - '0' : -1; }
 int ceil(const int n, const int d) { assert(d); return n / d + int((n ^ d) >= 0 && n % d != 0); }
+template<class T> constexpr bool iseven(T n) { return !(n & 1); }
+template<class T> constexpr bool isodd(T n) { return n & 1; }
 template<class T> void sort(T& v){ sort(all(v)); }
 template<class T, class Compare> void sort(T& v, Compare comp){ sort(all(v), comp); }
 template<class T> void rsort(T& v){ sort(all(v), greater<>()); }
@@ -127,31 +124,10 @@ template <class T = int, class S> auto count(const S& v, T target) { return coun
 template <class T, class Compare> auto count_if(const T& v, Compare comp) { return count_if(std::cbegin(v), std::cend(v), comp); }
 template<class T> auto max(T& v){ return *max_element(std::cbegin(v), std::cend(v)); }
 template<class T> auto min(T& v){ return *min_element(std::cbegin(v), std::cend(v)); }
-template<class T = int, class S> auto lower_bound(const S& v, T x){ return lower_bound(std::cbegin(v), std::cend(v), x); }
-template<class T = int, class S> auto upper_bound(const S& v, T x){ return upper_bound(std::cbegin(v), std::cend(v), x); }
-template<class T> auto next_permutation(T& v){ return next_permutation(all(v)); }
-vector<int> iota(int n) { vector<int> v(n); std::iota(all(v), int(0)); return v; }
-vector<int> iota(int a, int b) { vector<int> v(b - a); std::iota(all(v), a); return v; }
-namespace BitOperations {
-   constexpr int Popcount(int x) { return __builtin_popcountll(x); }
-   constexpr int Parity(int x) { return __builtin_parityll(x); }
-   constexpr int Ffs(int x) { return __builtin_ffsll(x); }
-   constexpr int Clz(int x) { return __builtin_clzll(x); }
-   constexpr int Ctz(int x) { return __builtin_ctzll(x); }
-
-   constexpr int Bit(int x) { return 1LL << x; }
-   constexpr bool Isbit(int x) { return x and (x & -x) == x; }
-   constexpr int Msb(int x) { return x == 0 ? -1 : 63 - Clz(x); }
-   constexpr int Lsb(int x) { return x == 0 ? 64 : Ctz(x); }
-   constexpr int Allbit(int n) { return (1LL << n) - 1; }
-   constexpr bool Stand(int x, int i) { return x & Bit(i); }
-   constexpr int Log2i(int x) { return Msb(x); }
-}
-using namespace BitOperations;
 template <class F>
-struct Fix {
+struct Bind {
    F f;
-   Fix(F &&f_) : f(std::forward<F>(f_)) {}
+   Bind(F &&f_) : f(std::forward<F>(f_)) {}
    template <class... Args> auto operator()(Args &&...args) const { return f(*this, std::forward<Args>(args)...); }
 };
 struct Scanner {
@@ -182,50 +158,6 @@ struct Scanner {
    vec<pii> nextVecPii(int n, int offset1, int offset2) const { vec<pii> r(n); rep (i, n) r[i] = nextPii(offset1, offset2); return r; }
    pair<vi, vi> nextPairViVi(int n) const { return nextPairViVi(n, 0, 0); }
    pair<vi, vi> nextPairViVi(int n, int offset1, int offset2) const { vi a(n), b(n); rep (i, n) tie(a[i], b[i]) = nextPii(offset1, offset2); return make_pair(a, b); }
-   tuple<int, int, vvi> nextGraph(int offset=-1) const {
-      int n = nextInt();
-      int m = nextInt();
-      vvi g(n);
-      rep (m) {
-         int a = nextInt(offset);
-         int b = nextInt(offset);
-         g[a].push_back(b);
-         g[b].push_back(a);
-      }
-      return make_tuple(n, m, g);
-   }
-   tuple<int, int, vvi> nextDirectedGraph(int offset=-1) const {
-      int n = nextInt();
-      int m = nextInt();
-      vvi g(n);
-      rep (m) {
-         int a = nextInt(offset);
-         int b = nextInt(offset);
-         g[a].push_back(b);
-      }
-      return make_tuple(n, m, g);
-   }
-   tuple<int, int, vvi> nextTree(int offset=-1) const {
-      int n = nextInt();
-      vvi g(n);
-      rep (n - 1) {
-         int a = nextInt(offset);
-         int b = nextInt(offset);
-         g[a].push_back(b);
-         g[b].push_back(a);
-      }
-      return make_tuple(n, n - 1, g);
-   }
-   tuple<int, int, vvi> nextDirectedTree(int offset=-1) const {
-      int n = nextInt();
-      vvi g(n);
-      rep (n - 1) {
-         int a = nextInt(offset);
-         int b = nextInt(offset);
-         g[a].push_back(b);
-      }
-      return make_tuple(n, n - 1, g);
-   }
 private:
    char skip() const { char c; while (isspace(c = getchar_unlocked())); return c; }
    inline char gc() const { return getchar_unlocked(); }

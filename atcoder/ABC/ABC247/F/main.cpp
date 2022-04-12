@@ -3,7 +3,7 @@
 # include <nglib/atcoder.hpp>
 # endif
 # ifdef ngng628_library
-using mint = atcoder::modint1000000007;
+using mint = atcoder::modint998244353;
 istream& operator >>(istream& is, mint& r){ int t; is >> t; r = t; return is; }
 ostream& operator <<(ostream& os, const mint& r){ return os << r.val(); }
 mint operator"" _mint(unsigned long long n) { return n; }
@@ -11,46 +11,62 @@ using vm = vec<mint>;
 using vvm = vec<vm>;
 using vvvm = vec<vvm>;
 
-struct Combination {
-   vec<mint> fact, ifact;
-   Combination(int n) : fact(n + 1), ifact(n + 1) {
-      assert(n < mint::mod());
-      fact[0] = 1;
-      reps (i, n) fact[i] = fact[i-1] * i;
-      ifact[n] = fact[n].inv();
-      rreps (i, n) ifact[i-1] = ifact[i] * i;
-   }
-   mint operator()(int n, int k) {
-      if (k < 0 or k > n) return 0;
-      return fact[n] * ifact[k] * ifact[n - k];
-   }
-} nchoosek(1e6 + 1);
-
-mint narrangek(int n, int k) {
-    return nchoosek.fact[n] * nchoosek.ifact[n - k];
-}
-
 int32 main() {
-    /**
-     * m 種類の文字からなる長さ n を 2 つ生成する
-     *  - a[i] != a[j] (i != j)
-     *  - b[i] != b[j] (i != j)
-     *  - a[i] != b[i]
-     * を満たす (a, b) の組は何個か
-    */
-    auto [n, m] = sc.nextPii();
+   auto n = sc.nextInt();
+   auto p = sc.nextVi(n, -1);
+   auto q = sc.nextVi(n, -1);
+   vvi graph(n);
+   rep (i, n) {
+      graph[p[i]].push_back(q[i]);
+      graph[q[i]].push_back(p[i]);
+   }
 
-    // ありえる全て - 少なくとも 1 つ被っている
-    mint cardA = narrangek(m, n);
-    mint sum = 0;
-    reps (k, n) {
-        mint n_selects = nchoosek(n, k);
-        mint perm = narrangek(m - k, n - k);
-        if (isodd(k)) sum += n_selects*perm;
-        else sum -= n_selects*perm;
-    }
-    cout << cardA*(cardA - sum) << endl;
+   vm cache(n + 1, 0);
+   vb hit(n + 1, false);
+   auto dp = Bind([&](auto&& dp, int i) -> mint {
+      if (hit[i]) return cache[i];
+
+      mint res = 0;
+      if (i == 0) res = 2;
+      else if (i == 1) res = 1;
+      else res = dp(i - 1) + dp(i - 2);
+
+      hit[i] = true;
+      return cache[i] = res;
+   });
+
+   mint ans = 1;
+   vb visited(n, false);
+   rep (i, n) {
+      if (visited[i]) continue;;
+
+      // 連結成分数を求めるよ
+      int cnt = 0;
+      visited[i] = true;
+      Bind([&](auto&& dfs, int v, int p) -> void {
+         if (v == i and p != -1) {
+            return;
+         }
+         cnt += 1;
+         for (int c : graph[v]) {
+            if (c == p) continue;
+            if (visited[c]) continue;
+            visited[c] = true;
+            dfs(c, v);
+         }
+         return;
+      })
+      (i, -1);
+
+      ans *= dp(cnt);
+   }
+
+   cout << ans << endl;
 }
+
+
+
+
 
 
 
@@ -142,9 +158,14 @@ vi iota(int n) { vi v(n); iota(all(v), int(0)); return v; }
 vi iota(int a, int b) { vi v(b - a); iota(all(v), a); return v; }
 vec<pii> iota2(int n, int m) { vec<pii> res(n * m); rep (i, n) rep (j, m) res[n*i + j] = { i, j }; return res; }
 namespace math {
-   constexpr int sum(int n) { return n * (n + 1) / 2; }
-   template<class T = int, class S> T sum(const S& v) { return accumulate(all(v), T(0)); }
+   template<class T> T sum(T n) { return n * (n + 1) / 2; }
    int ceil(const int n, const int d) { assert(d); return n / d + int((n ^ d) >= 0 && n % d != 0); }
+   constexpr int floor_sqrt(int n) {
+      if (n <= 1) return n;
+      int r = sqrt(n);
+      do r = (r & n / r) + (r ^ n / r) / 2; while (r > n / r);
+      return r;
+   }
 }
 template <class F>
 struct Bind { F f; Bind(F &&f_)
@@ -161,7 +182,7 @@ struct Scanner {
       while (!isspace(c = gc())) r = 10 * r + (c & 0xf);
       return sgn * r + o;
    }
-   char nextChar() const { return skip(); }   
+   char nextChar() const { return skip(); }
    string nextWord() const { char c = skip(); string r = {c}; while (!isspace(c = gc())) r.pb(c); return r; }
    string nextLine() const { char c; string r; while ((c = gc()) != '\n') r.pb(c); return r; }
    vi nextVi(int n, int o=0) const { vi a(n); rep(i, n) a[i] = nextInt(o); return a; }

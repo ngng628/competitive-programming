@@ -11,7 +11,8 @@ using vm = vec<mint>;
 using vvm = vec<vm>;
 using vvvm = vec<vvm>;
 
-struct Solver {   Solver() = default;
+struct Solver {
+   Solver() = default;
    void solve() {
       auto n = sc.nextInt();
       auto s = sc.nextWord();

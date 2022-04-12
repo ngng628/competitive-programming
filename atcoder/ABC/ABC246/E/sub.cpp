@@ -1,55 +1,60 @@
-# include <atcoder/modint>
 # ifndef ONLINE_JUDGE
 # include <nglib/atcoder.hpp>
 # endif
 # ifdef ngng628_library
-using mint = atcoder::modint1000000007;
-istream& operator >>(istream& is, mint& r){ int t; is >> t; r = t; return is; }
-ostream& operator <<(ostream& os, const mint& r){ return os << r.val(); }
-mint operator"" _mint(unsigned long long n) { return n; }
-using vm = vec<mint>;
-using vvm = vec<vm>;
-using vvvm = vec<vvm>;
 
-struct Combination {
-   vec<mint> fact, ifact;
-   Combination(int n) : fact(n + 1), ifact(n + 1) {
-      assert(n < mint::mod());
-      fact[0] = 1;
-      reps (i, n) fact[i] = fact[i-1] * i;
-      ifact[n] = fact[n].inv();
-      rreps (i, n) ifact[i-1] = ifact[i] * i;
-   }
-   mint operator()(int n, int k) {
-      if (k < 0 or k > n) return 0;
-      return fact[n] * ifact[k] * ifact[n - k];
-   }
-} nchoosek(1e6 + 1);
-
-mint narrangek(int n, int k) {
-    return nchoosek.fact[n] * nchoosek.ifact[n - k];
-}
+struct Node {
+   Node() = default;
+   Node(int y, int x, int dir)
+      : y(y), x(x), dir(dir)
+   {}
+   int y, x;
+   int dir;
+};
 
 int32 main() {
-    /**
-     * m 種類の文字からなる長さ n を 2 つ生成する
-     *  - a[i] != a[j] (i != j)
-     *  - b[i] != b[j] (i != j)
-     *  - a[i] != b[i]
-     * を満たす (a, b) の組は何個か
-    */
-    auto [n, m] = sc.nextPii();
+   auto n = sc.nextInt();
+   int h = n, w = n;
+   auto [si, sj] = sc.nextPii(-1, -1);
+   auto [gi, gj] = sc.nextPii(-1, -1);
+   auto s = sc.nextWords(h);
+   auto over = [&h, w](int y, int x) { return y < 0 or y >= h or x < 0 or x >= w; };
+   auto nexts = [&over, &s](const pii& p) -> vec<Node> { 
+      array<int, 4> dy = { 1, -1, 1, -1 };
+      array<int, 4> dx = { -1, -1, 1, 1 };
+      vec<Node> res;
+      rep (i, 4) {
+         if (int ny = p.first + dy[i], nx = p.second + dx[i]; not over(ny, nx)) {
+            if (s[ny][nx] != '#') res.emplace_back(ny, nx, int(i == 0 or i == 3));
+         }
+      }
+      return res;
+   };
 
-    // ありえる全て - 少なくとも 1 つ被っている
-    mint cardA = narrangek(m, n);
-    mint sum = 0;
-    reps (k, n) {
-        mint n_selects = nchoosek(n, k);
-        mint perm = narrangek(m - k, n - k);
-        if (isodd(k)) sum += n_selects*perm;
-        else sum -= n_selects*perm;
-    }
-    cout << cardA*(cardA - sum) << endl;
+   deque<Node> dq;
+   auto dist = make_vector({ h, w, 2 }, oo);
+   dq.emplace_back(si, sj, 0);
+   dq.emplace_back(si, sj, 1);
+   dist[si][sj][0] = 1;
+   dist[si][sj][1] = 1;
+   while (not dq.empty()) {
+      auto [y, x, dir] = dq.front();
+      dq.pop_front();
+      for (auto [y2, x2, dir2] : nexts(make_pair(y, x))) {
+         int cost = [&] {
+            if (dir == dir2) return 0;
+            else return 1;
+         }();
+         int d = dist[y][x][dir] + cost;
+         if (chmin(dist[y2][x2][dir2], d)) {
+            if (cost == 0) dq.emplace_front(y2, x2, dir2);
+            else dq.emplace_back(y2, x2, dir2);
+         }
+      }
+   }
+
+   int ans = min(dist[gi][gj]);
+   cout << (ans >= oo ? -1 : ans) << '\n';
 }
 
 
