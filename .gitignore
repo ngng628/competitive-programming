@@ -9,7 +9,7 @@ ans
 *.out
 .ccls
 .vscode/
-misc/
+toy/
 *.gch
 memo.ipynb
 
