@@ -14,7 +14,7 @@ int32 main() {
 
 # else
 
-# include <bits/stdc++.h>
+# include <bits/extc++.h>
 # define int Int
 # define float Float
 # define overload3(_1,_2,_3,name,...) name
@@ -31,7 +31,7 @@ int32 main() {
 # define rall(v) std::rbegin(v), std::rend(v)
 # define pb push_back
 # define eb emplace_back
-# define len(v) (int)std::size(v)
+# define len(v) ssize(std::size(v))
 # define eprintf(...) fprintf(stderr, __VA_ARGS__)
 using namespace std;
 using Int = long long;
@@ -97,6 +97,11 @@ vi iota(int a, int b) { vi v(b - a); iota(all(v), a); return v; }
 vec<pii> iota2(int n, int m) { vec<pii> res(n * m); rep (i, n) rep (j, m) res[n*i + j] = { i, j }; return res; }
 namespace math {
    template<class T> T sum(T n) { return n * (n + 1) / 2; }
+   template<class T> T nc2(T n) { return n * (n - 1) / 2; }
+   template<class T> T nc3(T n) { return n * (n - 1) * (n - 2) / 6; }
+   template<class T> int sgn(T x) { return x == T(0) ? 0 : (x > 0) - (x < 0); }
+   int pow(int a, int n) { int e = 1; while (n) { if (n & 1) e *= a; a *= a; n >>= 1; } return e; }
+   int pow(int a, int n, int m) { int e = 1; a %= m; while (n) { if (n & 1) (e *= a) %= m; (a *= a) %= m; n >>= 1; } return e; }
    int ceil(const int n, const int d) { assert(d); return n / d + int((n ^ d) >= 0 && n % d != 0); }
    constexpr int floor_sqrt(int n) {
       if (n <= 1) return n;
@@ -124,17 +129,21 @@ struct Scanner {
    string nextWord() const { char c = skip(); string r = {c}; while (!isspace(c = gc())) r.pb(c); return r; }
    string nextLine() const { char c; string r; while ((c = gc()) != '\n') r.pb(c); return r; }
    vi nextVi(int n, int o=0) const { vi a(n); rep(i, n) a[i] = nextInt(o); return a; }
-   template<size_t N> array<int, N> nextAi(int o=0) const { array<int, N> r; rep(i, N) r[i] = nextInt(o); return r; }
-   template<size_t N> vec<array<int, N>> nextVecAi(int n, int o=0) const {
-      vec<array<int, N>> r(n);
-      rep (i, n) rep(j, N) r[i][j] = nextInt(o);
+   template<size_t N> array<int, N> nextAi() const { array<int, N> r; rep(i, N) r[i] = nextInt(); return r; }
+   template<size_t N> array<int, N> nextAi(initializer_list<int> os) const {
+      vi o(all(os));
+      array<int, N> r;
+      rep(i, N) r[i] = nextInt(o[i]);
       return r;
    }
+   template<size_t N> vec<array<int, N>> nextVecAi(int n, initializer_list<int> os) const {
+      vec<array<int, N>> r(n);
+      rep (i, n) r[i] = nextAi<N>(os);
+      return r;
+   }
+   template<size_t N> vec<array<int, N>> nextVecAi(int n) const { vec<array<int, N>> r(n); rep (i, n) r[i] = nextAi<N>(); return r; }
    vvi nextVvi(int n, int m, int o=0) const { vvi a(n, vi(m)); rep(i, n) rep(j, m) a[i][j] = nextInt(o); return a; }
    vec<string> nextWords(int n) const { vec<string> s(n); rep (i, n) s[i] = nextWord(); return s; }
-   set<int> nextSetInt(int n, int o=0) const { set<int> r; rep(n) r.insert(nextInt(o)); return r; }
-   set<char> nextSetChar(int n) const { set<char> r; rep(n) r.insert(nextChar()); return r; }
-   set<string> nextSetWord(int n) const { set<string> r; rep(n) r.insert(nextWord()); return r; }
    pii nextPii() const { return nextPii(0, 0); }
    pii nextPii(int o1, int o2) const { int a = nextInt(o1), b = nextInt(o2); return { a, b }; }
    vec<pii> nextVecPii(int n) const { return nextVecPii(n, 0, 0); }

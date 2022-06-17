@@ -18,7 +18,7 @@
 # define rall(v) std::rbegin(v), std::rend(v)
 # define pb push_back
 # define eb emplace_back
-# define len(v) (int)std::size(v)
+# define len(v) ssize(std::size(v))
 # define eprintf(...) fprintf(stderr, __VA_ARGS__)
 using namespace std;
 using Int = long long;
@@ -79,6 +79,61 @@ namespace math {
    template<class T = int> T sum(T n) { return n * (n + 1) / 2; }
 
    /**
+    * @brief n 個のものから 2 個選ぶ場合の数
+    * @param n 0 以上の整数
+    * @return nC2 = n(n - 1) / 2
+    */
+   template<class T = int> T nc2(T n) { return n * (n - 1) / 2; }
+
+   /**
+    * @brief n 個のものから 3 個選ぶ場合の数
+    * @param n 0 以上の整数
+    * @return nC3 = n(n - 1)(n - 2) / 6
+    */
+   template<class T = int> T nc3(T n) { return n * (n - 1) * (n - 2) / 6; }
+
+   /**
+    * @brief x の符号を返します。
+    * @param x 数値
+    * @return sgn(x) ∈ { -1, 0, +1 }
+    */
+   template<class T = int> int sgn(T x) { return x == T(0) ? 0 : (x > 0) - (x < 0); }
+
+   /**
+    * @brief a**n を返します。
+    * @param a 底
+    * @param n 指数
+    * @return a**n
+    */
+   int pow(int a, int n) {
+      int res = 1;
+      while (n) {
+         if (n & 1) res *= a;
+         a *= a;
+         n >>= 1;
+      }
+      return res;
+   }
+
+   /**
+    * @brief a**n を m で割った余りを返します。
+    * @param a 底
+    * @param n 指数
+    * @param m 法
+    * @return a**n
+    */
+   int pow(int a, int n, int m) {
+      int res = 1;
+      a %= m;
+      while (n) {
+         if (n & 1) (res *= a) %= m;
+         (a *= a) %= m;
+         n >>= 1;
+      }
+      return res;
+   }
+
+   /**
     * @brief ceil(a / b) を正確に計算します。
     * @param a 割られる数
     * @param b 割る数
@@ -99,42 +154,6 @@ namespace math {
       return r;
    }
 }
-namespace BitOperations {
-   constexpr int Popcount(int x) { return __builtin_popcountll(x); }
-   constexpr int Parity(int x) { return __builtin_parityll(x); }
-   constexpr int Ffs(int x) { return __builtin_ffsll(x); }
-   constexpr int Clz(int x) { return __builtin_clzll(x); }
-   constexpr int Ctz(int x) { return __builtin_ctzll(x); }
-
-   constexpr int Bit(int x) { return 1LL << x; }
-   constexpr bool Isbit(int x) { return x and (x & -x) == x; }
-   constexpr int Msb(int x) { return x == 0 ? -1 : 63 - Clz(x); }
-   constexpr int Lsb(int x) { return x == 0 ? 64 : Ctz(x); }
-
-   /**
-    * @brief n - 1 桁目までの bit が全て立ったビット列を返します
-    * @param n 立たせるビットの個数
-    * @return n - 1 桁目までの bit が全て立ったビット列
-    * @details (1 << n) - 1 を返します
-    */
-   constexpr int Allbit(int n) { return (1LL << n) - 1; }
-
-   /**
-    * @brief x の i 桁目が立っているかを判定します
-    * @param x 対象のビット列
-    * @param i i 桁目 (0-index)
-    * @return i 桁目が立っているか
-    */
-   constexpr bool Stand(int x, int i) { return x & Bit(i); }
-
-   /**
-    * @brief floor(log2(x)) を正確に求めます
-    * @param x 対象の数
-    * @return floor(log2(x))
-    */
-   constexpr int Log2i(int x) { return Msb(x); }
-}
-using namespace BitOperations;
 
 template <class F>
 struct Bind {
@@ -148,6 +167,11 @@ struct Bind {
 struct Scanner {
    Scanner() = default;
 
+   /**
+    * @brief 整数を一つ読み取ります。
+    * @param offset 読み取った整数に offset を足します。
+    * @return 読み取った整数
+    */
    int nextInt(int offset = 0) const {
       char c = skip();
       int r = c - '0';
@@ -158,10 +182,18 @@ struct Scanner {
       return sgn * r + offset;
    }
 
+   /**
+    * @brief 文字を一つ読み取ります。
+    * @return 読み取った文字
+    */
    char nextChar() const {
       return skip();
    }
 
+   /**
+    * @brief 単語を一つ読み取ります。
+    * @return 読み取った単語
+    */
    string nextWord() const {
       char c = skip();
       string r = {c};
@@ -169,30 +201,51 @@ struct Scanner {
       return r;
    }
 
-   string nextLine() const {
+   /**
+    * @brief 一行読み取ります。
+    * @return 読み取った一行
+    */
+  string nextLine() const {
       char c;
       string r;
       while ((c = gc()) != '\n') r.push_back(c);
       return r;
    }
 
+   /**
+    * @brief 数列を読み取ります。
+    * @param n 数列の長さ
+    * @param offset 数列の全ての要素に offset 足します
+    * @return 読み取った数列
+    */
    vi nextVi(int n, int offset=0) const {
       vi a(n);
       rep(i, n) a[i] = nextInt(offset);
       return a;
    }
 
-   template <size_t N>
-   array<int, N> nextAi(int offset=0) const {
-      array<int, N> r;
-      rep(i, N) r[i] = nextInt(offset);
+   template<size_t N>
+   array<int, N> nextAi() const {
+      array<int, N> r; rep(i, N) r[i] = nextInt(); return r;
+   }
+
+   template<size_t N>
+   array<int, N>nextAi(initializer_list<int> os) const {
+      vec<int> o(all(os));
+      array<int, N> r; rep(i, N) r[i] = nextInt(o[i]); return r;
+   }
+
+   template<size_t N>
+   vec<array<int, N>> nextVecAi(int n, initializer_list<int> os) const {
+      vec<array<int, N>> r(n);
+      rep (i, n) r[i] = nextAi<N>(os);
       return r;
    }
 
-   template <size_t N>
-   vec<array<int, N>> nextVecAi(int n, int offset=0) const {
+   template<size_t N>
+   vec<array<int, N>> nextVecAi(int n) const {
       vec<array<int, N>> r(n);
-      rep (i, n) rep(j, N) r[i][j] = nextInt(offset);
+      rep (i, n) r[i] = nextAi<N>();
       return r;
    }
 
@@ -206,24 +259,6 @@ struct Scanner {
       vec<string> s(n);
       rep (i, n) s[i] = nextWord();
       return s;
-   }
-
-   set<int> nextSetInt(int n, int offset=0) const {
-      set<int> r;
-      rep(n) r.insert(nextInt(offset));
-      return r;
-   }
-
-   set<char> nextSetChar(int n) const {
-      set<char> r;
-      rep(n) r.insert(nextChar());
-      return r;
-   }
-
-   set<string> nextSetWord(int n) const {
-      set<string> r;
-      rep(n) r.insert(nextWord());
-      return r;
    }
 
    pii nextPii() const {
