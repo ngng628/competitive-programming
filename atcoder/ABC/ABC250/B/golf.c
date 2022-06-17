@@ -1,0 +1,1 @@
+i,j;main(n,a,b){scanf("%d%d%d",&n,&a,&b);for(;i<n*a;++i){for(j=0;j<n*b;++j)printf(i/a&1^j/b&1?"#":".");puts("");}}

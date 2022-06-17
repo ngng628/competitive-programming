@@ -1,103 +1,220 @@
-# include <bits/stdc++.h>
-# define rep(i, n) for(int i=0, i##_len=(n); i<i##_len; ++i)
-# define reps(i, n) for(int i=1, i##_len=(n); i<=i##_len; ++i)
-# define rrep(i, n) for(int i=((int)(n)-1); i>=0; --i)
-# define rreps(i, n) for(int i=((int)(n)); i>0; --i)
-# define range_for(i, b, e) for(int i=(b), i##_len=(e); i<=i##_len; ++i)
-# define ALL(x) (x).begin(), (x).end()
-# define RALL(x) (x).rbegin(), (x).rend()
-# define pb push_back
-# define len(x) ((int)(x).size())
-# define optimize_cin() cin.tie(0); ios::sync_with_stdio(false)
-# define debug(x) std::cerr<<#x<<": "<<(x)<<endl;
-# define LINT_MAX (LONG_LONG_MAX)
-# define cauto const auto
-using namespace std;
-using lint = long long;
-template <class Type> inline constexpr bool InRange(const Type& x, const Type& i, const Type& a) { return (i <= x) && (x <= a); }
-template<class Integer>bool chmax(Integer &a, const Integer &b) { if (a<b) { a=b; return 1; } return 0; }
-template<class Integer>bool chmin(Integer &a, const Integer &b) { if (b<a) { a=b; return 1; } return 0; }
-template<class Integer>bool IsOdd(Integer &n) { return n & 1; }
-template<class Integer>bool IsEven(Integer &n) { return !(n & 1); }
-int ctoi(const char c) { return ('0' <= c && c <= '9') ? (c - '0') : -1; }
-string YesNo(bool b) { return b ? "Yes" : "No"; }
-string YESNO(bool b) { return b ? "YES" : "NO"; }
-string yesno(bool b) { return b ? "yes" : "no"; }
-static const int dy[4] = {0, 1, 0, -1};
-static const int dx[4] = {1, 0, -1, 0};
+# include <atcoder/modint>
+# ifndef ONLINE_JUDGE
+# include <nglib/atcoder.hpp>
+# endif
+# ifdef ngng628_library
 
-// 整数の桁数を返す ( log(N) )
-template <class Integer> Integer GetDigit(Integer n) {
-    if (n == 0) return 1;
-    Integer d = 0;
-    while (n) {
-        n /= 10;
-        d++;
-    }
-    return d;
-}
+using mint = atcoder::modint1000000007;
+istream& operator >>(istream& is, mint& r){ int t; is >> t; r = t; return is; }
+ostream& operator <<(ostream& os, const mint& r){ return os << r.val(); }
+mint operator"" _mint(unsigned long long n) { return n; }
+using vm = vec<mint>;
 
-// 素数かどうかを返す ( O(sqrt(N)) )
-template <class Integer>
-constexpr bool IsPrime(const Integer n) noexcept {
-    if (n < 4) return n == 2 || n == 3;
-    if (n % 2 == 0 || n % 3 == 0 || (n % 6 != 1 && n % 6 != 5)) return false;
-    for (Integer i = 5; i * i <= n; i += 6) if (n % i == 0 || n % (i + 2) == 0) return false;
-    return true;
-}
+template <class T>
+struct StaticRangeSum {
+   StaticRangeSum() = default;
+   explicit StaticRangeSum(const vec<T>& seq) {
+      const int n = len(seq);
+      sums.resize(n + 1);
+      sums[0] = 0;
+      partial_sum(all(seq), begin(sums) + 1);
+   }
 
-static const int MOD = 1000000007;
-struct mint {
-    long long x;
-    mint(long long x=0):x((x%MOD+MOD)%MOD){}
-    mint operator-() const { return mint(-x);}
-    mint& operator+=(const mint a) {
-        if ((x += a.x) >= MOD) x -= MOD;
-        return *this;
-    }
-    mint& operator-=(const mint a) {
-        if ((x += MOD-a.x) >= MOD) x -= MOD;
-        return *this;
-    }
-    mint& operator*=(const mint a) { (x *= a.x) %= MOD; return *this;}
-    mint operator+(const mint a) const { return mint(*this) += a;}
-    mint operator-(const mint a) const { return mint(*this) -= a;}
-    mint operator*(const mint a) const { return mint(*this) *= a;}
-    mint pow(long long t) const {
-    if (!t) return 1;
-        mint a = pow(t>>1);
-        a *= a;
-        if (t&1) a *= *this;
-        return a;
-    }
+   // 0-index [l, r)
+   T get(int l, int r) const {
+      assert(0 <= l and l < r and r <= len(sums) - 1);
+      return sums[r] - sums[l];
+   }
+   T operator ()(int l, int r) const { return get(l, r); }
 
-    // for prime MOD
-    mint inv() const { return pow(MOD-2);}
-    mint& operator/=(const mint a) { return *this *= a.inv();}
-    mint operator/(const mint a) const { return mint(*this) /= a;}
-    bool operator<(const mint& iValue) const { return this->x < iValue.x; }
+   vec<T> sums;
 };
-inline std::istream& operator >>(std::istream& is, const mint& a) { return is >> a.x; }
-inline std::ostream& operator<<(std::ostream& os, const mint& a) { return os << a.x; }
 
-int main()
-{
-    int N; cin >> N;
+int32 main() {
+   auto [n, K] = sc.nextPii();
+   vm p(n + 1);
+   rep (i, n + 1) p[i] = i;
+   vm q(n + 1);
+   rrep (i, n + 1) q[i] = n - i;
+   StaticRangeSum s1(p), s2(q);
 
-    vector<mint> p(N+1);
-    p[0] = 1;
-    rep (i, 100)
-    {
-        p[0] *= 10;
-    }
+   mint ans = 0;
+   reps (k, K, n + 1) {
+      mint mn = s1(0, k);
+      mint mx = s2(0, k);
+      ans += mx - mn + 1;
+   }
 
-    reps (i, N)
-    {
-        p[i] = p[0] + i;
-    }
-    
-    sort(ALL(p));
-
-
-    return 0;
+   cout << ans << endl;
 }
+
+
+
+
+
+
+
+# else
+
+# include <bits/extc++.h>
+# define int Int
+# define float Float
+# define overload3(_1,_2,_3,name,...) name
+# define _step(n) _rep(_,n)
+# define _rep(i,n) _repr(i,0,n)
+# define _repr(i,b,e) for(int i=(b), i##_len=(e); i<i##_len; ++i)
+# define rep(...) overload3(__VA_ARGS__, _repr, _rep, _step)(__VA_ARGS__)
+# define _reps(i,n) _reprs(i,1,n)
+# define _reprs(i,b,e) for(int i=(b), i##_len=(e); i<=i##_len; ++i)
+# define reps(...) overload3(__VA_ARGS__, _reprs, _reps)(__VA_ARGS__)
+# define rrep(i,n) for(int i=(int)(n)-1; i>=0; --i)
+# define rreps(i,n) for(int i=(n); i>0; --i)
+# define all(v) std::begin(v), std::end(v)
+# define rall(v) std::rbegin(v), std::rend(v)
+# define pb push_back
+# define eb emplace_back
+# define len(v) (int)std::size(v)
+# define eprintf(...) fprintf(stderr, __VA_ARGS__)
+using namespace std;
+using Int = long long;
+using Float = long double;
+using int32 = int32_t;
+using int64 = int64_t;
+using uint32 = uint32_t;
+using uint64 = uint64_t;
+using usize = size_t;
+using ssize = ptrdiff_t;
+template<class T> using vec = vector<T>;
+template<class T> using MaxHeap = priority_queue<T>;
+template<class T> using MinHeap = priority_queue<T, vec<T>, greater<T>>;
+using pii = pair<int, int>;
+using vi = vec<int>;
+using vvi = vec<vi>;
+using vvvi = vec<vvi>;
+using vb = basic_string<bool>;
+using vvb = vec<vb>;
+using vvvb = vec<vvb>;
+template<class T, size_t N> auto make_vector(vi& sizes, const T& x) {
+   if constexpr (N == 1) return vector(sizes[0], x);
+   else { int size = sizes[N - 1]; sizes.pop_back();
+   return vector(size, make_vector<T, N - 1>(sizes, x)); }
+}
+template<class T, size_t N> auto make_vector(int const(&sizes)[N], const T& x = T()) {
+   vi s(N); rep (i, N) s[i] = sizes[N - i - 1];
+   return make_vector<T, N>(s, x);
+}
+constexpr int oo = (1LL<<62)-(1LL<<31);
+template<class T> string join(const vec<T>& v){ stringstream s; for (T t : v) s << ' ' << t; return s.str().substr(1); }
+template<class T> ostream& operator <<(ostream& os, const vec<T>& v){ if (len(v)) os << join(v); return os; }
+template<class T> ostream& operator <<(ostream& os, const vec<vec<T>>& v){
+   rep (i, len(v)) if (len(v[i])) os << join(v[i]) << (i-len(v)+1 ? "\n" : "");
+   return os;
+}
+template<class T, class U> ostream& operator <<(ostream& os, const pair<T, U>& p){ return os << p.first << ' ' << p.second; }
+template<class T, class U, class V>
+ostream& operator <<(ostream& os, const tuple<T, U, V>& t){ return os << get<0>(t) << " " << get<1>(t) << " " << get<2>(t); }
+template<class T> T scan(){ T t; cin >> t; return t; }
+template<class T> constexpr bool chmax(T& a, const T& b){ return a < b && (a = b, true); }
+template<class T> constexpr bool chmin(T& a, const T& b){ return a > b && (a = b, true); }
+constexpr int ctoi(char c){ return '0' <= c and c <= '9' ? c - '0' : -1; }
+template<class T> constexpr bool iseven(T n) { return !(n & 1); }
+template<class T> constexpr bool isodd(T n) { return n & 1; }
+template<class T> void sort(T& v){ sort(all(v)); }
+template<class T, class C> void sort(T& v, C comp){ sort(all(v), comp); }
+template<class T> void rsort(T& v){ sort(all(v), greater<>()); }
+template<class T, class C> void rsort(T& v, C comp){ sort(rall(v), comp); }
+template<class T> void reverse(T& v){ reverse(all(v)); }
+template<class T> void unique(T& v){ sort(v); v.erase(unique(all(v)), end(v)); }
+template<class T = int, class S> T accumulate(const S& v, T init = 0) { return accumulate(cbegin(v), cend(v), init); }
+template<class T = int, class S, class Op> T accumulate(const S& v, T init, Op op) { return accumulate(cbegin(v), cend(v), init, op); }
+template<class T = int, class S> auto count(const S& v, T target) { return count(cbegin(v), cend(v), target); }
+template<class T, class C> auto count_if(const T& v, C comp) { return count_if(cbegin(v), cend(v), comp); }
+template<class T> auto max(T& v){ return *max_element(cbegin(v), cend(v)); }
+template<class T> auto min(T& v){ return *min_element(cbegin(v), cend(v)); }
+template<class T = int, class S> auto lower_bound(const S& v, T x){ return lower_bound(cbegin(v), cend(v), x); }
+template<class T = int, class S> auto upper_bound(const S& v, T x){ return upper_bound(cbegin(v), cend(v), x); }
+template<class T> auto next_permutation(T& v){ return next_permutation(all(v)); }
+vi iota(int n) { vi v(n); iota(all(v), int(0)); return v; }
+vi iota(int a, int b) { vi v(b - a); iota(all(v), a); return v; }
+vec<pii> iota2(int n, int m) { vec<pii> res(n * m); rep (i, n) rep (j, m) res[n*i + j] = { i, j }; return res; }
+namespace math {
+   template<class T> T sum(T n) { return n * (n + 1) / 2; }
+   int ceil(const int n, const int d) { assert(d); return n / d + int((n ^ d) >= 0 && n % d != 0); }
+   constexpr int floor_sqrt(int n) {
+      if (n <= 1) return n;
+      int r = sqrt(n);
+      do r = (r & n / r) + (r ^ n / r) / 2; while (r > n / r);
+      return r;
+   }
+}
+template <class F>
+struct Bind { F f; Bind(F &&f_)
+   : f(forward<F>(f_)) {} template <class... Args> auto operator()(Args &&...args) const
+   { return f(*this, forward<Args>(args)...); }
+};
+struct Scanner {
+   Scanner() = default;
+   int nextInt(int o = 0) const {
+      char c = skip();
+      int r = c - '0', sgn = 1;
+      if (c == '-') sgn = -1, r = gc() & 0xf;
+      else if (c == '+') r = gc() & 0xf;
+      while (!isspace(c = gc())) r = 10 * r + (c & 0xf);
+      return sgn * r + o;
+   }
+   char nextChar() const { return skip(); }
+   string nextWord() const { char c = skip(); string r = {c}; while (!isspace(c = gc())) r.pb(c); return r; }
+   string nextLine() const { char c; string r; while ((c = gc()) != '\n') r.pb(c); return r; }
+   vi nextVi(int n, int o=0) const { vi a(n); rep(i, n) a[i] = nextInt(o); return a; }
+   template<size_t N> array<int, N> nextAi(int o=0) const { array<int, N> r; rep(i, N) r[i] = nextInt(o); return r; }
+   template<size_t N> vec<array<int, N>> nextVecAi(int n, int o=0) const {
+      vec<array<int, N>> r(n);
+      rep (i, n) rep(j, N) r[i][j] = nextInt(o);
+      return r;
+   }
+   vvi nextVvi(int n, int m, int o=0) const { vvi a(n, vi(m)); rep(i, n) rep(j, m) a[i][j] = nextInt(o); return a; }
+   vec<string> nextWords(int n) const { vec<string> s(n); rep (i, n) s[i] = nextWord(); return s; }
+   set<int> nextSetInt(int n, int o=0) const { set<int> r; rep(n) r.insert(nextInt(o)); return r; }
+   set<char> nextSetChar(int n) const { set<char> r; rep(n) r.insert(nextChar()); return r; }
+   set<string> nextSetWord(int n) const { set<string> r; rep(n) r.insert(nextWord()); return r; }
+   pii nextPii() const { return nextPii(0, 0); }
+   pii nextPii(int o1, int o2) const { int a = nextInt(o1), b = nextInt(o2); return { a, b }; }
+   vec<pii> nextVecPii(int n) const { return nextVecPii(n, 0, 0); }
+   vec<pii> nextVecPii(int n, int o1, int o2) const { vec<pii> r(n); rep (i, n) r[i] = nextPii(o1, o2); return r; }
+   pair<vi, vi> nextPairViVi(int n) const { return nextPairViVi(n, 0, 0); }
+   pair<vi, vi> nextPairViVi(int n, int o1, int o2) const {
+      vi a(n), b(n);
+      rep (i, n) tie(a[i], b[i]) = nextPii(o1, o2);
+      return { a, b };
+   }
+   tuple<int, int, vvi> nextGraph(int o=-1) const {
+      auto [n, m] = nextPii();
+      vvi g(n);
+      rep (m) { auto [a, b] = nextPii(o, o); g[a].pb(b); g[b].pb(a); }
+      return { n, m, g };
+   }
+   tuple<int, int, vvi> nextDirectedGraph(int o=-1) const {
+      auto [n, m] = nextPii();
+      vvi g(n);
+      rep (m) { auto [a, b] = nextPii(o, o); g[a].pb(b); }
+      return { n, m, g };
+   }
+   tuple<int, int, vvi> nextTree(int o=-1) const {
+      int n = nextInt();
+      vvi g(n);
+      rep (n - 1) { auto [a, b] = nextPii(o, o); g[a].pb(b); g[b].pb(a); }
+      return { n, n - 1, g };
+   }
+   tuple<int, int, vvi> nextDirectedTree(int o=-1) const {
+      int n = nextInt();
+      vvi g(n); rep (n - 1) { auto [a, b] = nextPii(o, o); g[a].pb(b); }
+      return { n, n - 1, g };
+   }
+private:
+   char skip() const { char c; while (isspace(c = getchar_unlocked())); return c; }
+   inline char gc() const { return getchar_unlocked(); }
+} sc;
+
+# define ngng628_library
+# include __FILE__
+# endif

@@ -6,27 +6,56 @@
 struct Solver {
    Solver() = default;
 
-   int sum(int a, int b) {
-      return (a + b) * (b - a - 1) / 2;
+   int f(int t, int init_pos, int velocity, int acceleration) {
+      return init_pos + t*velocity + (t*(t + 1) / 2)*acceleration;
+   }
+
+   int maximum(int init_pos, int velocity, int acceleration, int yi) {
+      int low = 1;
+      int high = yi;
+
+      auto wrapper = [&](int t) -> int {
+         return f(t, init_pos, velocity, acceleration);
+      };
+
+      while (high - low > 2) {
+         int mid1 = (low + high) / 2;
+         int mid2 = mid1 + 1;
+         if (wrapper(mid1) < wrapper(mid2)) {
+            low = mid1;
+         }
+         else {
+            high = mid2;
+         }
+      }
+
+      return max({ wrapper(1), wrapper(yi), wrapper(low + 1) });
    }
 
    void solve() {
       auto [n, m] = sc.nextPii();
       auto [x, y] = sc.nextPairViVi(n);
-      // y の累積和
-      vi ys(n);
-      ys[0] = y[0];
-      rep (i, 1, n) ys[i] = ys[i - 1] + y[i];
-
       
+      int ans = -oo;
+      int init_pos = 0;
+      int velocity = 0;
+      rep (i, n) {
+         int acceleration = x[i];
+         chmax(ans, maximum(init_pos, velocity, acceleration, y[i]));
+         init_pos = f(y[i], init_pos, velocity, acceleration);
+         velocity = velocity + y[i]*x[i];
+      }
+
+      cout << ans << endl;
    }
 };
 
 int32 main() {
-   auto t = sc.nextInt();
+   int t;
+   cin >> t;
    rep (t) {
-      Solver solver;
-      solver.solve();
+      Solver ngng628;
+      ngng628.solve();
    }
 }
 
@@ -35,9 +64,10 @@ int32 main() {
 
 
 
+
 # else
 
-# include <bits/stdc++.h>
+# include <bits/extc++.h>
 # define int Int
 # define float Float
 # define overload3(_1,_2,_3,name,...) name
@@ -69,125 +99,32 @@ template<class T> using vec = vector<T>;
 using pii = pair<int, int>;
 using vi = vec<int>;
 using vvi = vec<vi>;
-using vvvi = vec<vvi>;
-using db = deque<bool>;
-using ddb = deque<db>;
-using dddb = deque<ddb>;
+using vb = basic_string<bool>;
+using vvb = vec<vb>;
 constexpr int oo = (1LL<<62)-(1LL<<31);
-template<class T> string join(const vec<T>& v){ stringstream s; for (T t : v) s << ' ' << t; return s.str().substr(1); }
-template<class T> ostream& operator <<(ostream& os, const vec<T>& v){ if (len(v)) os << join(v); return os; }
-template<class T> ostream& operator <<(ostream& os, const vec<vec<T>>& v){ rep (i, len(v)) if (len(v[i])) os << join(v[i]) << (i-len(v)+1 ? "\n" : ""); return os; }
-template<class T, class U> ostream& operator <<(ostream& os, const pair<T, U>& p){ return os << p.first << ' ' << p.second; }
-template<class T, class U, class V> ostream& operator <<(ostream& os, const tuple<T, U, V>& t){ return os << get<0>(t) << " " << get<1>(t) << " " << get<2>(t); }
 template<class T> T scan(){ T t; cin >> t; return t; }
 template<class T> constexpr bool chmax(T& a, const T& b){ return a < b && (a = b, true); }
 template<class T> constexpr bool chmin(T& a, const T& b){ return a > b && (a = b, true); }
-constexpr int ctoi(char c){ return isdigit(c) ? c - '0' : -1; }
-int ceil(const int n, const int d) { assert(d); return n / d + int((n ^ d) >= 0 && n % d != 0); }
-template<class T> void sort(T& v){ sort(all(v)); }
-template<class T, class Compare> void sort(T& v, Compare comp){ sort(all(v), comp); }
-template<class T> void rsort(T& v){ sort(all(v), greater<>()); }
-template<class T, class Compare> void rsort(T& v, Compare comp){ sort(rall(v), comp); }
-template<class T> void reverse(T& v){ reverse(all(v)); }
-template<class T> void unique(T& v){ sort(v); v.erase(unique(all(v)), std::end(v)); }
-template <class T = int, class S> T accumulate(const S& v, T init = 0) { return accumulate(std::cbegin(v), std::cend(v), init); }
-template <class T = int, class S, class Operation> T accumulate(const S& v, T init, Operation op) { return accumulate(std::cbegin(v), std::cend(v), init, op); }
-template <class T = int, class S> auto count(const S& v, T target) { return count(std::cbegin(v), std::cend(v), target); }
-template <class T, class Compare> auto count_if(const T& v, Compare comp) { return count_if(std::cbegin(v), std::cend(v), comp); }
-template<class T> auto max(T& v){ return *max_element(std::cbegin(v), std::cend(v)); }
-template<class T> auto min(T& v){ return *min_element(std::cbegin(v), std::cend(v)); }
-template<class T = int, class S> auto lower_bound(const S& v, T x){ return lower_bound(std::cbegin(v), std::cend(v), x); }
-template<class T = int, class S> auto upper_bound(const S& v, T x){ return upper_bound(std::cbegin(v), std::cend(v), x); }
-template<class T> auto next_permutation(T& v){ return next_permutation(all(v)); }
-vector<int> iota(int n) { vector<int> v(n); std::iota(all(v), int(0)); return v; }
-vector<int> iota(int a, int b) { vector<int> v(b - a); std::iota(all(v), a); return v; }
-namespace BitOperations {
-   constexpr int Popcount(int x) { return __builtin_popcountll(x); }
-   constexpr int Parity(int x) { return __builtin_parityll(x); }
-   constexpr int Ffs(int x) { return __builtin_ffsll(x); }
-   constexpr int Clz(int x) { return __builtin_clzll(x); }
-   constexpr int Ctz(int x) { return __builtin_ctzll(x); }
-
-   constexpr int Bit(int x) { return 1LL << x; }
-   constexpr bool Isbit(int x) { return x and (x & -x) == x; }
-   constexpr int Msb(int x) { return x == 0 ? -1 : 63 - Clz(x); }
-   constexpr int Lsb(int x) { return x == 0 ? 64 : Ctz(x); }
-   constexpr int Allbit(int n) { return (1LL << n) - 1; }
-   constexpr bool Stand(int x, int i) { return x & Bit(i); }
-   constexpr int Log2i(int x) { return Msb(x); }
-}
-using namespace BitOperations;
 struct Scanner {
    Scanner() = default;
-   int nextInt(int offset = 0) const {
+   int nextInt(int o = 0) const {
       char c = skip();
-      int r = c - '0';
-      int sgn = 1;
+      int r = c - '0', sgn = 1;
       if (c == '-') sgn = -1, r = gc() & 0xf;
       else if (c == '+') r = gc() & 0xf;
-      while (not isspace(c = gc())) r = 10 * r + (c & 0xf);
-      return sgn * r + offset;
+      while (!isspace(c = gc())) r = 10 * r + (c & 0xf);
+      return sgn * r + o;
    }
-   char nextChar() const { return skip(); }   
-   string nextWord() const { char c = skip(); string r = {c}; while (not isspace(c = gc())) r.push_back(c); return r; }
-   string nextLine() const { char c; string r; while ((c = gc()) != '\n') r.push_back(c); return r; }
-   vi nextVi(int n, int offset=0) const { vi a(n); rep(i, n) a[i] = nextInt(offset); return a; }
-   template <size_t N> array<int, N> nextAi(int offset=0) const { array<int, N> r; rep(i, N) r[i] = nextInt(offset); return r; }
-   template <size_t N> vec<array<int, N>> nextVecAi(int n, int offset=0) const { vec<array<int, N>> r(n); rep (i, n) rep(j, N) r[i][j] = nextInt(offset); return r; }
-   vvi nextVvi(int n, int m, int offset=0) const { vvi a(n, vi(m)); rep(i, n) rep(j, m) a[i][j] = nextInt(offset); return a; }
-   vec<string> nextWords(int n) const { vec<string> s(n); rep (i, n) s[i] = nextWord(); return s; }
-   set<int> nextSetInt(int n, int offset=0) const { set<int> r; rep(n) r.insert(nextInt(offset)); return r; }
-   set<char> nextSetChar(int n) const { set<char> r; rep(n) r.insert(nextChar()); return r; }
-   set<string> nextSetWord(int n) const { set<string> r; rep(n) r.insert(nextWord()); return r; }
+   vi nextVi(int n, int o=0) const { vi a(n); rep(i, n) a[i] = nextInt(o); return a; }
    pii nextPii() const { return nextPii(0, 0); }
-   pii nextPii(int offset1, int offset2) const { int a = nextInt(offset1), b = nextInt(offset2); return make_pair(a, b); }
+   pii nextPii(int o1, int o2) const { int a = nextInt(o1), b = nextInt(o2); return { a, b }; }
    vec<pii> nextVecPii(int n) const { return nextVecPii(n, 0, 0); }
-   vec<pii> nextVecPii(int n, int offset1, int offset2) const { vec<pii> r(n); rep (i, n) r[i] = nextPii(offset1, offset2); return r; }
+   vec<pii> nextVecPii(int n, int o1, int o2) const { vec<pii> r(n); rep (i, n) r[i] = nextPii(o1, o2); return r; }
    pair<vi, vi> nextPairViVi(int n) const { return nextPairViVi(n, 0, 0); }
-   pair<vi, vi> nextPairViVi(int n, int offset1, int offset2) const { vi a(n), b(n); rep (i, n) tie(a[i], b[i]) = nextPii(offset1, offset2); return make_pair(a, b); }
-   tuple<int, int, vvi> nextGraph(int offset=-1) const {
-      int n = nextInt();
-      int m = nextInt();
-      vvi g(n);
-      rep (m) {
-         int a = nextInt(offset);
-         int b = nextInt(offset);
-         g[a].push_back(b);
-         g[b].push_back(a);
-      }
-      return make_tuple(n, m, g);
-   }
-   tuple<int, int, vvi> nextDirectedGraph(int offset=-1) const {
-      int n = nextInt();
-      int m = nextInt();
-      vvi g(n);
-      rep (m) {
-         int a = nextInt(offset);
-         int b = nextInt(offset);
-         g[a].push_back(b);
-      }
-      return make_tuple(n, m, g);
-   }
-   tuple<int, int, vvi> nextTree(int offset=-1) const {
-      int n = nextInt();
-      vvi g(n);
-      rep (n - 1) {
-         int a = nextInt(offset);
-         int b = nextInt(offset);
-         g[a].push_back(b);
-         g[b].push_back(a);
-      }
-      return make_tuple(n, n - 1, g);
-   }
-   tuple<int, int, vvi> nextDirectedTree(int offset=-1) const {
-      int n = nextInt();
-      vvi g(n);
-      rep (n - 1) {
-         int a = nextInt(offset);
-         int b = nextInt(offset);
-         g[a].push_back(b);
-      }
-      return make_tuple(n, n - 1, g);
+   pair<vi, vi> nextPairViVi(int n, int o1, int o2) const {
+      vi a(n), b(n);
+      rep (i, n) tie(a[i], b[i]) = nextPii(o1, o2);
+      return { a, b };
    }
 private:
    char skip() const { char c; while (isspace(c = getchar_unlocked())); return c; }

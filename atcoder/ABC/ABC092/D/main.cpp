@@ -3,18 +3,64 @@
 # endif
 # ifdef ngng628_library
 
-int32 main() {
-   auto [a, b] = sc.nextPii();
-
-   const int N = 50;
-   vec<string> s(2*N, string(2*N, '.'));
-   rep (i, N) {
-      rep (j, 2*N) {
-         s[i][j] = '#';
+vvi rotated(const vvi& s, const int t) {
+   const int h = len(s), w = len(s[0]);
+   switch ((t % 4 + 4) % 4) {
+      case 0: return s;
+      case 1: {
+         vvi r(w, vi(h, 0));
+         rep (i, w) rep (j, h) r[i][j] = s[h-1-j][i];
+         return r;
+      }
+      case 2: {
+         vvi r = s;
+         rep (i, h / 2) rep (j, w) swap(r[i][j], r[h-1-i][j]);
+         rep (i, h) reverse(all(r[i]));
+         return r;
+      }
+      case 3: {
+         vvi r(w, vi(h, 0));
+         rep (i, w) rep (j, h) r[i][j] = s[j][w-1-i];
+         return r;
       }
    }
-   pair<int, int> cur;
-   while 
+   return vvi();
+}
+
+int32 main() {
+   auto [a, b] = sc.nextPii();
+   a--, b--;
+   auto board = make_vector({ 100, 100 }, int(0));
+   rep (i, 50, 100) {
+      rep (j, 100) {
+         board[i][j] = 1;
+      }
+   }
+
+   // 白を塗る
+   auto f = [&board](int a, int c) {
+      int i = 0;
+      int j = 0;
+      rep (a) {
+         board[i][j] = c;
+         j += 2;
+         if (j >= 100) {
+            i += 2;
+            j = 0;
+         }
+      }
+   };
+   f(b, 1);
+   board = rotated(board, 2);
+   f(a, 0);
+
+   cout << 100 << " " << 100 << endl;
+   rep (i, 100) {
+      rep (j, 100) {
+         cout << (board[i][j] ? '#' : '.');
+      }
+      cout << '\n';
+   }
 }
 
 
@@ -25,7 +71,7 @@ int32 main() {
 
 # else
 
-# include <bits/stdc++.h>
+# include <bits/extc++.h>
 # define int Int
 # define float Float
 # define overload3(_1,_2,_3,name,...) name
