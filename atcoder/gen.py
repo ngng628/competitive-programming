@@ -39,8 +39,8 @@ def main():
         os.mkdir(contest_grope + '/' + contest_name)
         print(plus, contest_name, 'is created')
 
-    shutil.copyfile('./download.py', contest_grope + '/' + contest_name + '/download.py')
-    print(plus, 'download.py is created')
+    shutil.copyfile('./download.rb', contest_grope + '/' + contest_name + '/download.rb')
+    print(plus, 'download.rb is created')
     
     if contest_grope in ['ABC', 'ARC', 'AGC']:
         contest_number = int(contest_name[3:])
@@ -68,8 +68,8 @@ def main():
             print(warning, task_name, 'is already exists')
         else:
             os.mkdir(path)
-            template = '/home/ngng/work/competitive-programming/template/atcoder.cpp'
-            shutil.copyfile(template, path + '/main.cpp')
+            template = '/home/ngng/Documents/competitive-programming/template/compe.cr'
+            shutil.copyfile(template, path + '/main.cr')
             print(plus, task_name, 'is created')
 
 if __name__ == '__main__':

@@ -21,11 +21,17 @@ int main() {
 
                if (ord == Equal and d > Ki) continue;
                if (d < Ki) ord2 = Less;
-
+               
                dp[i + 1][mod2][ord2] += dp[i][mod][ord];
             }
          }
       }
+      cout << "[";
+      for (int mod = 0; mod < D; ++mod) {
+         if (mod != 0) cout << ", ";
+         cout << "[" << dp[i + 1][mod][0].val() << ", " << dp[i + 1][mod][1].val() << "]";
+      }
+      cout << "]\n";
    }
 
    cout << (dp[n][0][Less] + dp[n][0][Equal] - 1).val() << endl;
