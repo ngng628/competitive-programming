@@ -41,7 +41,7 @@ using vvb = vec<vb>;
 using vvvb = vec<vvb>;
 template<class T, size_t N> auto make_vector(vi& sizes, const T& x) { if constexpr (N == 1) { return vector(sizes[0], x); } else { int size = sizes[N - 1]; sizes.pop_back(); return vector(size, make_vector<T, N - 1>(sizes, x)); } }
 template<class T, size_t N> auto make_vector(int const(&sizes)[N], const T& x = T()) { vi s(N); rep (i, N) s[i] = sizes[N - i - 1]; return make_vector<T, N>(s, x); }
-constexpr int oo = (1LL<<62)-(1LL<<31);
+constexpr int OO = (1LL<<62)-(1LL<<31);
 template<class T> string join(const vec<T>& v){ stringstream s; for (T t : v) s << ' ' << t; return s.str().substr(1); }
 template<class T> ostream& operator <<(ostream& os, const vec<T>& v){ if (len(v)) os << join(v); return os; }
 template<class T> ostream& operator <<(ostream& os, const vec<vec<T>>& v){ rep (i, len(v)) if (len(v[i])) os << join(v[i]) << (i-len(v)+1 ? "\n" : ""); return os; }

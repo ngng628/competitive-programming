@@ -61,7 +61,7 @@ template<class T, size_t N> auto make_vector(int const(&sizes)[N], const T& x = 
    vi s(N); rep (i, N) s[i] = sizes[N - i - 1];
    return make_vector<T, N>(s, x);
 }
-constexpr int oo = (1LL<<62)-(1LL<<31);
+constexpr int OO = (1LL<<62)-(1LL<<31);
 template<class T> string join(const vec<T>& v){ stringstream s; for (T t : v) s << ' ' << t; return s.str().substr(1); }
 template<class T> ostream& operator <<(ostream& os, const vec<T>& v){ if (len(v)) os << join(v); return os; }
 template<class T> ostream& operator <<(ostream& os, const vec<vec<T>>& v){
