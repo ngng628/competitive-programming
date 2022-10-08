@@ -62,7 +62,6 @@ int32 main() {
 
 
 
-
 # else
 
 # include <bits/extc++.h>
