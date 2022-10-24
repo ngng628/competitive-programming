@@ -7,3 +7,15 @@ macro chmax(a, b); {{a}} = Math.max({{a}}, {{b}}) end
 OO = (1_i64<<62)-(1_i64<<31)
 # ○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．
 
+n, q = ints
+
+senbei = Array.new(n){ 0_i64 }
+q.times do
+  l, r = ints
+  l -= 1
+  (l...r).each do |j|
+    senbei[j] ^= 1
+  end
+end
+
+puts senbei.sum
