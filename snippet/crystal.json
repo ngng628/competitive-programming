@@ -7,16 +7,6 @@
     "body": "puts ${1:condition} ? \"Yes\" : \"No\"",
     "description": "yesno"
   },
-  "Ai": {
-    "prefix": "Ai",
-    "body": "Array(Int64)",
-    "description": "Array(Int64)"
-  },
-  "Aai": {
-    "prefix": "Aai",
-    "body": "Array(Array(Int64))",
-    "description": "Array(Array(Int64))"
-  },
   "ComplexInt": {
     "prefix": "ComplexInt",
     "body": [
@@ -147,13 +137,13 @@
       "dist[${2:s}] = 0",
       "heap << { dist[${2:s}], ${2:s} }",
       "until heap.empty?",
-      "  d, now = heap.pop",
-      "  next if dist[now] < d",
-      "  graph[now].each do |edge|",
-      "    cost = dist[now] + edge.weight",
-      "    if dist[edge.to] > cost",
-      "      dist[edge.to] = cost",
-      "      heap << { cost, edge.to }",
+      "  d, from = heap.pop",
+      "  next if dist[from] < d",
+      "  graph[from].each do |edge|",
+      "    cost = edge.weight",
+      "    if dist[edge.to] > dist[from] + cost",
+      "      dist[edge.to] = dist[from] + cost",
+      "      heap << { dist[edge.to], edge.to }",
       "    end",
       "  end",
       "end"
@@ -402,7 +392,7 @@
       "  y, x = que.shift",
       "  grid.each_neighbor(y, x) do |ny, nx|",
       "    next if dist[ny][nx] != OO",
-      "    dist[ny][nx] = dist[y][x].not_nil! + 1",
+      "    dist[ny][nx] = dist[y][x] + 1",
       "    que << {ny, nx}",
       "  end",
       "end"
@@ -3502,5 +3492,32 @@
       "end"
     ],
     "description": "XorShift"
+  },
+  "Stopwatch": {
+    "prefix": "Stopwatch",
+    "body": [
+      "class Stopwatch",
+      "  def initialize",
+      "    @start = Time.utc",
+      "  end",
+      "",
+      "  def reset",
+      "    @start = Time.utc",
+      "  end",
+      "",
+      "  def ms",
+      "    Time.utc.to_unix_ms - @start.to_unix_ms",
+      "  end",
+      "",
+      "  def sec",
+      "    ms / 1000",
+      "  end",
+      "",
+      "  def to_s(io)",
+      "    io << ms << \"ms\"",
+      "  end",
+      "end"
+    ],
+    "description": "Stopwatch"
   },
 }
