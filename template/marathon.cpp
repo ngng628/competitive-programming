@@ -3,12 +3,15 @@
 # define ngng628_library
 # define fi first
 # define se second
-# define rep(i,n) for(int i=0, i##_len=(n); i<i##_len; ++i)
-# define reps(i,n) for(int i=1, i##_len=(n); i<=i##_len; ++i)
+# define _step(n) _rep(_,n)
+# define _rep(i,n) _repr(i,0,n)
+# define _repr(i,b,e) for(int i=(b), i##_len=(e); i<i##_len; ++i)
+# define rep(...) overload3(__VA_ARGS__, _repr, _rep, _step)(__VA_ARGS__)
+# define _reps(i,n) _reprs(i,1,n)
+# define _reprs(i,b,e) for(int i=(b), i##_len=(e); i<=i##_len; ++i)
+# define reps(...) overload3(__VA_ARGS__, _reprs, _reps)(__VA_ARGS__)
 # define rrep(i,n) for(int i=(int)(n)-1; i>=0; --i)
-# define rreps(i,n) for(int i=(int)(n); i>0; --i)
-# define repr(i,b,e) for(int i=(b), i##_len=(e); i<i##_len; ++i)
-# define reprs(i,b,e) for(int i=(b), i##_len=(e); i<=i##_len; ++i)
+# define rreps(i,n) for(int i=(n); i>0; --i)
 # define all(x) std::begin(x), std::end(x)
 # define rall(x) std::rbegin(x), std::rend(x)
 # define pb push_back
