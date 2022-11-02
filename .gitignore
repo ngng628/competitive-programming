@@ -12,6 +12,7 @@ ans
 toy/
 *.gch
 memo.ipynb
+ac-library/
 
 # Rust
 Cargo.*
