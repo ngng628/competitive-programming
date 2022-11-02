@@ -12,7 +12,7 @@ ans
 toy/
 *.gch
 memo.ipynb
-ac-library/
+atcoder/ac-library/
 
 # Rust
 Cargo.*
