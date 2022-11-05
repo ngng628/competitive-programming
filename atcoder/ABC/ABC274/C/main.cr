@@ -7,3 +7,16 @@ macro chmax(a, b); {{a}} = Math.max({{a}}, {{b}}) end
 OO = (1_i64<<62)-(1_i64<<31)
 # ○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．
 
+n = int
+a = [-1_i64].concat(ints)
+
+hash = Hash(Int64, Int64).new
+hash[1_i64] = 0_i64
+(1..2*n+1).each_with_index do |i|
+  puts hash[i]
+
+  unless a[i]?.nil?
+    hash[2*i] = hash[a[i]] + 1
+    hash[2*i + 1] = hash[a[i]] + 1
+  end
+end
