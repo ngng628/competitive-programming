@@ -1,0 +1,1 @@
+eval'_,M,*A='+`dd`.split*?,;t=A.sum;p t-[t,(A.sort*2).slice_when{_1!=_2&&(_1+1)%M!=_2}.map{_1.sum}.max].min

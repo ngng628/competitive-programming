@@ -8,61 +8,6 @@ OO = (1_i64<<62)-(1_i64<<31)
 # ○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．
 
 n, m = ints
-a = ints
-
-
-
-
-
-
-
-
-hash = Hash(Int64, Array(Int64)).new
-a.each do |ai|
-  hash[ai % m] = Array(Int64).new unless hash.has_key?(ai % m)
-  hash[ai % m] << ai
-end
-
-hash.each_key do |key|
-  hash[key].sort!
-end
-hash.each{ |key, value| puts "#{key} => #{value}" }
-
-# とりあえず 0 から始めるとする
-index = -OO
-start = false
-n.times do |i|
-  if hash.has_key?(i % m) && !hash[i % m].empty?
-    start = true
-    t = hash[i % m].pop
-    while !hash[i % m].empty? && t == hash[i % m][-1]
-      hash[i % m].pop
-    end
-  elsif start
-    index = i
-    break
-  end
-end
-
-hash.each{ |key, value| puts "#{key} => #{value}" }
-puts "─" * 30
-
-start = false
-(0...n).reverse_each do |i|
-  if hash.has_key?(i % m) && !hash[i % m].empty? && index <= i
-    start = true
-    t = hash[i % m].pop
-    while !hash[i % m].empty? && t == hash[i % m][-1]
-      hash[i % m].pop
-    end
-  elsif start
-    break
-  end
-end
-
-
-hash.each{ |key, value| puts "#{key} => #{value}" }
-puts "─" * 30
-
-
-puts hash.sum{ |_, v| v.sum }
+a = ints.sort
+sliced = (0...2*n).map{ |i| i % n }.slice_when{ |i, j| a[i] != a[j] && (a[i] + 1) % m != a[j] }
+puts a.sum - Math.min(a.sum, sliced.max_of{ |seq| seq.sum{ |i| a[i % n] } })
