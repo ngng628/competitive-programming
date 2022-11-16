@@ -136,6 +136,38 @@
     ],
     "description": "runLengthEncoding"
   },
+  "z_algorithm": {
+    "prefix": "z_algorithm",
+    "body": [
+      "class Array(T)",
+      "  def z_algorithm",
+      "    n = size",
+      "    return [] of Int32 if n == 0",
+      "    z = Array(Int32).new(n){ 0 }",
+      "    z[0] = 0",
+      "    i = 1",
+      "    j = 0",
+      "    while i < n",
+      "      z[i] = (j + z[j] <= i) ? 0 : Math.min(j + z[j] - i, z[i - j])",
+      "      while i + z[i] < n && self[z[i]] == self[i + z[i]]",
+      "        z[i] += 1",
+      "      end",
+      "      j = i if j + z[j] < i + z[i]",
+      "      i += 1",
+      "    end",
+      "    z[0] = n",
+      "    z",
+      "  end",
+      "end",
+      "",
+      "class String",
+      "  def z_algorithm",
+      "    chars.z_algorithm",
+      "  end",
+      "end"
+    ],
+    "description": "z_algorithm"
+  },
 
   //────────────────────────────────────────────────────
   // 探索
@@ -1031,6 +1063,28 @@
     ],
     "description": "divisors"
   },
+  "Vec2": {
+    "prefix": "Vec2",
+    "body": [
+      "record Vec2, x : Float64, y : Float64 do",
+      "  def self.zero; new 0.0, 0.0 end",
+      "  def length; Math.sqrt(x**2 + y**2) end",
+      "  def lengthSquare; self.dot(self) end",
+      "  def dot(other : Vec2); x * other.x + y * other.y end",
+      "  def corss(other : Vec2); x * other.x - y * other.y end",
+      "  def distanceFrom(other : Vec2); (other - self).length end",
+      "  def normalized; self / length end",
+      "  def zero?; x == 0.0 && y == 0.0 end",
+      "  def +; self end",
+      "  def -; Vec2.new(-x, -y) end",
+      "  def +(other : Vec2); Vec2.new(x + other.x, y + other.y) end",
+      "  def -(other : Vec2); Vec2.new(x - other.x, y - other.y) end",
+      "  def *(s); Vec2.new(x * s, y * s) end",
+      "  def /(s); Vec2.new(x / s, y / s) end",
+      "end"
+    ],
+    "description": "Vec2"
+  },
   "Matrix": {
     "prefix": "Matrix",
     "body": [
@@ -1682,42 +1736,6 @@
       "end"
     ],
     "description": "lis"
-  },
-
-  //────────────────────────────────────────────────────
-  // 文字列
-  //────────────────────────────────────────────────────
-  "z_algorithm": {
-    "prefix": "z_algorithm",
-    "body": [
-      "class Array(T)",
-      "  def z_algorithm",
-      "    n = size",
-      "    return [] of Int32 if n == 0",
-      "    z = Array(Int32).new(n){ 0 }",
-      "    z[0] = 0",
-      "    i = 1",
-      "    j = 0",
-      "    while i < n",
-      "      z[i] = (j + z[j] <= i) ? 0 : Math.min(j + z[j] - i, z[i - j])",
-      "      while i + z[i] < n && self[z[i]] == self[i + z[i]]",
-      "        z[i] += 1",
-      "      end",
-      "      j = i if j + z[j] < i + z[i]",
-      "      i += 1",
-      "    end",
-      "    z[0] = n",
-      "    z",
-      "  end",
-      "end",
-      "",
-      "class String",
-      "  def z_algorithm",
-      "    chars.z_algorithm",
-      "  end",
-      "end"
-    ],
-    "description": "z_algorithm"
   },
 
   //────────────────────────────────────────────────────
