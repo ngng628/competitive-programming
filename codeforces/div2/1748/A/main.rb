@@ -1,0 +1,1 @@
+gets.to_i.times{p (gets.to_i+1)/2}
