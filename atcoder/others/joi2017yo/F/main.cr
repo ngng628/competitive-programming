@@ -5,250 +5,157 @@ def str; read_line.chomp end
 macro chmin(a, b); {{a}} = Math.min({{a}}, {{b}}) end
 macro chmax(a, b); {{a}} = Math.max({{a}}, {{b}}) end
 OO = (1_i64<<62)-(1_i64<<31)
+macro make_array(s, x)
+  Array.new({{ s[0] }}){
+    {% if s[1..s.size].empty? %}; {{ x }}
+    {% else %}; make_array({{ s[1..s.size] }}, {{ x }}) {% end %}
+  }
+end
 # ○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．
 
-enum Temp
-  TooCold = 0
-  Comfortable = 1
-  TooHot = 2
-end
+#────────────────────────────────────────────────
+# データ型
+#────────────────────────────────────────────────
+record Edge, to : Int64, weight : Int64
+record Node, index : Int64, temp : Int32, ela : Int64
 
+#────────────────────────────────────────────────
+# 入力
+#────────────────────────────────────────────────
 n, m, x = ints
-t = (1..n).map{ Temp.new(int.to_i32) }
-graph = DijkstraGraph.new(n)
+t = (1..n).map{ int.to_i32 }
+graph = Array.new(n){ Array(Edge).new }
 m.times do
-  a, b, d = ints
-  graph.add_edge(a - 1, b - 1, d, directed: true)
+  u, v, w = ints
+  u -= 1; v -= 1
+  graph[u] << Edge.new(v, w)
+  graph[v] << Edge.new(u, w)
 end
 
-dist = graph.shortest_path(start: 0) do |from, to, edge, dist|
-  res = case t[from]
-  when Temp::TooCold, Temp::TooHot
-    if t[from] != t[to] && t[to] != Temp::Comfortable && edge.weight < x
-      OO
-    else
-      dist[from] + edge.weight
-    end
-  when Temp::Comfortable
-    dist[from] + edge.weight
-  else
-    OO
-  end
+#────────────────────────────────────────────────
+# ダイクストラ法
+#────────────────────────────────────────────────
+dist = make_array([n, 3, 200 + 1], OO)
+dist[0][t[0]][0] = 0
+heap = Heap({Int64, Node}).new{ |a, b| a[0] > b[0] }
+heap << {0_i64, Node.new(0_i64, t[0], t[0] == 1 ? x : 0_i64)}
+until heap.empty?
+  d, now = heap.pop
 
-  puts "#{res - dist[from]} (from: #{from + 1}, to: #{to + 1})"
-  res
+  now_dist = dist[now.index][now.temp][now.ela]
+  next if now_dist < d
+
+  graph[now.index].each do |e|
+    w = e.weight
+    to = e.to
+
+    cost = (t[to] - now.temp).abs == 2 && now.ela + w < x ? OO : w
+
+    next_cost = now_dist + cost
+
+    next_t = t[to] == 1 ? now.temp : t[to]
+
+    next_ela = case t[to]
+      when 0, 2
+        0_i64
+      else
+        Math.min(now.ela + w, x)
+    end
+
+    if next_cost < dist[to][next_t][next_ela]
+      dist[to][next_t][next_ela] = next_cost
+      heap << {next_cost, Node.new(to, next_t, next_ela)}
+    end
+  end
 end
 
-puts dist[n - 1]
-pp! dist
+ans = OO
+chmin(ans, dist[n - 1][0].min)
+chmin(ans, dist[n - 1][1].min)
+chmin(ans, dist[n - 1][2].min)
+puts ans
 
-class DijkstraGraph
-  record Edge, target : Int32, weight : UInt64
 
-  # 基数ヒープ
-  class RadixHeap64(T)
-    @s : Int32
-    @last : UInt64
-    @bit : Int32
-    @vs : Array(Array({UInt64, T}))
-    @ms : Array(UInt64)
 
-    def initialize
-      @s = 0
-      @last = 0_u64
-      @bit = sizeof(UInt64) * 8
-      @vs = Array.new(@bit + 1){ Array({UInt64, T}).new }
-      @ms = Array.new(@bit + 1){ -1.to_u64! }
-    end
 
-    def empty? : Bool
-      @s == 0
-    end
 
-    def size : Int32
-      s
-    end
 
-    @[AlwaysInline]
-    def get_bit(x : UInt64) : UInt64
-      64_u64 - x.leading_zeros_count
-    end
 
-    def push(key : UInt64, val : T) : Nil
-      @s += 1
-      b = get_bit(key ^ @last)
-      @vs[b] << {key, val}
-      @ms[b] = Math.min(@ms[b], key)
-    end
+class Heap(T)
+  include Comparable(Heap(T))
 
-    def pop : {UInt64, T}
-      if @ms[0] == -1.to_u64!
-        idx = @ms.index{ |m| m != -1.to_u64! }.not_nil!
-        @last = @ms[idx]
-        @vs[idx].each do |v|
-          b = get_bit(v[0] ^ @last)
-          @vs[b] << v
-          @ms[b] = Math.min(@ms[b], v[0])
-        end
-        @vs[idx].clear
-        @ms[idx] = -1.to_u64!
+  delegate size, to: hp
+  delegate empty?, to: hp
+  getter hp : Array(T)
+
+  def <=>(other : Heap(T))
+    @hp <=> other.hp
+  end
+
+  def self.min
+    new { |a, b| a > b }
+  end
+
+  def self.max
+    new { |a, b| a < b }
+  end
+
+  def initialize
+    @cmp = ->(a : T, b : T) { a < b }
+    @hp = Array(T).new
+  end
+
+  def initialize(&@cmp : (T, T) -> Bool)
+    @hp = Array(T).new
+  end
+
+  def <<(value : T)
+    push(value)
+  end
+
+  def push(value : T)
+    @hp.push(value)
+    child = @hp.size - 1
+    v = @hp[child]
+    while child > 0
+      parent = (child - 1) // 2
+      unless @cmp.call @hp[parent], v
+        break
       end
-
-      @s -= 1
-      res = @vs[0].last
-      @vs[0].pop
-      @ms[0] = -1.to_u64! if @vs[0].empty?
-
-      res
+      @hp.swap(parent, child)
+      child = parent
     end
+    @hp[child] = v
   end
 
-  getter size : Int32
-  getter graph : Array(Array(Edge))
-
-  # n 頂点 0 辺からなるグラフを作成します。
-  #
-  # ```
-  # graph = Dijkstra.new(n)
-  # ```
-  def initialize(n : Int)
-    @size = n.to_i32
-    @graph = Array.new(@size){ Array(Edge).new }
-  end
-
-  # 非負整数の重み w の辺 (u, v) を追加します。
-  #
-  # `directed` が `true` の場合、
-  # 無向グラフとみなして、両端から辺を生やします。
-  #
-  # ```
-  # graph = Dijkstra.new(n)
-  # graph.add_edge(u, v, w) # => (u) <---w---> (v)
-  # graph.add_edge(u, v, w, directed: false) # => (u) ----w---> (v)
-  # ```
-  def add_edge(u : Int, v : Int, w : Int, directed : Bool = true)
-    @graph[u.to_i32] << Edge.new(v.to_i32, w.to_u64)
-    @graph[v.to_i32] << Edge.new(u.to_i32, w.to_u64) if directed
-  end
-
-  # 全点対間の最短経路長を返します。
-  #
-  # ```
-  # dists = graph.shortest_path
-  # dists # => [[0, 1, 3], [1, 0, 2], [1, 1, 0]]
-  # ```
-  def shortest_path
-    (0...@size).map{ |s| shortest_path(s) }
-  end
-
-  # 始点 `start` から各頂点への最短経路長を返します。
-  #
-  # ```
-  # dist = graph.shortest_path(2)
-  # dist # => [3, 8, 0, 7, 1]
-  # ```
-  def shortest_path(start : Int)
-    dist = Array.new(@size){ OO }
-    dist[start] = 0_i64
-    next_node = RadixHeap64(Int32).new
-    next_node.push(0_u64, start.to_i32)
-
-    until next_node.empty?
-      d, source = next_node.pop
-      next if dist[source] < d
-      @graph[source].each do |e|
-        next_cost = dist[source] + e.weight
-        if next_cost < dist[e.target]
-          dist[e.target] = next_cost
-          next_node.push(next_cost.to_u64, e.target)
+  def pop
+    len = @hp.size - 1
+    if len > 0
+      v = @hp[len]
+      @hp[len] = @hp[0]
+      parent = 0
+      child = 1
+      while child < len
+        if child + 1 < len && @cmp.call @hp[child], @hp[child + 1]
+          child += 1
         end
-      end
-    end
-
-    dist
-  end
-
-  # 始点 `start` から終点 `dest` への最短経路長を返します。
-  #
-  # ```
-  # dist = graph.shortest_path(start: 2, dest: 0)
-  # dist # => 12
-  # ```
-  def shortest_path(start : Int, dest : Int)
-    shortest_path(start)[dest]
-  end
-
-  # 始点 `start` から各頂点への最短経路長を返します。
-  #
-  # 重みをブロックで指定することができます。
-  #
-  # ```
-  # dist = graph.shortest_path(2)
-  # dist # => [3, 8, 0, 7, 1]
-  # ```
-  def shortest_path(start : Int, & : Int32, Int32, Edge, Array(Int64) ->)
-    dist = Array.new(@size){ OO }
-    dist[start] = 0_i64
-    next_node = RadixHeap64(Int32).new
-    next_node.push(0_u64, start.to_i32)
-
-    until next_node.empty?
-      d, source = next_node.pop
-      next if dist[source] < d
-      @graph[source].each do |e|
-        next_cost = (yield source, e.target, e, dist)
-        if next_cost < dist[e.target]
-          dist[e.target] = next_cost
-          next_node.push(next_cost.to_u64, e.target)
+        unless @cmp.call v, @hp[child]
+          break
         end
+        @hp.swap(parent, child)
+        parent = child
+        child = 2*parent + 1
       end
+      @hp[parent] = v
     end
-
-    dist
+    @hp.pop
   end
 
-
-  # 始点 `start` から終点 `dest` への最短経路の一例を返します。
-  #
-  # ```
-  # route = graph.shortest_path_route(start: 2, dest: 0)
-  # route # => [2, 7, 1, 0]
-  # ```
-  def shortest_path_route(start, dest)
-    prev = impl_memo_route(start)
-
-    res = Array(Int32).new
-    now : Int32? = dest.to_i32
-    until now.nil?
-      res << now.not_nil!
-      now = prev[now]
-    end
-
-    res.reverse
+  def peek
+    @hp.first
   end
 
-  # 経路復元のための「どこから移動してきたか」を
-  # メモした配列を返します。
-  private def impl_memo_route(start)
-    dist = Array.new(@size){ OO }
-    dist[start] = 0_i64
-    prev = Array(Int32?).new(@size){ nil }
-    next_node = RadixHeap64(Int32).new
-    next_node.push(0_u64, start.to_i32)
-
-    until next_node.empty?
-      d, source = next_node.pop
-      next if dist[source] < d
-      @graph[source].each do |e|
-        next_cost = dist[source] + e.weight
-        if next_cost < dist[e.target]
-          dist[e.target] = next_cost
-          prev[e.target] = source
-          next_node.push(next_cost.to_u64, e.target)
-        end
-      end
-    end
-
-    prev
+  def clear
+    @hp.clear
   end
 end
