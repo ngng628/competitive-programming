@@ -7,3 +7,13 @@ macro chmax(a, b); {{a}} = Math.max({{a}}, {{b}}) end
 OO = (1_i64<<62)-(1_i64<<31)
 # ○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．
 
+n, m = ints
+cards = (1..m).map{ ints }
+
+c = (0...m).map do |i|
+  cards[i][0] >= n ? 0_i64 : n - cards[i][0]
+end
+
+ans = c.sum - c.max
+
+puts ans
