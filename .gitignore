@@ -13,6 +13,7 @@ toy/
 *.gch
 memo.ipynb
 atcoder/ac-library/
+.python-version
 
 # Rust
 Cargo.*
