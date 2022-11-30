@@ -9,42 +9,49 @@ OO = (1_i64<<62)-(1_i64<<31)
 
 n, q = ints
 
-hash = Hash(Int64, Set(Int64)).new
-acc = 0_i64
+dsu = DisjointSet.new(n + q)
 
+# ball -> box
 where = Array.new(n + q){ |i| i.to_i64 }
-box_leader = Array.new(n){ |i| i.to_i64 }
-ut = DisjointSet.new(n + q)
-cur = n - 1
+
+# box -> ball (leader)
+leaders = Array(Int64?).new(n + q){ |i| i.to_i64 }
+
+k = n - 1
 
 q.times do
-  input = str.split
-  t = input[0].to_i64
-  x = input[1].to_i64 - 1
-  y = (input[2]? || 0).to_i64 - 1
+  r = ints
+  t = r[0]
+  x = r[1] - 1
+  y = (r[2]? || 0_i64) - 1
 
   case t
   when 1
-    puts "箱 #{x} の中身を箱 #{y} に移します。"
-    u = box_leader[x]
-    v = box_leader[y]
-    ut.unite(u, v)
-    where[ut.leader(x)] = x
-    box_leader[x] = box_leader[y] = ut.leader(x)
+    bx = leaders[x]
+    by = leaders[y]
+    next if bx.nil? && by.nil?
+    if !bx.nil? && !by.nil?
+      dsu.unite(bx, by)
+    end
+    l = dsu.leader((bx || by).not_nil!)
+    where[l] = x
+    leaders[x] = l
+    leaders[y] = nil
   when 2
-    puts "箱 #{x} に #{cur} を入れます。"
-    cur += 1
-    ut.unite(box_leader[x], cur)
-    where[ut.leader(x)] = x
-    box_leader[x] = ut.leader(x)
+    bx = leaders[x]
+    unless bx.nil?
+      dsu.unite(bx, k + 1)
+    end
+    l = dsu.leader(k + 1)
+    k += 1
+    where[l] = x
+    leaders[x] = l
+    leaders[k + 1] = nil
   when 3
-    puts "ボール #{x} はどこにありますか？"
-    l = ut.leader(x)
-    puts where[x]
+    l = dsu.leader(x)
+    puts where[l] + 1
   end
-  puts "─" * 40
 end
-
 
 
 
