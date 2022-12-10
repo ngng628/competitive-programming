@@ -1,6 +1,7 @@
 my/
 *.out
 download.py
+download.rb
 test/
 *.in
 in
