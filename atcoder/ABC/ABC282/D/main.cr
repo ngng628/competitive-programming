@@ -9,6 +9,7 @@ OO = (1_i64<<62)-(1_i64<<31)
 
 n, m = ints
 graph = Array.new(n){ [] of Int64 }
+
 ut = DisjointSet.new(n)
 m.times do
   u, v = ints -1

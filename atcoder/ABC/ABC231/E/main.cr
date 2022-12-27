@@ -7,17 +7,33 @@ macro chmax(a, b); {{a}} = Math.max({{a}}, {{b}}) end
 OO = (1_i64<<62)-(1_i64<<31)
 # ○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．
 
-n, m = ints
-s = (1..n).map{ str.chars }
-ans = n.times.sum do |i|
-  n.times.count do |j|
-    next if i >= j
-    cnt = 0
-    m.times do |k|
-      cnt += 1 if s[i][k] == 'o' || s[j][k] == 'o'
-    end
-    cnt == m
-  end
+n, x = ints
+a = ints
+
+pays = Array.new(n){ 0_i64 }
+y = x
+(0...n).reverse_each do |i|
+  pays[i] = y // a[i]
+  y %= a[i]
 end
 
-puts ans
+cache = Array.new(n + 1){ [nil, nil] of Int64? } 
+dp = uninitialized Proc(Int32, Int32, Int64)
+dp = ->(i : Int32, c : Int32) do
+  return c == 0 ? 0_i64 : OO if i == n
+  return cache[i][c].not_nil! unless cache[i][c].nil?
+
+  res = OO
+
+  if i < n - 1
+    payed = (a[i + 1] - a[i] * (pays[i] + c)) // a[i]
+    res = Math.min(res, dp.call(i + 1, 1) + payed)
+  end
+
+  pay = pays[i] + c
+  res = Math.min(res, dp.call(i + 1, 0) + pay)
+
+  cache[i][c] = res
+end
+
+puts dp.call(0, 0)

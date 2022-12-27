@@ -7,17 +7,25 @@ macro chmax(a, b); {{a}} = Math.max({{a}}, {{b}}) end
 OO = (1_i64<<62)-(1_i64<<31)
 # ○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．
 
-n, m = ints
-s = (1..n).map{ str.chars }
-ans = n.times.sum do |i|
-  n.times.count do |j|
-    next if i >= j
-    cnt = 0
-    m.times do |k|
-      cnt += 1 if s[i][k] == 'o' || s[j][k] == 'o'
-    end
-    cnt == m
-  end
+n = int
+a = ints.sort.reverse
+b = ints.sort.reverse
+c = ints.sort.reverse
+d = ints.sort.reverse
+
+abcd = a + b + c + d
+
+ans = OO
+abcd.each do |m|
+  h1 = a.bsearch{ |ai| ai <= m }
+  h2 = b.bsearch{ |bi| bi <= m }
+  h3 = c.bsearch{ |ci| ci <= m }
+  h4 = d.bsearch{ |di| di <= m }
+
+  h = [h1, h2, h3, h4].reject(&.nil?).map(&.not_nil!).sort
+
+  next if h.size < 4
+  chmin(ans, h[-1] - h[0])
 end
 
 puts ans
