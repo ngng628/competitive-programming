@@ -67,8 +67,9 @@ def main():
         if os.path.isfile(path):
             print(warning, task_name, 'is already exists')
         else:
+            compe_home = os.environ['COMPE']
             os.mkdir(path)
-            template = '/home/ngng/Documents/competitive-programming/template/compe.cr'
+            template = f'{compe_home}/template/compe.cr'
             shutil.copyfile(template, path + '/main.cr')
             print(plus, task_name, 'is created')
 
