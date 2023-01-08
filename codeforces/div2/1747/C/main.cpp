@@ -171,6 +171,16 @@ private:
 struct Solver {
    Solver() = default;
    void solve() {
+      auto n = sc.nextInt();
+      auto a = sc.nextVi(n);
+
+      auto p = accumulate(all(a), int64_t(0));
+      if (p % 2 == 0) {
+         cout << "Bob\n";
+      }
+      else {
+         cout << "Alice\n";
+      }
    }
 };
 

@@ -171,6 +171,30 @@ private:
 struct Solver {
    Solver() = default;
    void solve() {
+      auto n = sc.nextInt();
+      string sn = "_";
+      rep (n) sn += "BAN";
+
+      auto ok = [](const string& s) -> bool {
+         return s.find("BAN") == string::npos;
+      };
+
+      vec<pii> ans;
+      int cur = 1;
+      for (int i = 3*n; i >= 1; i--) {
+         if (sn[i] == 'N') {
+            swap(sn[cur], sn[i]);
+            ans.emplace_back(cur, i);
+            cur += 3;
+         }
+
+         if (ok(sn)) break;
+      }
+
+      int m = ans.size();
+
+      cout << m << '\n';
+      for (auto ab : ans) cout << ab << '\n';
    }
 };
 

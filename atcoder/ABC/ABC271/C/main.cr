@@ -1,6 +1,6 @@
 # ○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．
-def int(b = 0); read_line.to_i32 + b end
-def ints(b = 0); read_line.split.map{ |x| x.to_i32 + b } end
+def int(b = 0); read_line.to_i + b end
+def ints(b = 0); read_line.split.map{ |x| x.to_i + b } end
 def str; read_line.chomp end
 macro chmin(a, b); {{a}} = Math.min({{a}}, {{b}}) end
 macro chmax(a, b); {{a}} = Math.max({{a}}, {{b}}) end
@@ -8,23 +8,33 @@ OO = (1_i64<<62)-(1_i64<<31)
 # ○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．
 
 n = int
-a = ints
+a = ints.tally
 
-rec = uninitialized Int32, Array(Int32) -> Int32
-rec = ->(k : Int32, seq : Array(Int32)) do
-  if k == -1
-    return seq.min
+ans = 10**9 + 1 - (0..10**9 + 1).bsearch do |k|
+  k = 10**9 + 1 - k
+
+  rem = 0
+  a.each do |(key, cnt)|
+    if key <= k
+      rem += cnt - 1
+    else
+      rem += cnt
+    end
   end
 
-  if seq.all?{ |e| e.bit(k) == 0 }
-    return rec.call(k - 1, seq)
-  elsif seq.all?{ |e| e.bit(k) == 1 }
-    return rec.call(k - 1, seq.map{ |e| e ^ (1 << k) })
-  else
-    g = seq.group_by{ |e| e.bit(k) }
-    return Math.min(rec.call(k - 1, g[0]) | (1 << k), rec.call(k - 1, g[1]))
+  now = 0
+  until now >= k
+    if a.fetch(now.succ, 0) >= 1
+      now += 1
+    elsif rem >= 2
+      now += 1
+      rem -= 2
+    else
+      break
+    end
   end
-end
 
-ans = rec.call(31, a)
+  now >= k
+end.not_nil!
+
 puts ans
