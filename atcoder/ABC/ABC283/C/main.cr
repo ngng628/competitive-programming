@@ -1,0 +1,1 @@
+p read_line.gsub(/00/,'0').size

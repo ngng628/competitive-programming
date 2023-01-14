@@ -8,14 +8,16 @@ OO = (1_i64<<62)-(1_i64<<31)
 # 🎄⛄🏠🏠🏠⛄🎄⛄🏠🏠🏠⛄🎄⛄🏠🏠🏠⛄🎄⛄🏠🏠🏠⛄🎄⛄🏠🏠🏠⛄🎄⛄🏠🏠🏠⛄🎄
 
 n = int
-a = ints
+a = [-1_i64].concat(ints)
 q = int
 q.times do
   query = ints
   case query[0]
   when 1
-    a[query[1] - 1] = query[2]
+    k, x = query[1..]
+    a[k] = x
   when 2
-    puts a[query[1] - 1]
+    x = query[1]
+    puts a[x]
   end
 end

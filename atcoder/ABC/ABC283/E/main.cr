@@ -11,8 +11,8 @@ OO = 100100100
 h, w = ints
 a = (1..h).map{ ints + [-1] }
 
-dp = (2...h).reduce([[inf, inf], [inf, inf]]) do |dp, i|
-  dp2 = [[inf, inf], [inf, inf]]
+dp = (2...h).reduce([[OO, OO], [OO, OO]]) do |dp, i|
+  dp2 = [[OO, OO], [OO, OO]]
   8.times.map{ |m| {m.bit(0), m.bit(1), m.bit(2)} }.each do |r1, r2, r3|
       d = a[i - 2].map{ |e| e ^ r3 }
       c = a[i - 1].map{ |e| e ^ r2 }
@@ -35,4 +35,4 @@ dp = (2...h).reduce([[inf, inf], [inf, inf]]) do |dp, i|
 end
 
 ans = dp.min_of{ |e| e.min }
-puts ans >= inf ? -1 : ans
+puts ans >= OO ? -1 : ans
