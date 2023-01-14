@@ -127,17 +127,6 @@
   },
 
   //────────────────────────────────────────────────────
-  // 文字列
-  //────────────────────────────────────────────────────
-  "runLengthEncoding": {
-    "prefix": "runLengthEncoding",
-    "body": [
-      "s.chars.slice_when{ |i, j| i != j }.map{ |a| { a[0], a.size} }.to_a"
-    ],
-    "description": "runLengthEncoding"
-  },
-
-  //────────────────────────────────────────────────────
   // 探索
   //────────────────────────────────────────────────────
   "binary_search": {
@@ -3210,6 +3199,42 @@
       "end"
     ],
     "description": "RollingHash"
+  },
+  "runLengthEncoding": {
+    "prefix": "runLengthEncoding",
+    "body": [
+      "s.chars.slice_when{ |i, j| i != j }.map{ |a| { a[0], a.size} }.to_a"
+    ],
+    "description": "runLengthEncoding"
+  },
+  "編集距離": {
+    "prefix": ["edit_distance", "levenshtein_distance"],
+    "body": [
+      "module Enumerable(T)",
+      "  def edit_distance(other : Enumerable(T), del_cost : Int = 1, rep_cost : Int = 1, ins_cost : Int = 1)",
+      "    n = self.size",
+      "    m = other.size",
+      "",
+      "    dp = Array.new(n + 1){ |i| i * ins_cost }",
+      "",
+      "    other.each_with_index do |tj, j|",
+      "      dp2 = dp.clone",
+      "      dp2[0] += ins_cost",
+      "      self.each_with_index do |si, i|",
+      "        dp2[i + 1] = {",
+      "          dp[i] + (si == tj ? 0 : rep_cost),",
+      "          dp[i + 1] + ins_cost,",
+      "          dp2[i] + del_cost,",
+      "        }.min",
+      "      end",
+      "      dp = dp2",
+      "    end",
+      "",
+      "    dp[n]",
+      "  end",
+      "end"
+    ],
+    "description": "編集距離"
   },
 
   //────────────────────────────────────────────────────
