@@ -3902,6 +3902,8 @@
     "prefix": "Imos",
     "body": [
       "class Imos(T)",
+      "  include Enumerable(T)",
+      "",
       "  getter size : Int32",
       "  @added : Array(T)",
       "  @sums : Array(T)",
@@ -3992,6 +3994,11 @@
       "    @sums[i]?",
       "  end",
       "",
+      "  def each(& : T -> )",
+      "    build if @should_build",
+      "    @sums.each { |s| yield s }",
+      "  end",
+      "",
       "  def [](i : Int) : T; get(i) end",
       "  def []?(i : Int) : T?; get?(i) end",
       "",
@@ -4006,7 +4013,7 @@
       "end"
     ],
     "description": "Imos"
-  },
+  }
   "二次元いもす法": {
     "prefix": "RectangleImos",
     "body": [
