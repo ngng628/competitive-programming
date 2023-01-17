@@ -4013,7 +4013,7 @@
       "end"
     ],
     "description": "Imos"
-  }
+  },
   "二次元いもす法": {
     "prefix": "RectangleImos",
     "body": [
@@ -5683,6 +5683,14 @@
       "",
       "  def self.min(elems : Enumerable(S))",
       "    new elems, ->(x : S, y : S){ x < y ? x : y }, ->(){ S::MAX }",
+      "  end",
+      "",
+      "  def self.gcd(elems : Enumerable(S))",
+      "    new elems, ->(x : S, y : S){ x.gcd(y) }, ->(){ S.zero }",
+      "  end",
+      "",
+      "  def self.lcm(elems : Enumerable(S))",
+      "    new elems, ->(x : S, y : S){ x.lcm(y) }, ->(){ S.zero.succ }",
       "  end",
       "",
       "  def initialize(elems : Enumerable(S), @op : S, S -> S, @e : -> S)",
