@@ -2,12 +2,12 @@
   //────────────────────────────────────────────────────
   // 楽をする・STL的な
   //────────────────────────────────────────────────────
-  "yn": {
+  "YesNo出力": {
     "prefix": "yn",
     "body": "puts ${1:condition} ? \"Yes\" : \"No\"",
     "description": "yesno"
   },
-  "ComplexInt": {
+  "整数複素数": {
     "prefix": "ComplexInt",
     "body": [
       "struct ComplexInt",
@@ -47,7 +47,7 @@
     ],
     "description": "ComplexInt"
   },
-  "make_array": {
+  "n次元配列生成": {
     "prefix": "make_array",
     "body": [
       "macro make_array(s, x)",
@@ -127,38 +127,9 @@
   },
 
   //────────────────────────────────────────────────────
-  // 文字列
-  //────────────────────────────────────────────────────
-  "runLengthEncoding": {
-    "prefix": "runLengthEncoding",
-    "body": [
-      "s.chars.slice_when{ |i, j| i != j }.map{ |a| { a[0], a.size} }.to_a"
-    ],
-    "description": "runLengthEncoding"
-  },
-
-  //────────────────────────────────────────────────────
-  // 探索
-  //────────────────────────────────────────────────────
-  "binary_search": {
-    "prefix": "binary_search",
-    "body": [
-      "def binary_search(ac : Int64, wa : Int64, f : Int64 -> Bool)",
-      "  while (ac - wa).abs > 1",
-      "    wj = (ac + wa) >> 1",
-      "    if f.call(wj); ac = wj",
-      "    else; wa = wj end",
-      "  end",
-      "  ac",
-      "end",
-    ],
-    "description": "binary_search"
-  },
-
-  //────────────────────────────────────────────────────
   // グラフ理論
   //────────────────────────────────────────────────────
-  "BfsGraph": {
+  "幅優先探索": {
     "prefix": "BfsGraph",
     "body": [
       "class BfsGraph",
@@ -233,7 +204,7 @@
     ],
     "description": "BfsGraph"
   },
-  "Edge": {
+  "重み付き辺": {
     "prefix": "Edge",
     "body": [
       "struct Edge",
@@ -891,7 +862,7 @@
     ],
     "description": "Grid"
   },
-  "bfs": {
+  "幅優先探索（生実装）": {
     "prefix": "bfs",
     "body": [
       "que = Deque(Int64).new [${1:start}]",
@@ -906,7 +877,7 @@
     ],
     "description": "bfs"
   },
-  "mazebfs": {
+  "迷路用BFS": {
     "prefix": "mazebfs",
     "body": [
       "que = Deque.new [{${1:sy}, ${2:sx}}]",
@@ -923,7 +894,7 @@
     ],
     "description": "mazebfs"
   },
-  "dfs": {
+  "深さ優先探索": {
     "prefix": "dfs",
     "body": [
       "dfs = uninitialized Int64 -> Nil",
@@ -1289,7 +1260,7 @@
     ],
     "description": "MaxFlowGraph"
   },
-  "MinCostFlowGraph": {
+  "最小費用流": {
     "prefix": "MinCostFlowGraph",
     "body": [
       "class MinCostFlowGraph(Cap, Cost)",
@@ -1494,7 +1465,7 @@
   //────────────────────────────────────────────────────
   // 数学系
   //────────────────────────────────────────────────────
-  "bisect": {
+  "二分法": {
     "prefix": "bisect",
     "body": [
       "def bisect(ac : Float64, wa : Float64, error : Float64, & : Float64 -> Bool)",
@@ -1512,7 +1483,7 @@
     ],
     "description": "bisect"
   },
-  "Combination": {
+  "二項係数": {
     "prefix": "Combination",
     "body": [
       "class Combination",
@@ -1560,7 +1531,7 @@
     ],
     "description": "Combination"
   },
-  "modint": {
+  "ModInt": {
     "prefix": "modint",
     "body": [
       "def modinv(a : Int64, mod : Int64) : Int64",
@@ -1672,7 +1643,7 @@
     ],
     "description": "modint"
   },
-  "Prime": {
+  "素数系ライブラリ": {
     "prefix": "Prime",
     "body": [
       "class Prime",
@@ -1813,7 +1784,7 @@
     ],
     "description": "Prime"
   },
-  "divisors": {
+  "約数列挙": {
     "prefix": "divisors",
     "body": [
       "struct Int",
@@ -1837,7 +1808,7 @@
     ],
     "description": "divisors"
   },
-  "Matrix": {
+  "行列": {
     "prefix": "Matrix",
     "body": [
       "class Matrix(T)",
@@ -2291,7 +2262,7 @@
     ],
     "description": "inversion_number"
   },
-  "Fraction": {
+  "有理数": {
     "prefix": "Fraction",
     "body": [
       "struct Fraction",
@@ -2499,6 +2470,62 @@
     ],
     "description": "Fraction"
   },
+  "中国剰余定理": {
+    "prefix": "crt",
+    "body": [
+      "module Math",
+      "  def crt(rems : Array(Int64), mods : Array(Int64))",
+      "    r0 = 0_i64",
+      "    m0 = 1_i64",
+      "    rems.zip(mods).each do |(r1, m1)|",
+      "      r1 %= m1",
+      "",
+      "      if m0 < m1",
+      "        r0, r1 = r1, r0",
+      "        m0, m1 = m1, m0",
+      "      end",
+      "",
+      "      if m0 % m1 == 0",
+      "        return {0_i64, 0_i64} if r0 % m1 != r1",
+      "        next",
+      "      end",
+      "",
+      "      g, im = inv_gcd(m0, m1)",
+      "",
+      "      u1 = m1 // g",
+      "      return {0_i64, 0_i64} if (r1 - r0) % g != 0",
+      "",
+      "      x = (r1 - r0) // g % u1 * im % u1",
+      "      r0 += x * m0",
+      "      m0 *= u1",
+      "      r0 += m0 if r0 < 0",
+      "    end",
+      "",
+      "    {r0, m0}",
+      "  end",
+      "",
+      "  def inv_gcd(a : Int64, b : Int64)",
+      "    a %= b",
+      "    return {b, 0} if a == 0",
+      "",
+      "    s, t = b, a",
+      "    m0, m1 = 0_i64, 1_i64",
+      "",
+      "    until t == 0",
+      "      u = s // t",
+      "      s -= t * u",
+      "      m0 -= m1 * u",
+      "      s, t = t, s",
+      "      m0, m1 = m1, m0",
+      "    end",
+      "",
+      "    m0 += b // s if m0 < 0",
+      "    {s, m0}",
+      "  end",
+      "end"
+    ],
+    "description": "crt"
+  },
 
   //────────────────────────────────────────────────────
   // 動的計画法
@@ -2517,8 +2544,8 @@
       "  @seq : Enumerable(Int32)",
       "  @capacity : Int32",
       "  @mod_old : Int64?",
-      "  getter exist : Array(Bool)",
-      "  getter ways : Array(Int64)",
+      "  @exist : Array(Bool)",
+      "  @ways : Array(Int64)",
       "",
       "  # 0-1 部分和問題を解くためのソルバを生成します。",
       "  #",
@@ -2571,7 +2598,7 @@
       "  # ```",
       "  def configurable?(x : Int)",
       "    unless @exist.empty?",
-      "      return @exist[x]",
+      "      return @exist[x]?.nil? ? false : @exist[x]",
       "    end",
       "",
       "    case @type",
@@ -2593,7 +2620,7 @@
       "      end",
       "    end",
       "",
-      "    @exist[x]",
+      "    @exist[x]?.nil? ? false : @exist[x]",
       "  end",
       "",
       "  # 値 x が構成可能なら、構成例の1つを返します。",
@@ -2758,7 +2785,7 @@
     "description": "メモ化再帰"
   },
   "最長増加部分列": {
-    "prefix": ["lis", "longest_increasing_subsequence"],
+    "prefix": "lis",
     "body": [
       "class Array(T)",
       "  # 最長増加部分列の長さを返します。",
@@ -2772,6 +2799,27 @@
       "  def lis(strict : Bool) : Int64",
       "    dp = Array(T).new",
       "    each do |v|",
+      "      i = dp.bsearch_index{ |e| strict ? e >= v : e > v }",
+      "      if i.nil?",
+      "        dp << v",
+      "      else",
+      "        dp[i.not_nil!] = v",
+      "      end",
+      "    end",
+      "    dp.size.to_i64",
+      "  end",
+      "",
+      "  # 最長増加部分列の長さを返します。",
+      "  #",
+      "  # `strict が `true` の場合、狭義単調増加として考えます。",
+      "  #",
+      "  # ```",
+      "  # [1, 9, 1, 2, 3, 8].lis_by(strict: true){ |x| x**2 } # => 3",
+      "  # [1, 9, 1, 2, 3, 8].lis_by(strict: false){ |x| x**2 } # => 4",
+      "  # ```",
+      "  def lis_by(strict : Bool, & : T -> U) : Int64 forall U",
+      "    dp = Array(U).new",
+      "    map{ |v| yield v }.each do |v|",
       "      i = dp.bsearch_index{ |e| strict ? e >= v : e > v }",
       "      if i.nil?",
       "        dp << v",
@@ -2987,7 +3035,7 @@
   //────────────────────────────────────────────────────
   // 文字列
   //────────────────────────────────────────────────────
-  "z_algorithm": {
+  "Zアルゴリズム": {
     "prefix": "z_algorithm",
     "body": [
       "class Array(T)",
@@ -3019,7 +3067,7 @@
     ],
     "description": "z_algorithm"
   },
-  "RollingHash": {
+  "ローリングハッシュ": {
     "prefix": "RollingHash",
     "body": [
       "class RollingHash",
@@ -3291,11 +3339,47 @@
     ],
     "description": "RollingHash"
   },
+  "ランレングス符号変換": {
+    "prefix": "runLengthEncoding",
+    "body": [
+      "s.chars.slice_when{ |i, j| i != j }.map{ |a| { a[0], a.size} }.to_a"
+    ],
+    "description": "runLengthEncoding"
+  },
+  "編集距離": {
+    "prefix": ["edit_distance", "levenshtein_distance"],
+    "body": [
+      "module Enumerable(T)",
+      "  def edit_distance(other : Enumerable(T), del_cost : Int = 1, rep_cost : Int = 1, ins_cost : Int = 1)",
+      "    n = self.size",
+      "    m = other.size",
+      "",
+      "    dp = Array.new(n + 1){ |i| i * ins_cost }",
+      "",
+      "    other.each_with_index do |tj, j|",
+      "      dp2 = dp.clone",
+      "      dp2[0] += ins_cost",
+      "      self.each_with_index do |si, i|",
+      "        dp2[i + 1] = {",
+      "          dp[i] + (si == tj ? 0 : rep_cost),",
+      "          dp[i + 1] + ins_cost,",
+      "          dp2[i] + del_cost,",
+      "        }.min",
+      "      end",
+      "      dp = dp2",
+      "    end",
+      "",
+      "    dp[n]",
+      "  end",
+      "end"
+    ],
+    "description": "編集距離"
+  },
 
   //────────────────────────────────────────────────────
   // データ構造
   //────────────────────────────────────────────────────
-  "AllAssignableArray": {
+  "全要素リセット付き配列": {
     "prefix": "AllAssignableArray",
     "body": [
       "class AllAssignableArray(T)",
@@ -3512,7 +3596,7 @@
     ],
     "description": "StaticRangeSum"
   },
-  "DynamicRangeSum": {
+  "動的累積和": {
     "prefix": "DynamicRangeSum",
     "body": [
       "class DynamicRangeSum(T)",
@@ -3721,7 +3805,7 @@
     ],
     "description": "二次元累積和"
   },
-  "DynamicRectangleSum": {
+  "動的二次元累積和": {
     "prefix": "DynamicRectangleSum",
     "body": [
       "class DynamicRectangleSum(T)",
@@ -4123,7 +4207,7 @@
     ],
     "description": "RectangleImos"
   },
-  "DisjointSet": {
+  "素集合データ構造": {
     "prefix": "DisjointSet",
     "body": [
       "class DisjointSet",
@@ -4344,7 +4428,7 @@
     ],
     "description": "PotentializedDisjointSet"
   },
-  "MedQueue": {
+  "中央値取り出しキュー": {
     "prefix": "MedQueue",
     "body": [
       "# require \"Heap\"",
@@ -4404,7 +4488,7 @@
     ],
     "description": "MedQueue"
   },
-  "AATreeSet": {
+  "順序付き集合": {
     "prefix": "AATreeSet",
     "body": [
       "class AATreeSet(T)",
@@ -4797,7 +4881,7 @@
     ],
     "description": "AATreeSet"
   },
-  "AATreeMultiset": {
+  "順序付き重複集合": {
     "prefix": "AATreeMultiset",
     "body": [
       "class AATreeMultiset(T)",
@@ -5212,7 +5296,7 @@
     ],
     "description": "AATreeMultiset"
   },
-  "AATreeMap": {
+  "順序付き連想配列": {
     "prefix": "AATreeMap",
     "body": [
       "class AATreeMap(K, V)",
@@ -5661,7 +5745,7 @@
     ],
     "description": "AATreeMap"
   },
-  "SegmentTree": {
+  "セグメント木": {
     "prefix": "SegmentTree",
     "body": [
       "class SegmentTree(S)",
@@ -5861,7 +5945,7 @@
     ],
     "description": "SegmentTree"
   },
-  "LazySegmentTree": {
+  "遅延評価セグメント木": {
     "prefix": "LazySegmentTree",
     "body": [
       "struct Intervalish(T)",
@@ -6243,7 +6327,7 @@
     ],
     "description": "ConvexHullTrick"
   },
-  "DoublyLinkedList": {
+  "双方向リスト": {
     "prefix": "DoublyLinkedList",
     "body": [
       "class DoublyLinkedList(T)",
