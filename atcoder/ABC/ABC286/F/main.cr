@@ -53,6 +53,13 @@ r, m = Math.crt(rems.map(&.to_i64), mods.map(&.to_i64))
 puts r - 1
 STDOUT.flush
 
+
+
+
+
+
+
+
 module Math
   def crt(rems : Array(Int64), mods : Array(Int64))
     r0 = 0_i64
