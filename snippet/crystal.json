@@ -1218,6 +1218,38 @@
     ],
     "description": "MSTGraph"
   },
+  "トポロジカルソート": {
+    "prefix": "topological_sort",
+    "body": [
+      "def topological_sort(graph : Array(Array(Int64))) : Array(Int64)",
+      "  n = graph.size.to_i64",
+      "  res = Array(Int64).new(n)",
+      "  deg = [0] * n",
+      "  graph.each do |outs|",
+      "    outs.each do |to|",
+      "      deg[to] += 1",
+      "    end",
+      "  end",
+      "",
+      "  que = Deque(Int64).new",
+      "  n.times do |i|",
+      "    que << i if deg[i] == 0",
+      "  end",
+      "",
+      "  until que.empty?",
+      "    from = que.shift",
+      "    res << from",
+      "    graph[from].each do |to|",
+      "      deg[to] -= 1",
+      "      que << to if deg[to] == 0",
+      "    end",
+      "  end",
+      "",
+      "  res",
+      "end"
+    ],
+    "description": "topological_sort"
+  },
 
   //────────────────────────────────────────────────────
   // ネットワークフロー
