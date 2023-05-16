@@ -1,0 +1,33 @@
+name: crystal-env
+version: 0.1.0
+
+authors:
+  - ngng628 <ngng628.kyopro@gmail.com>
+
+targets:
+  a:
+    main: src/a.cr
+  b:
+    main: src/b.cr
+  c:
+    main: src/c.cr
+  d:
+    main: src/d.cr
+  e:
+    main: src/e.cr
+  f:
+    main: src/f.cr
+  g:
+    main: src/g.cr
+  h:
+    main: src/h.cr
+
+dependencies:
+  atcoder:
+    github: google/ac-library.cr
+    branch: master
+  nglib:
+    github: ngng628/compe-library.cr
+    branch: main
+
+license: CC0

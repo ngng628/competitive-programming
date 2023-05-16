@@ -71,6 +71,9 @@ def main():
             os.mkdir(path)
             template = f'{compe_home}/template/compe.cr'
             shutil.copyfile(template, path + '/main.cr')
+
+            os.symlink(f'{compe_home}/crystal-env/lib', path + '/lib')
+
             print(plus, task_name, 'is created')
 
 if __name__ == '__main__':
