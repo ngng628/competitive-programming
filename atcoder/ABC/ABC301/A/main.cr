@@ -7,5 +7,22 @@ macro chmin(a, b); ({{a}} > {{b}} && ({{a}} = {{b}})) end
 OO = (1_i64<<62)-(1_i64<<31)
 # ○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．
 
-int
-puts ints.select(&.even?).join(" ")
+n = int
+s = str
+
+if s.count('T') > s.count('A')
+  puts 'T'
+elsif s.count('T') < s.count('A')
+  puts 'A'
+else
+  sum = s.count('T')
+  n.times do |i|
+    if s[0..i].count('T') == sum
+      puts 'T'
+      break
+    elsif s[0..i].count('A') == sum
+      puts 'A'
+      break
+    end
+  end
+end

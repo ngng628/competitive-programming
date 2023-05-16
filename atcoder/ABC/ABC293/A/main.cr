@@ -7,5 +7,10 @@ macro chmin(a, b); ({{a}} > {{b}} && ({{a}} = {{b}})) end
 OO = (1_i64<<62)-(1_i64<<31)
 # ○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．
 
-int
-puts ints.select(&.even?).join(" ")
+s = str.chars
+n = s.size
+(n // 2).times do |i|
+  s.swap(2*i, 2*i + 1)
+end
+
+puts s.join

@@ -7,5 +7,13 @@ macro chmin(a, b); ({{a}} > {{b}} && ({{a}} = {{b}})) end
 OO = (1_i64<<62)-(1_i64<<31)
 # ○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．
 
-int
-puts ints.select(&.even?).join(" ")
+n = 8
+s = (1..n).map { str.chars }
+
+n.times do |i|
+  n.times do |j|
+    if s[i][j] == '*'
+      puts "#{('a'.ord + j).chr}#{n - i}"
+    end
+  end
+end

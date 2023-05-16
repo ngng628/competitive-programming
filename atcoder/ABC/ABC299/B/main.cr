@@ -7,5 +7,26 @@ macro chmin(a, b); ({{a}} > {{b}} && ({{a}} = {{b}})) end
 OO = (1_i64<<62)-(1_i64<<31)
 # ○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．
 
-int
-puts ints.select(&.even?).join(" ")
+n, t = ints
+c = ints
+r = ints
+
+same = [] of {Int64, Int64}
+n.times do |i|
+  if c[i] == t
+    same << {r[i], i + 1}
+  end
+end
+
+if same.size >= 1
+  puts same.max_by(&.[0])[1]
+else
+  t = c[0]
+  same = [] of {Int64, Int64}
+  n.times do |i|
+    if c[i] == t
+      same << {r[i], i + 1}
+    end
+  end
+  puts same.max_by(&.[0])[1]
+end

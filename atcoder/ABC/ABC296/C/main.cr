@@ -7,5 +7,12 @@ macro chmin(a, b); ({{a}} > {{b}} && ({{a}} = {{b}})) end
 OO = (1_i64<<62)-(1_i64<<31)
 # ○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．
 
-int
-puts ints.select(&.even?).join(" ")
+n, x = ints
+a = ints.sort
+set = Set.new(a)
+
+ans = a.any? { |ai|
+  set.includes?(ai - x)
+}
+
+puts ans ? "Yes" : "No"

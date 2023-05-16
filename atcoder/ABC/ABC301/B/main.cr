@@ -7,5 +7,18 @@ macro chmin(a, b); ({{a}} > {{b}} && ({{a}} = {{b}})) end
 OO = (1_i64<<62)-(1_i64<<31)
 # ○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．
 
-int
-puts ints.select(&.even?).join(" ")
+n = int
+a = ints
+
+ans = String.build { |io|
+  (n - 1).times do |i|
+    if a[i] < a[i + 1]
+      io << a[i].upto(a[i + 1] - 1).join(" ") << ' '
+    else
+      io << a[i].downto(a[i + 1] + 1).join(" ") << ' '
+    end
+  end
+  io << a[-1]
+}
+
+puts ans

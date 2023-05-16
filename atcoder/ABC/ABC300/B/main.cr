@@ -7,5 +7,23 @@ macro chmin(a, b); ({{a}} > {{b}} && ({{a}} = {{b}})) end
 OO = (1_i64<<62)-(1_i64<<31)
 # ○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．
 
-int
-puts ints.select(&.even?).join(" ")
+h, w = ints
+a = (1..h).map { str.chomp.chars }
+b = (1..h).map { str.chomp.chars }
+
+h.times do |si|
+  w.times do |sj|
+    c = Array.new(h) { |i|
+      Array.new(w) { |j|
+        a[(i + si) % h][(j + sj) % w]
+      }
+    }
+
+    if b == c
+      puts "Yes"
+      exit
+    end
+  end
+end
+
+puts "No"

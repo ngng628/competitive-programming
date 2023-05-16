@@ -7,5 +7,21 @@ macro chmin(a, b); ({{a}} > {{b}} && ({{a}} = {{b}})) end
 OO = (1_i64<<62)-(1_i64<<31)
 # ○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．
 
-int
-puts ints.select(&.even?).join(" ")
+n = int
+
+left = 0
+right = n
+20.times do |i|
+  mid = (left + right) // 2
+  puts "? #{mid + 1}"
+  STDOUT.flush
+  s = int
+  if s == 0
+    left = mid
+  else
+    right = mid
+  end
+end
+
+puts "! #{left + 1}"
+STDOUT.flush

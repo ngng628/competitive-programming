@@ -7,5 +7,20 @@ macro chmin(a, b); ({{a}} > {{b}} && ({{a}} = {{b}})) end
 OO = (1_i64<<62)-(1_i64<<31)
 # ○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．
 
-int
-puts ints.select(&.even?).join(" ")
+n = int
+a = ints -1
+
+set = Set(Int64).new
+n.times do |i|
+  unless set.includes?(i)
+    set << a[i]
+  end
+end
+
+ans = [] of Int64
+n.times do |i|
+  ans << i + 1 unless set.includes?(i)
+end
+
+puts ans.size
+puts ans.join(" ")

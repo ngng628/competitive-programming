@@ -7,5 +7,27 @@ macro chmin(a, b); ({{a}} > {{b}} && ({{a}} = {{b}})) end
 OO = (1_i64<<62)-(1_i64<<31)
 # ○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．
 
-int
-puts ints.select(&.even?).join(" ")
+n = int
+a = ints
+b = ints
+
+# if a.sort != b.sort
+#   puts "No"
+#   exit
+# end
+
+def calc_indices(v)
+  indices = Array.new(v.size) { [] of Int64 }
+  v.each_with_index do |vi, i|
+    indices[vi - 1] << i + 1
+  end
+  indices
+end
+
+pp! calc_indices(a)
+pp! calc_indices(b)
+
+n.times do |i|
+  next if a[i] == b[i]
+
+end

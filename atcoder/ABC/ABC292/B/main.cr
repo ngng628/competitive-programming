@@ -7,5 +7,19 @@ macro chmin(a, b); ({{a}} > {{b}} && ({{a}} = {{b}})) end
 OO = (1_i64<<62)-(1_i64<<31)
 # ○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．○。．
 
-int
-puts ints.select(&.even?).join(" ")
+n, q = ints
+
+a = [0] * n
+
+q.times do
+  t, x = ints
+  x -= 1
+  case t
+  when 1
+    a[x] += 1
+  when 2
+    a[x] += 3
+  else
+    puts a[x] >= 2 ? "Yes" : "No"
+  end
+end
