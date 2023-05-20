@@ -6,5 +6,5 @@ shards:
 
   nglib:
     git: https://github.com/ngng628/compe-library.cr.git
-    version: 0.1.0+git.commit.e101d1ad260d627d94b67d3a8a2069e91e8ea867
+    version: 0.1.0+git.commit.06881bb1ff09e8c04385fb54c64e811c5fbfc528
 
