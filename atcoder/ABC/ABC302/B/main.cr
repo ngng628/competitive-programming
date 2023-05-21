@@ -1,0 +1,181 @@
+require "nglib/utils"
+
+#                                           .O,                                        
+#                                          :o.                                         
+#                                        'd'          :c;.                            c
+#                                       lc  dKl     ;d,.,cl:.           oOx.           
+#                                     .x.   .,.   'd:.......:ll;.       'lc            
+#                                   .;0;        .ol............'col;.                  
+#                                .:do;xl       cd'.................,col;.              
+#                           .,cdd:'   od     'x;........:..............':ol;.          
+#                     ..;lddc,.       od    od....l:...;x.........,........,lo;        
+#              .,:loodl;.          .,,kx. .kk:....k,...lo........od.........;.:x,      
+#       .,coool:,.                  ....;lkodl....O:...dk.......;Oo........:x...oo     
+#    :dl;'.                                .lk:...Ok...xkc......xcx.......,k'....:x    
+#  ;k,                                        :x:.Olx'.O'd;....;o.O......;Oc......cx   
+#  O,                       .                   ;xO;.cOO..ll,..l: x,...,dck,.......dc  
+#  k:                      lKd                    oO. KK   .;cld; dc;lOc.;d........,0  
+#  dl                       .                      cx.cO.         .,.KW..x'.........0. 
+#  oc         .ll;.                                 :k.l:            ;l,k,...;:.....0. 
+#  o,         kkxkOOOOOOOOOkkkkxl:'.                 ;x.,.           .dOoccod:.....cO  
+#  x..o.     lOxxxxxxxxxxxxxxxxxxkXOOdc'              oc    .l;,,,;coo:...ol......o0,  
+#  O  '     xOxxxxxxxxxxxxxxxxxxxxKOxxkOOd;           .0.   '0:ccc:,,,0ccd;....;lx0l   
+# .x      .Okxxxxxxxxxxxxxxxxxxxxx0KxxxxxxkOo.         O'    do'''''''OllOkoooolckl    
+# ;l     .OkxxxxxxxxxxxxxxxxxxxxxxOKxxxxxkOxk0l        kkollll0kdoddxkK0Oxllooool.     
+# c:     kKxxxxxxxxxxxxxxxxxxxxxxx0XkxxxxkXxxxOO       k'  ;d. .k,....':ok0dc;..   .'::
+# o,    xO00xxxxxxxxxxxxxxxxxxxxxxKOKxxxxxXdoOk0;     .O  ;d  .k.         .cd,ckccc;lx,
+# d,   c0xx0Kkxxxxxxxxxxxxxxxxxxx0O.KkxxxkX. .0K;     lk:lOo;;Oo;kd;     ' .x;:c      .
+# d,  .0KxxxkK0kxxxxxxxxxxxxxxxx0k. l0xxxOx   O0     'O::k; .kckO: Okollxxkx. k.       
+# d,  xod0xxxxK00OxxxxxxxxxxxxO0l.  'XxxkK'  ;K,    .Oxxo.  .o x: ;O;;xo..K. l:        
+# l;  0:;d0xxxkO.;ok0OkO00OkO0l.     KkkKc';d0,   ;olxx     ,dd; 'Kkkk, 'Oc 'x         
+# :l  K:;;o0kxxKc   .':c..:o,.       O0OlO0Kd. 'ol. :d      lO' ;00x;. ck'  O.         
+# 'x  0c;;;cO0xkXk,               '. cdk00x..cOx   ol     .od.  ,c.  'k;   d;          
+#  0. kl;;;;;oO0OK0,              ,ccO00KOokk.'x. o:   'cx0; .::c:. od    ;d           
+#  ;d..xd:;;;;;cdkkk,...    ..';llc::,...   ;d..xkc  .klld.      ol ol   .k            
+#    ,llokkolcccloddkK0K00ck00xodoo:.         cl '   .o..d:      c. ,k   k.            
+#       .,:c::;,..  ;d  .0;k. ;lodxkKo         .d'        :x;'.....:xc  lc             
+#                   lx :OOOol       'O           :o.        dOooodd0.  .O              
+#                  lxc:,k:O .d;     ll            .dc        ld;;;;O'  l;              
+#               .c, dk:k;.k   oOcc,,O.              ,x.       Oc;;;x:  x.              
+#             .ld.'lkd;,:cdlc;;0, .:'                 dxcc:;,'kdllld0;',..    ;loodoool
+#           ,ol.     .oo.    ...' .:::cccl:.           :x. .............';codOc;;;;;;;;
+#        :kd,          co                 .'c,          'k.                  ,dx:;;;;;;
+#         .:llld;,;:....O'                               .x:                  .ko;;;;;;
+#               'lkcodxdxO.                                ;x,                :kc;;;;;;
+#                ;k;;;;;;dx                                  o0'               ;Kd;;;;;
+
+h, w = ints
+s = (1..h).map { str.chars }
+
+SNUKE = "snuke".chars
+
+over = ->(i : Int64, j : Int64) {
+  i < 0 || i >= h || j < 0 || j >= w
+}
+
+h.times do |i|
+  w.times do |j|
+    ok = 5.times.all? { |k|
+      !over.call(i, j + k) && s[i][j + k] == SNUKE[k]
+    }
+    if ok
+      puts "#{i + 1} #{j + 1}"
+      puts "#{i + 1} #{j + 2}"
+      puts "#{i + 1} #{j + 3}"
+      puts "#{i + 1} #{j + 4}"
+      puts "#{i + 1} #{j + 5}"
+      exit
+    end
+  end
+end
+
+w.times do |j|
+  h.times do |i|
+    ok = 5.times.all? { |k|
+      !over.call(i + k, j) && s[i + k][j] == SNUKE[k]
+    }
+    if ok
+      puts "#{i + 1} #{j + 1}"
+      puts "#{i + 2} #{j + 1}"
+      puts "#{i + 3} #{j + 1}"
+      puts "#{i + 4} #{j + 1}"
+      puts "#{i + 5} #{j + 1}"
+      exit
+    end
+  end
+end
+
+h.times do |i|
+  w.times do |j|
+    ok = 5.times.all? { |k|
+      !over.call(i + k, j + k) && s[i + k][j + k] == SNUKE[k]
+    }
+    if ok
+      puts "#{i + 1} #{j + 1}"
+      puts "#{i + 2} #{j + 2}"
+      puts "#{i + 3} #{j + 3}"
+      puts "#{i + 4} #{j + 4}"
+      puts "#{i + 5} #{j + 5}"
+      exit
+    end
+  end
+end
+h.times do |i|
+  w.times do |j|
+    ok = 5.times.all? { |k|
+      !over.call(i + k, j - k) && s[i + k][j - k] == SNUKE[k]
+    }
+    if ok
+      puts "#{i + 1} #{j - 0 + 1}"
+      puts "#{i + 2} #{j - 1 + 1}"
+      puts "#{i + 3} #{j - 2 + 1}"
+      puts "#{i + 4} #{j - 3 + 1}"
+      puts "#{i + 5} #{j - 4 + 1}"
+      exit
+    end
+  end
+end
+#==================================================================================================================
+h.times do |i|
+  w.times do |j|
+    ok = 5.times.all? { |k|
+      !over.call(i, j - k) && s[i][j - k] == SNUKE[k]
+    }
+    if ok
+      puts "#{i + 1} #{j - 0 + 1}"
+      puts "#{i + 1} #{j - 1 + 1}"
+      puts "#{i + 1} #{j - 2 + 1}"
+      puts "#{i + 1} #{j - 3 + 1}"
+      puts "#{i + 1} #{j - 4 + 1}"
+      exit
+    end
+  end
+end
+
+w.times do |j|
+  h.times do |i|
+    ok = 5.times.all? { |k|
+      !over.call(i - k, j) && s[i - k][j] == SNUKE[k]
+    }
+    if ok
+      puts "#{i - 0 + 1} #{j + 1}"
+      puts "#{i - 1 + 1} #{j + 1}"
+      puts "#{i - 2 + 1} #{j + 1}"
+      puts "#{i - 3 + 1} #{j + 1}"
+      puts "#{i - 4 + 1} #{j + 1}"
+      exit
+    end
+  end
+end
+
+h.times do |i|
+  w.times do |j|
+    ok = 5.times.all? { |k|
+      !over.call(i - k, j - k) && s[i - k][j - k] == SNUKE[k]
+    }
+    if ok
+      puts "#{i - 0 + 1} #{j - 0 + 1}"
+      puts "#{i - 1 + 1} #{j - 1 + 1}"
+      puts "#{i - 2 + 1} #{j - 2 + 1}"
+      puts "#{i - 3 + 1} #{j - 3 + 1}"
+      puts "#{i - 4 + 1} #{j - 4 + 1}"
+      exit
+    end
+  end
+end
+
+h.times do |i|
+  w.times do |j|
+    ok = 5.times.all? { |k|
+      !over.call(i - k, j + k) && s[i - k][j + k] == SNUKE[k]
+    }
+    if ok
+      puts "#{i - 0 + 1} #{j + 0 + 1}"
+      puts "#{i - 1 + 1} #{j + 1 + 1}"
+      puts "#{i - 2 + 1} #{j + 2 + 1}"
+      puts "#{i - 3 + 1} #{j + 3 + 1}"
+      puts "#{i - 4 + 1} #{j + 4 + 1}"
+      exit
+    end
+  end
+end
