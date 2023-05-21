@@ -16,7 +16,7 @@ memo.ipynb
 atcoder/ac-library/
 library/compe-library.cr/
 .python-version
-lib/**
+lib
 
 # Rust
 Cargo.*
