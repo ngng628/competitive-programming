@@ -16,6 +16,7 @@ memo.ipynb
 atcoder/ac-library/
 library/compe-library.cr/
 .python-version
+crystal-env/shard.lock
 
 # Rust
 Cargo.*
