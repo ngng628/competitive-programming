@@ -17,6 +17,7 @@ atcoder/ac-library/
 library/compe-library.cr/
 .python-version
 lib
+crystal-env/shard.lock
 
 # Rust
 Cargo.*
