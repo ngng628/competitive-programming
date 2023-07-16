@@ -2,6 +2,42 @@
   //────────────────────────────────────────────────────
   // 楽をする・STL的な
   //────────────────────────────────────────────────────
+  "int": {
+    "prefix": "rint",
+    "body": "read_line.to_i64",
+    "description": "read a int"
+  },
+  "rints": {
+    "prefix": "rints",
+    "body": "read_line.split.map &.to_i64",
+    "description": "read a ints"
+  },
+  "rstr": {
+    "prefix": "rstr",
+    "body": "read_line.chomp",
+    "description": "read line"
+  },
+  "make_array": {
+    "prefix": "make_array",
+    "body": [
+        "macro make_array(s, x)",
+        "  Array.new({{ s[0] }}) {",
+        "    {% if s[1..s.size].empty? %}; {{ x }}",
+        "    {% else %}; make_array({{ s[1..s.size] }}, {{ x }}) {% end %}",
+        "  }",
+        "end",
+    ],
+    "description": ""
+  },
+  "div_ceil": {
+    "prefix": "div_ceil",
+    "body": [
+        "struct Int",
+        "  def div_ceil(other : Int); (self + other - 1) // other end",
+        "end",
+    ],
+    "description": ""
+  },
   "YesNo出力": {
     "prefix": "yn",
     "body": "puts ${1:condition} ? \"Yes\" : \"No\"",
